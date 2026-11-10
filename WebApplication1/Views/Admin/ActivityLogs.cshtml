@@ -1,0 +1,755 @@
+@{
+    ViewData["Title"] = "Nhật ký hoạt động - ExamBank Admin";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Tổng thể trang Nhật ký hoạt động */
+    .logs-page-wrapper {
+        padding: 24px 30px;
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Top Search & Profile Bar */
+    .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .top-search-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .btn-menu-toggle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-menu-toggle:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .search-box-top {
+        position: relative;
+        width: 380px;
+    }
+
+    .search-box-top input {
+        width: 100%;
+        padding: 9px 18px 9px 42px;
+        border-radius: 22px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        font-size: 13.5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .search-box-top input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .search-box-top i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .notification-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .notification-btn:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .badge-alert {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+    .user-pill-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 14px 4px 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .user-avatar-top {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .user-avatar-top img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Breadcrumb */
+    .page-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .page-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .page-breadcrumb a:hover {
+        color: #2563eb;
+    }
+
+    /* Page Heading Header */
+    .page-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .page-title-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .page-title-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+    }
+
+    .page-title-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .page-subtitle-text {
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 4px 0 0 0;
+    }
+
+    .header-actions-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-export-log {
+        background: #ffffff;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn-export-log:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+    }
+
+    .btn-clear-log {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .btn-clear-log:hover {
+        background: #fee2e2;
+    }
+
+    /* 4 Thẻ Thống kê KPI */
+    .kpi-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .kpi-card {
+        border-radius: 16px;
+        padding: 20px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
+        transition: transform 0.2s ease;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .kpi-card-blue { background: linear-gradient(135deg, #f0f7ff 0%, #e0effe 100%); border-color: #bfdbfe; }
+    .kpi-card-green { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-color: #bbf7d0; }
+    .kpi-card-purple { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-color: #e9d5ff; }
+    .kpi-card-red { background: linear-gradient(135deg, #fff5f5 0%, #fee2e2 100%); border-color: #fecaca; }
+
+    .kpi-info { display: flex; align-items: center; gap: 16px; z-index: 1; }
+    .kpi-icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+    .kpi-icon-blue { background: #dbeafe; color: #2563eb; }
+    .kpi-icon-green { background: #16a34a; color: #ffffff; }
+    .kpi-icon-purple { background: #9333ea; color: #ffffff; }
+    .kpi-icon-red { background: #ef4444; color: #ffffff; }
+
+    .kpi-label { font-size: 13px; color: #475569; font-weight: 600; margin-bottom: 2px; }
+    .kpi-value { font-size: 26px; font-weight: 800; color: #0f172a; line-height: 1.1; }
+    .kpi-subtext { font-size: 11.5px; color: #64748b; margin-top: 4px; font-weight: 500; }
+    .kpi-watermark { position: absolute; right: 15px; bottom: 8px; font-size: 58px; opacity: 0.12; pointer-events: none; }
+
+    /* Filter Bar */
+    .filter-card {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 14px 18px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .filter-search-box {
+        position: relative;
+        flex: 1;
+        max-width: 340px;
+    }
+
+    .filter-search-box input {
+        width: 100%;
+        padding: 8px 12px 8px 36px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 13px;
+        outline: none;
+        background: #f8fafc;
+    }
+
+    .filter-search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    .custom-select {
+        padding: 8px 30px 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 13px;
+        color: #334155;
+        background-color: #f8fafc;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px 10px;
+    }
+
+    /* Logs Table Card */
+    .logs-table-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 13px;
+    }
+
+    .custom-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .custom-table tbody td {
+        padding: 13px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        vertical-align: middle;
+    }
+
+    .custom-table tbody tr:hover td {
+        background: #f8fafc;
+    }
+
+    .log-time {
+        font-family: 'Consolas', monospace;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1e293b;
+        white-space: nowrap;
+    }
+
+    .badge-action {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11.5px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .badge-export { background: #fef3c7; color: #b45309; }
+    .badge-approve { background: #dcfce7; color: #15803d; }
+    .badge-login { background: #e0f2fe; color: #0369a1; }
+    .badge-security { background: #fee2e2; color: #b91c1c; }
+    .badge-edit { background: #f3e8ff; color: #7e22ce; }
+
+    /* Footer Pagination */
+    .table-footer {
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #ffffff;
+        border-top: 1px solid #f1f5f9;
+        font-size: 12.5px;
+        color: #64748b;
+    }
+
+    .pagination-custom {
+        display: flex;
+        gap: 5px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .page-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12.5px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .page-btn.active {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+    }
+
+    /* Responsive */
+    @@media (max-width: 1200px) {
+        .kpi-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+
+<div class="logs-page-wrapper">
+
+    <!-- 1. TOP BAR: TÌM KIẾM & PROFILE -->
+    <div class="top-header">
+        <div class="top-search-group">
+            <button class="btn-menu-toggle" title="Thu gọn menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="search-box-top">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm nhật ký, IP, tài khoản..." />
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="notification-btn" title="Thông báo">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-alert">3</span>
+            </div>
+
+            <div class="user-pill-top">
+                <div class="user-avatar-top">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" alt="Admin Avatar" />
+                </div>
+                <div class="d-none d-sm-block text-start">
+                    <div class="fw-bold small text-dark leading-tight">@(ViewBag.FullName ?? "admin")</div>
+                    <div class="text-muted" style="font-size: 11px;">Administrator</div>
+                </div>
+                <i class="fa-solid fa-chevron-down text-muted small ms-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. BREADCRUMB & TIÊU ĐỀ TRANG -->
+    <div class="page-breadcrumb">
+        <i class="fa-solid fa-house-chimney me-1"></i>
+        <a asp-controller="Admin" asp-action="Index">Trang chủ</a>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span>Quản trị hệ thống</span>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span class="text-dark fw-semibold">Nhật ký hoạt động</span>
+    </div>
+
+    <div class="page-title-row">
+        <div class="page-title-group">
+            <div class="page-title-icon">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div>
+                <h1 class="page-title-text">Nhật ký hoạt động</h1>
+                <p class="page-subtitle-text">Ghi lại toàn bộ vết thao tác, truy cập ngân hàng đề thi và cảnh báo an toàn bảo mật hệ thống (Audit Log)</p>
+            </div>
+        </div>
+
+        <div class="header-actions-group">
+            <button class="btn-export-log" onclick="alert('Đang xuất toàn bộ nhật ký hệ thống ra file Excel...');">
+                <i class="fa-solid fa-file-arrow-down text-success"></i>
+                <span>Xuất Excel Log</span>
+            </button>
+            <button class="btn-clear-log" onclick="if(confirm('Bạn có chắc chắn muốn dọn dẹp các bản ghi nhật ký cũ hơn 90 ngày?')) alert('Đã dọn dẹp dữ liệu log cũ!');">
+                <i class="fa-regular fa-trash-can"></i>
+                <span>Dọn dẹp Log cũ</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. 4 THẺ THỐNG KÊ (KPI CARDS) -->
+    <div class="kpi-cards-grid">
+        <div class="kpi-card kpi-card-blue">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-blue">
+                    <i class="fa-solid fa-list-ul"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Tổng thao tác (24h qua)</div>
+                    <div class="kpi-value">1.420</div>
+                    <div class="kpi-subtext">Hoạt động bình thường</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-list-ul kpi-watermark text-primary"></i>
+        </div>
+
+        <div class="kpi-card kpi-card-green">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-green">
+                    <i class="fa-solid fa-file-shield"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Thao tác Đề thi & Ngân hàng</div>
+                    <div class="kpi-value">480</div>
+                    <div class="kpi-subtext">Xuất, duyệt, trộn đề</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-file-shield kpi-watermark text-success"></i>
+        </div>
+
+        <div class="kpi-card kpi-card-purple">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-purple">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Đăng nhập & Xác thực</div>
+                    <div class="kpi-value">650</div>
+                    <div class="kpi-subtext">Tài khoản truy cập</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-right-to-bracket kpi-watermark text-secondary"></i>
+        </div>
+
+        <div class="kpi-card kpi-card-red">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-red">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Cảnh báo bảo mật</div>
+                    <div class="kpi-value">3</div>
+                    <div class="kpi-subtext text-danger fw-bold">Đăng nhập sai / Tải đề bất thường</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-shield-halved kpi-watermark text-danger"></i>
+        </div>
+    </div>
+
+    <!-- 4. THANH BỘ LỌC TÌM KIẾM -->
+    <div class="filter-card">
+        <div class="filter-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Tìm theo người dùng, email, địa chỉ IP..." />
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <select class="custom-select">
+                <option value="">Tất cả loại hành động</option>
+                <option value="EXPORT_EXAM">Xuất đề thi</option>
+                <option value="APPROVE">Phê duyệt câu hỏi / đề thi</option>
+                <option value="LOGIN">Đăng nhập / Đăng xuất</option>
+                <option value="SECURITY">Cảnh báo bảo mật</option>
+                <option value="UPDATE">Chỉnh sửa dữ liệu</option>
+            </select>
+
+            <select class="custom-select">
+                <option value="today">Hôm nay</option>
+                <option value="7days" selected>7 ngày gần đây</option>
+                <option value="30days">30 ngày qua</option>
+            </select>
+
+            <select class="custom-select">
+                <option value="">Mức độ: Tất cả</option>
+                <option value="info">Thông tin (Info)</option>
+                <option value="warning">Cảnh báo (Warning)</option>
+                <option value="danger">Nguy hiểm (Danger)</option>
+            </select>
+
+            <button class="btn btn-sm btn-light border px-3 py-2" title="Tải lại" onclick="window.location.reload();">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 5. BẢNG DANH SÁCH NHẬT KÝ HỆ THỐNG -->
+    <div class="logs-table-card">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Thời gian</th>
+                        <th>Người thực hiện</th>
+                        <th>Loại hành động</th>
+                        <th>Chi tiết thao tác</th>
+                        <th>Địa chỉ IP</th>
+                        <th>Thiết bị</th>
+                        <th class="text-end">Xem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="log-time">10/11/2026 16:45:20</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" width="28" height="28" class="rounded-circle" />
+                                <div>
+                                    <div class="fw-bold text-dark small">Nguyễn Văn An</div>
+                                    <span class="badge bg-purple-subtle text-primary border" style="font-size: 10px;">Admin</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge-action badge-export"><i class="fa-solid fa-file-arrow-down me-1"></i> Xuất đề thi</span></td>
+                        <td>Đã xuất <strong>04 mã đề thi chính thức</strong> môn Lập trình hướng đối tượng (CNTT01) kèm Watermark bảo mật</td>
+                        <td class="font-monospace small">192.168.1.100</td>
+                        <td><i class="fa-brands fa-chrome text-danger me-1"></i> Windows 11 Chrome</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light" title="Xem chi tiết vết" onclick="alert('Chi tiết log: Mã đề CNTT01_01, CNTT01_02, CNTT01_03, CNTT01_04 được tạo lúc 16:45');"><i class="fa-regular fa-eye text-primary"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="log-time">10/11/2026 15:30:12</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=An" width="28" height="28" class="rounded-circle" />
+                                <div>
+                                    <div class="fw-bold text-dark small">Trần Văn An</div>
+                                    <span class="badge bg-warning-subtle text-warning-emphasis border" style="font-size: 10px;">Trưởng BM</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge-action badge-approve"><i class="fa-solid fa-check-double me-1"></i> Phê duyệt</span></td>
+                        <td>Phê duyệt <strong>25 câu hỏi mới</strong> thuộc Chương 2 môn Cơ sở dữ liệu đưa vào ngân hàng chính thức</td>
+                        <td class="font-monospace small">192.168.1.145</td>
+                        <td><i class="fa-brands fa-chrome text-danger me-1"></i> Windows 11 Chrome</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light" title="Xem chi tiết vết"><i class="fa-regular fa-eye text-primary"></i></button>
+                        </td>
+                    </tr>
+                    <tr class="table-danger-subtle bg-danger-subtle">
+                        <td class="log-time text-danger">10/11/2026 14:15:05</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="width: 28px; height: 28px; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 12px;">
+                                    <i class="fa-solid fa-user-xmark"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-danger small">IP Lạ: 118.70.12.85</div>
+                                    <span class="badge bg-danger text-white" style="font-size: 10px;">Cảnh báo</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge-action badge-security"><i class="fa-solid fa-triangle-exclamation me-1"></i> Thất bại 5 lần</span></td>
+                        <td>Đăng nhập sai mật khẩu liên tiếp 5 lần vào tài khoản <strong>admin@abc.edu.vn</strong> - Đã tạm khóa 30 phút</td>
+                        <td class="font-monospace small text-danger fw-bold">118.70.12.85</td>
+                        <td><i class="fa-brands fa-firefox-browser text-warning me-1"></i> Linux Firefox</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-danger" title="Khóa vĩnh viễn IP này" onclick="alert('Đã thêm IP vào danh sách đen (Blacklist)');"><i class="fa-solid fa-ban"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="log-time">10/11/2026 11:20:44</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mai" width="28" height="28" class="rounded-circle" />
+                                <div>
+                                    <div class="fw-bold text-dark small">Trần Thị Mai</div>
+                                    <span class="badge bg-info-subtle text-primary border" style="font-size: 10px;">Giảng viên</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge-action badge-edit"><i class="fa-solid fa-file-import me-1"></i> Nhập câu hỏi</span></td>
+                        <td>Import thành công <strong>50 câu hỏi</strong> từ file <code>De_Cuong_Lap_Trinh.docx</code></td>
+                        <td class="font-monospace small">192.168.1.180</td>
+                        <td><i class="fa-brands fa-edge text-primary me-1"></i> Windows 10 Edge</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light" title="Xem chi tiết vết"><i class="fa-regular fa-eye text-primary"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="log-time">10/11/2026 08:00:10</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" width="28" height="28" class="rounded-circle" />
+                                <div>
+                                    <div class="fw-bold text-dark small">Nguyễn Văn An</div>
+                                    <span class="badge bg-purple-subtle text-primary border" style="font-size: 10px;">Admin</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge-action badge-login"><i class="fa-solid fa-right-to-bracket me-1"></i> Đăng nhập</span></td>
+                        <td>Đăng nhập hệ thống thành công qua xác thực 2 lớp (2FA)</td>
+                        <td class="font-monospace small">192.168.1.100</td>
+                        <td><i class="fa-brands fa-chrome text-danger me-1"></i> Windows 11 Chrome</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light"><i class="fa-regular fa-eye text-primary"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-footer">
+            <div>Hiển thị <strong>1 – 5</strong> trong tổng số <strong>1.420</strong> sự kiện ghi nhận</div>
+            <ul class="pagination-custom">
+                <li><a href="#" class="page-btn"><i class="fa-solid fa-chevron-left small"></i></a></li>
+                <li><a href="#" class="page-btn active">1</a></li>
+                <li><a href="#" class="page-btn">2</a></li>
+                <li><a href="#" class="page-btn">3</a></li>
+                <li><a href="#" class="page-btn">...</a></li>
+                <li><a href="#" class="page-btn"><i class="fa-solid fa-chevron-right small"></i></a></li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+

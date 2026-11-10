@@ -1,0 +1,1107 @@
+@{
+    ViewData["Title"] = "Cấu hình hệ thống - ExamBank Admin";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Tổng thể trang Cấu hình hệ thống */
+    .settings-page-wrapper {
+        padding: 24px 30px;
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Top Breadcrumb & Clock Bar */
+    .top-header-settings {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .top-left-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .btn-menu-toggle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-menu-toggle:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .page-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: #64748b;
+        margin: 0;
+    }
+
+    .page-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .page-breadcrumb a:hover {
+        color: #2563eb;
+    }
+
+    .top-right-group {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .notification-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .notification-btn:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .badge-alert {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+    .clock-display-box {
+        text-align: right;
+        line-height: 1.25;
+    }
+
+    .clock-date {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .clock-time {
+        font-size: 11.5px;
+        color: #64748b;
+        font-family: 'Consolas', monospace;
+    }
+
+    .theme-toggle-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .theme-toggle-btn:hover {
+        color: #f59e0b;
+        background: #fffbeb;
+    }
+
+    /* Page Heading Header */
+    .page-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .page-title-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .page-title-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+    }
+
+    .page-title-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .page-subtitle-text {
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 4px 0 0 0;
+    }
+
+    .header-actions-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-restore-default {
+        background: #ffffff;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn-restore-default:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        color: #0f172a;
+    }
+
+    .btn-save-settings {
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        padding: 9px 22px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn-save-settings:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        color: #ffffff;
+    }
+
+    /* Horizontal Navigation Tabs (5 Tabs) */
+    .settings-nav-tabs {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 22px;
+        border: 1px solid #e2e8f0;
+        overflow-x: auto;
+    }
+
+    .settings-tab-btn {
+        padding: 9px 18px;
+        border-radius: 10px;
+        border: none;
+        background: transparent;
+        color: #64748b;
+        font-size: 13.5px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .settings-tab-btn:hover:not(.active) {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .settings-tab-btn.active {
+        background: #2563eb;
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+
+    /* 2x2 Grid Cards for Settings */
+    .settings-cards-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+    }
+
+    .setting-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 22px 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .setting-card-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 16px;
+        margin-bottom: 18px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .setting-card-header h5 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .setting-card-header i {
+        color: #2563eb;
+        font-size: 17px;
+    }
+
+    /* Card 1: Logo & Info Fields Split */
+    .system-info-split {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .brand-logo-preview-box {
+        text-align: center;
+        padding: 16px 12px;
+        background: #f8faff;
+        border-radius: 14px;
+        border: 1px dashed #bfdbfe;
+    }
+
+    .brand-logo-icon {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 10px auto;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        box-shadow: 0 6px 16px rgba(29, 78, 216, 0.3);
+    }
+
+    .brand-logo-title {
+        font-size: 17px;
+        font-weight: 800;
+        color: #1e3a8a;
+        letter-spacing: 0.5px;
+    }
+
+    .brand-logo-slogan {
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 4px;
+        font-style: italic;
+    }
+
+    /* Form Fields Styling */
+    .form-group-custom {
+        margin-bottom: 14px;
+    }
+
+    .form-group-custom:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-label-custom {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .input-custom {
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 13px;
+        color: #1e293b;
+        outline: none;
+        background: #ffffff;
+        transition: all 0.2s;
+    }
+
+    .input-custom:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .input-custom:disabled, .input-custom[readonly] {
+        background-color: #f1f5f9;
+        color: #64748b;
+        cursor: not-allowed;
+    }
+
+    .input-icon-wrapper {
+        position: relative;
+    }
+
+    .input-icon-wrapper i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    .input-icon-wrapper input {
+        padding-left: 36px;
+    }
+
+    .select-custom {
+        width: 100%;
+        padding: 8px 30px 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 13px;
+        color: #1e293b;
+        background-color: #ffffff;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px 10px;
+    }
+
+    .select-custom:focus {
+        border-color: #3b82f6;
+    }
+
+    /* Giao diện Theme Selector Box */
+    .theme-selector-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 7px 12px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        cursor: pointer;
+    }
+
+    .theme-name-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .theme-mini-preview {
+        width: 60px;
+        height: 24px;
+        border-radius: 5px;
+        background: #ffffff;
+        border: 1px solid #93c5fd;
+        display: flex;
+        align-items: center;
+        padding: 2px 4px;
+        gap: 3px;
+    }
+
+    .mini-bar-blue {
+        width: 14px;
+        height: 100%;
+        background: #2563eb;
+        border-radius: 3px;
+    }
+
+    .mini-dot-blue {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #2563eb;
+        margin-left: auto;
+    }
+
+    /* Trạng thái hệ thống (Status list) */
+    .system-status-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .system-status-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 12px;
+        background: #f8fafc;
+        border-radius: 10px;
+        border: 1px solid #f1f5f9;
+    }
+
+    .status-item-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .status-item-left i {
+        color: #2563eb;
+        font-size: 15px;
+    }
+
+    .status-item-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .status-pill-green {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        background: #dcfce7;
+        color: #15803d;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-dot-green {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #16a34a;
+    }
+
+    .status-ping-text {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    /* Dung lượng lưu trữ progress */
+    .storage-progress-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 280px;
+    }
+
+    .custom-progress-bar {
+        flex: 1;
+        height: 8px;
+        border-radius: 10px;
+        background: #e2e8f0;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        width: 65%;
+        background: #2563eb;
+        border-radius: 10px;
+    }
+
+    .storage-text {
+        font-size: 12px;
+        color: #334155;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    /* Responsive */
+    @@media (max-width: 1024px) {
+        .settings-cards-grid {
+            grid-template-columns: 1fr;
+        }
+        .system-info-split {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-title-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .top-header-settings {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+    }
+</style>
+
+<div class="settings-page-wrapper">
+
+    <!-- 1. TOP BAR: BREADCRUMB, ĐỒNG HỒ & GIAO DIỆN -->
+    <div class="top-header-settings">
+        <div class="top-left-group">
+            <button class="btn-menu-toggle" title="Thu gọn menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="page-breadcrumb">
+                <a asp-controller="Admin" asp-action="Index">Trang chủ</a>
+                <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+                <span>Cài đặt hệ thống</span>
+                <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+                <span class="text-dark fw-semibold">Cấu hình hệ thống</span>
+            </div>
+        </div>
+
+        <div class="top-right-group">
+            <div class="notification-btn" title="Thông báo">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-alert">3</span>
+            </div>
+
+            <div class="clock-display-box">
+                <div class="clock-date" id="liveDateDisplay">Thứ Hai, 28/04/2025</div>
+                <div class="clock-time" id="liveTimeDisplay">09:30:15</div>
+            </div>
+
+            <button class="theme-toggle-btn" title="Chuyển chế độ Sáng / Tối" onclick="alert('Đã chuyển đổi chủ đề Sáng / Tối (Demo)');">
+                <i class="fa-regular fa-sun"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. TIÊU ĐỀ TRANG & NÚT LƯU CẤU HÌNH -->
+    <div class="page-title-row">
+        <div class="page-title-group">
+            <div class="page-title-icon">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+            <div>
+                <h1 class="page-title-text">Cấu hình hệ thống</h1>
+                <p class="page-subtitle-text">Quản lý các thiết lập chung của hệ thống ExamBank</p>
+            </div>
+        </div>
+
+        <div class="header-actions-group">
+            <button class="btn-restore-default" type="button" onclick="if(confirm('Bạn có chắc chắn muốn khôi phục cấu hình về giá trị mặc định ban đầu?')) alert('Đã khôi phục cấu hình mặc định!');">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>Khôi phục mặc định</span>
+            </button>
+            <button class="btn-save-settings" type="button" onclick="alert('Lưu cấu hình hệ thống thành công!');">
+                <i class="fa-regular fa-floppy-disk"></i>
+                <span>Lưu cấu hình</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. THANH TAB ĐIỀU HƯỚNG CẤU HÌNH (5 TABS) -->
+    <div class="settings-nav-tabs">
+        <button class="settings-tab-btn active" onclick="switchSettingsTab(event, 'tabSystemInfo')">
+            <i class="fa-solid fa-gear"></i>
+            <span>Thông tin hệ thống</span>
+        </button>
+        <button class="settings-tab-btn" onclick="switchSettingsTab(event, 'tabSecurity')">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Bảo mật & Đăng nhập</span>
+        </button>
+        <button class="settings-tab-btn" onclick="switchSettingsTab(event, 'tabNotifications')">
+            <i class="fa-regular fa-bell"></i>
+            <span>Thông báo</span>
+        </button>
+        <button class="settings-tab-btn" onclick="switchSettingsTab(event, 'tabFileManager')">
+            <i class="fa-regular fa-folder-open"></i>
+            <span>Quản lý tệp</span>
+        </button>
+        <button class="settings-tab-btn" onclick="switchSettingsTab(event, 'tabBackup')">
+            <i class="fa-solid fa-database"></i>
+            <span>Sao lưu & Phục hồi</span>
+        </button>
+    </div>
+
+    <!-- 4. NỘI DUNG TỪNG TAB -->
+
+    <!-- TAB 1: THÔNG TIN HỆ THỐNG (CHÍNH THEO HÌNH ẢNH MẪU) -->
+    <div id="tabSystemInfo" class="settings-tab-pane">
+        <div class="settings-cards-grid">
+
+            <!-- THẺ 1: THÔNG TIN HỆ THỐNG -->
+            <div class="setting-card">
+                <div class="setting-card-header">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <h5>Thông tin hệ thống</h5>
+                </div>
+
+                <div class="system-info-split">
+                    <!-- Logo bên trái -->
+                    <div class="brand-logo-preview-box">
+                        <div class="brand-logo-icon">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div class="brand-logo-title">ExamBank</div>
+                        <div class="brand-logo-slogan">Tri thức kết nối – Tương lai vững vàng</div>
+                        <button class="btn btn-outline-primary btn-sm mt-3" style="border-radius: 8px; font-size: 11px;" onclick="alert('Tải ảnh logo thương hiệu mới (Demo)');">
+                            <i class="fa-solid fa-upload me-1"></i> Đổi Logo
+                        </button>
+                    </div>
+
+                    <!-- Các ô nhập bên phải -->
+                    <div>
+                        <div class="form-group-custom">
+                            <label class="form-label-custom">Tên hệ thống <span class="text-danger">*</span></label>
+                            <input type="text" class="input-custom fw-semibold" value="ExamBank" />
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label class="form-label-custom">Phiên bản hiện tại</label>
+                            <input type="text" class="input-custom" value="v1.0.0" disabled />
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label class="form-label-custom">Đơn vị sử dụng <span class="text-danger">*</span></label>
+                            <input type="text" class="input-custom fw-semibold" value="Trường Đại học Công nghệ" />
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label class="form-label-custom">Thông tin liên hệ</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-regular fa-envelope"></i>
+                                <input type="email" class="input-custom" value="contact@university.edu.vn" />
+                            </div>
+                        </div>
+
+                        <div class="form-group-custom">
+                            <label class="form-label-custom">Website</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-globe"></i>
+                                <input type="url" class="input-custom" value="https://exambank.edu.vn" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THẺ 2: TÙY CHỌN HIỂN THỊ -->
+            <div class="setting-card">
+                <div class="setting-card-header">
+                    <i class="fa-solid fa-desktop"></i>
+                    <h5>Tùy chọn hiển thị</h5>
+                </div>
+
+                <div>
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Ngôn ngữ mặc định</label>
+                        <select class="select-custom fw-semibold">
+                            <option selected>🇻🇳 Tiếng Việt</option>
+                            <option>🇬🇧 English (US)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Giao diện mặc định</label>
+                        <div class="theme-selector-box">
+                            <div class="theme-name-group">
+                                <span>🎨</span>
+                                <span>Sáng</span>
+                                <i class="fa-solid fa-chevron-right text-muted small ms-1"></i>
+                            </div>
+                            <div class="theme-mini-preview">
+                                <div class="mini-bar-blue"></div>
+                                <div class="mini-dot-blue"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Số lượng bản ghi/trang</label>
+                        <select class="select-custom fw-semibold">
+                            <option>10</option>
+                            <option selected>20</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Thời gian phiên đăng nhập</label>
+                        <select class="select-custom fw-semibold">
+                            <option>30 phút</option>
+                            <option>60 phút</option>
+                            <option selected>🕒 120 phút</option>
+                            <option>480 phút (8 giờ)</option>
+                        </select>
+                        <div class="text-muted small mt-1" style="font-size: 11px;">
+                            Tự động đăng xuất sau thời gian không hoạt động
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THẺ 3: THÔNG TIN LIÊN HỆ & BẢN QUYỀN -->
+            <div class="setting-card">
+                <div class="setting-card-header">
+                    <i class="fa-solid fa-phone"></i>
+                    <h5>Thông tin liên hệ & bản quyền</h5>
+                </div>
+
+                <div>
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Địa chỉ liên hệ</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <input type="text" class="input-custom" value="Số 123, Đường Đại học, Quận Cầu Giấy, Hà Nội" />
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Điện thoại</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="text" class="input-custom" value="024.1234.5678" />
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Email hỗ trợ</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" class="input-custom" value="support@exambank.edu.vn" />
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Bản quyền hiển thị</label>
+                        <input type="text" class="input-custom" value="© 2025 ExamBank. All rights reserved." />
+                    </div>
+                </div>
+            </div>
+
+            <!-- THẺ 4: TRẠNG THÁI HỆ THỐNG -->
+            <div class="setting-card">
+                <div class="setting-card-header">
+                    <i class="fa-solid fa-server"></i>
+                    <h5>Trạng thái hệ thống</h5>
+                </div>
+
+                <div class="system-status-list">
+                    <!-- Hàng 1: Cơ sở dữ liệu -->
+                    <div class="system-status-row">
+                        <div class="status-item-left">
+                            <i class="fa-solid fa-database"></i>
+                            <span>Cơ sở dữ liệu</span>
+                        </div>
+                        <div class="status-item-right">
+                            <span class="status-pill-green">
+                                <span class="status-dot-green"></span> Hoạt động
+                            </span>
+                            <span class="status-ping-text">Thời gian phản hồi: <strong>12ms</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Hàng 2: Dịch vụ API -->
+                    <div class="system-status-row">
+                        <div class="status-item-left">
+                            <i class="fa-solid fa-network-wired"></i>
+                            <span>Dịch vụ API</span>
+                        </div>
+                        <div class="status-item-right">
+                            <span class="status-pill-green">
+                                <span class="status-dot-green"></span> Hoạt động
+                            </span>
+                            <span class="status-ping-text">Thời gian phản hồi: <strong>18ms</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Hàng 3: Dịch vụ gửi email -->
+                    <div class="system-status-row">
+                        <div class="status-item-left">
+                            <i class="fa-regular fa-envelope"></i>
+                            <span>Dịch vụ gửi email</span>
+                        </div>
+                        <div class="status-item-right">
+                            <span class="status-pill-green">
+                                <span class="status-dot-green"></span> Hoạt động
+                            </span>
+                            <span class="status-ping-text">Thời gian phản hồi: <strong>25ms</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Hàng 4: Dung lượng lưu trữ -->
+                    <div class="system-status-row">
+                        <div class="status-item-left">
+                            <i class="fa-regular fa-hard-drive"></i>
+                            <span>Dung lượng lưu trữ</span>
+                        </div>
+                        <div class="status-item-right">
+                            <div class="storage-progress-wrapper">
+                                <div class="custom-progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                                <span class="storage-text">65% (32 GB / 50 GB)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TAB 2: BẢO MẬT & ĐĂNG NHẬP -->
+    <div id="tabSecurity" class="settings-tab-pane d-none">
+        <div class="settings-cards-grid">
+            <div class="setting-card">
+                <div class="setting-card-header">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h5>Chính sách mật khẩu</h5>
+                </div>
+                <div class="d-flex flex-column gap-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="pwdLengthCheck" checked>
+                        <label class="form-check-label fw-semibold small" for="pwdLengthCheck">Yêu cầu độ dài tối thiểu ít nhất 8 ký tự</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="pwdSpecialCheck" checked>
+                        <label class="form-check-label fw-semibold small" for="pwdSpecialCheck">Bắt buộc có chữ hoa, số và ký tự đặc biệt (!@@#$%)</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="pwdExpireCheck">
+                        <label class="form-check-label fw-semibold small" for="pwdExpireCheck">Yêu cầu đổi mật khẩu định kỳ sau 90 ngày</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-card">
+                <div class="setting-card-header">
+                    <i class="fa-solid fa-lock"></i>
+                    <h5>Khóa tài khoản & Xác thực</h5>
+                </div>
+                <div>
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Số lần đăng nhập sai tối đa trước khi khóa</label>
+                        <select class="select-custom">
+                            <option>3 lần</option>
+                            <option selected>5 lần</option>
+                            <option>10 lần</option>
+                        </select>
+                    </div>
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" id="force2faCheck" checked>
+                        <label class="form-check-label fw-semibold small" for="force2faCheck">Bắt buộc xác thực 2 lớp (2FA) đối với tài khoản Admin & Giảng viên</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: THÔNG BÁO -->
+    <div id="tabNotifications" class="settings-tab-pane d-none">
+        <div class="setting-card">
+            <div class="setting-card-header">
+                <i class="fa-regular fa-envelope"></i>
+                <h5>Cấu hình máy chủ gửi Email (SMTP)</h5>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label-custom">Máy chủ SMTP</label>
+                    <input type="text" class="input-custom" value="smtp.gmail.com" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-custom">Cổng (Port)</label>
+                    <input type="text" class="input-custom" value="587 (TLS)" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-custom">Tài khoản gửi Email</label>
+                    <input type="email" class="input-custom" value="noreply.exambank@university.edu.vn" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-custom">Mật khẩu ứng dụng (App Password)</label>
+                    <input type="password" class="input-custom" value="••••••••••••••••" />
+                </div>
+                <div class="col-12 mt-3">
+                    <button class="btn btn-outline-primary btn-sm" onclick="alert('Đã gửi email kiểm tra thành công tới hòm thư quản trị!');">
+                        <i class="fa-regular fa-paper-plane me-1"></i> Gửi thử email kiểm tra
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: QUẢN LÝ TỆP -->
+    <div id="tabFileManager" class="settings-tab-pane d-none">
+        <div class="setting-card">
+            <div class="setting-card-header">
+                <i class="fa-regular fa-folder-open"></i>
+                <h5>Thiết lập tệp đính kèm đề thi & tài liệu</h5>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label-custom">Định dạng file cho phép tải lên</label>
+                    <input type="text" class="input-custom" value=".docx, .pdf, .xlsx, .zip, .png, .jpg" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-custom">Dung lượng tệp tối đa (MB)</label>
+                    <input type="number" class="input-custom" value="25" />
+                </div>
+                <div class="col-12">
+                    <label class="form-label-custom">Thư mục lưu trữ trên máy chủ</label>
+                    <input type="text" class="input-custom" value="~/uploads/exambank_storage/" readonly />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: SAO LƯU & PHỤC HỒI -->
+    <div id="tabBackup" class="settings-tab-pane d-none">
+        <div class="setting-card">
+            <div class="setting-card-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-database"></i>
+                    <h5 class="m-0">Bản sao lưu Ngân hàng đề thi & Dữ liệu</h5>
+                </div>
+                <button class="btn btn-primary btn-sm" style="border-radius: 8px;" onclick="alert('Bắt đầu tiến trình tạo bản sao lưu toàn hệ thống...');">
+                    <i class="fa-solid fa-plus me-1"></i> Tạo bản sao lưu mới (.bak)
+                </button>
+            </div>
+            <p class="small text-muted">Hệ thống tự động sao lưu định kỳ vào <strong>02:00 sáng Chủ Nhật</strong> hàng tuần.</p>
+            <table class="table table-sm align-middle mt-2">
+                <thead>
+                    <tr class="text-muted small">
+                        <th>Tên bản sao lưu</th>
+                        <th>Ngày tạo</th>
+                        <th>Dung lượng</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-bold">Backup_ExamBank_20250428.bak</td>
+                        <td>28/04/2025 02:00</td>
+                        <td>420 MB</td>
+                        <td><span class="badge bg-success">Thành công</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-light btn-sm" title="Tải xuống"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn btn-light btn-sm text-primary" title="Phục hồi"><i class="fa-solid fa-rotate-left"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Backup_ExamBank_20250421.bak</td>
+                        <td>21/04/2025 02:00</td>
+                        <td>412 MB</td>
+                        <td><span class="badge bg-success">Thành công</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-light btn-sm" title="Tải xuống"><i class="fa-solid fa-download"></i></button>
+                            <button class="btn btn-light btn-sm text-primary" title="Phục hồi"><i class="fa-solid fa-rotate-left"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        // 1. CHUYỂN TAB CẤU HÌNH
+        function switchSettingsTab(evt, tabId) {
+            const tabs = document.querySelectorAll('.settings-tab-btn');
+            tabs.forEach(t => t.classList.remove('active'));
+            evt.currentTarget.classList.add('active');
+
+            const panes = document.querySelectorAll('.settings-tab-pane');
+            panes.forEach(p => p.classList.add('d-none'));
+
+            const target = document.getElementById(tabId);
+            if (target) {
+                target.classList.remove('d-none');
+            }
+        }
+
+        // 2. ĐỒNG HỒ THỜI GIAN THỰC (REAL-TIME CLOCK)
+        function updateLiveClock() {
+            const now = new Date();
+            const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+            const dayName = days[now.getDay()];
+
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            const dateStr = `${dayName}, ${day}/${month}/${year}`;
+            const timeStr = `${hours}:${minutes}:${seconds}`;
+
+            const dateElem = document.getElementById('liveDateDisplay');
+            const timeElem = document.getElementById('liveTimeDisplay');
+
+            if (dateElem) dateElem.innerText = dateStr;
+            if (timeElem) timeElem.innerText = timeStr;
+        }
+
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+    </script>
+}
+

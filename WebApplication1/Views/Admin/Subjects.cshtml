@@ -1,0 +1,1851 @@
+@{
+    ViewData["Title"] = "Quản lý môn học - ExamBank Admin";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Tổng thể trang Quản lý môn học */
+    .subject-page-wrapper {
+        padding: 24px 30px;
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Top Search & Profile Bar */
+    .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .top-search-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .btn-menu-toggle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-menu-toggle:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .search-box-top {
+        position: relative;
+        width: 420px;
+    }
+
+    .search-box-top input {
+        width: 100%;
+        padding: 9px 18px 9px 42px;
+        border-radius: 22px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        font-size: 13.5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .search-box-top input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .search-box-top i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .notification-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .notification-btn:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .badge-alert {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+    .user-pill-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 14px 4px 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .user-avatar-top {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .user-avatar-top img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Breadcrumb */
+    .page-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .page-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .page-breadcrumb a:hover {
+        color: #2563eb;
+    }
+
+    /* Page Heading Header */
+    .page-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .page-title-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .page-title-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+    }
+
+    .page-title-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .page-subtitle-text {
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 4px 0 0 0;
+    }
+
+    .header-action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-add-subject {
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        transition: all 0.2s ease;
+    }
+
+    .btn-add-subject:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        color: #ffffff;
+    }
+
+    .btn-import-excel {
+        background: #ffffff;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-import-excel:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        color: #0f172a;
+    }
+
+    /* 4 Thẻ Thống kê (KPI Cards) */
+    .kpi-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .kpi-card {
+        border-radius: 16px;
+        padding: 20px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .kpi-card-blue {
+        background: linear-gradient(135deg, #f0f7ff 0%, #e0effe 100%);
+        border-color: #bfdbfe;
+    }
+
+    .kpi-card-green {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border-color: #bbf7d0;
+    }
+
+    .kpi-card-pink {
+        background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+        border-color: #fecdd3;
+    }
+
+    .kpi-card-orange {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border-color: #fde68a;
+    }
+
+    .kpi-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        z-index: 1;
+    }
+
+    .kpi-icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .kpi-icon-blue { background: #dbeafe; color: #2563eb; }
+    .kpi-icon-green { background: #16a34a; color: #ffffff; }
+    .kpi-icon-pink { background: #e11d48; color: #ffffff; }
+    .kpi-icon-orange { background: #f59e0b; color: #ffffff; }
+
+    .kpi-label {
+        font-size: 13px;
+        color: #475569;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    .kpi-value {
+        font-size: 26px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+    }
+
+    .kpi-subtext {
+        font-size: 11.5px;
+        color: #64748b;
+        margin-top: 4px;
+        font-weight: 500;
+    }
+
+    .kpi-watermark {
+        position: absolute;
+        right: 15px;
+        bottom: 8px;
+        font-size: 60px;
+        opacity: 0.12;
+        pointer-events: none;
+    }
+
+    /* Bộ lọc Controls (Search & Dropdowns) */
+    .filter-card {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 14px 18px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .filter-search-box {
+        position: relative;
+        flex: 1;
+        max-width: 360px;
+    }
+
+    .filter-search-box input {
+        width: 100%;
+        padding: 8px 14px 8px 38px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 13px;
+        outline: none;
+        background: #f8fafc;
+        transition: all 0.2s;
+    }
+
+    .filter-search-box input:focus {
+        background: #ffffff;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .filter-search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    .filter-dropdowns {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .custom-filter-select {
+        padding: 8px 30px 8px 14px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 13px;
+        color: #334155;
+        background-color: #f8fafc;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px 10px;
+    }
+
+    .custom-filter-select:focus {
+        background-color: #ffffff;
+        border-color: #3b82f6;
+    }
+
+    .btn-advanced-filter {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-advanced-filter:hover {
+        background: #dbeafe;
+    }
+
+    .btn-refresh-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-refresh-icon:hover {
+        color: #1e293b;
+        background: #f1f5f9;
+    }
+
+    /* Batch Toolbar Actions */
+    .batch-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .batch-actions-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-batch-action {
+        padding: 6px 14px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        font-size: 12.5px;
+        color: #64748b;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .btn-batch-action:hover:not(:disabled) {
+        background: #f8fafc;
+        color: #0f172a;
+        border-color: #cbd5e1;
+    }
+
+    .btn-batch-action:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+
+    .btn-export-excel {
+        padding: 6px 16px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        font-size: 13px;
+        color: #334155;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-export-excel:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+    }
+
+    /* 2-Column Layout */
+    .content-grid-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 410px;
+        gap: 20px;
+        align-items: start;
+    }
+
+    /* Left Table Card */
+    .table-container-card {
+        background: #ffffff;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .subject-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 0;
+    }
+
+    .subject-table thead th {
+        background-color: #f8fafc;
+        color: #475569;
+        font-size: 12.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 14px;
+        border-bottom: 1px solid #e2e8f0;
+        white-space: nowrap;
+    }
+
+    .subject-table tbody td {
+        padding: 13px 14px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 13px;
+        color: #334155;
+        vertical-align: middle;
+        background-color: #ffffff;
+        transition: background-color 0.15s ease;
+    }
+
+    .subject-table tbody tr {
+        cursor: pointer;
+    }
+
+    .subject-table tbody tr:hover td {
+        background-color: #f8faff;
+    }
+
+    .subject-table tbody tr.row-active td {
+        background-color: #eff6ff !important;
+    }
+
+    /* Mã môn & Tên môn */
+    .subject-code-badge {
+        font-weight: 700;
+        color: #0f172a;
+        font-family: inherit;
+    }
+
+    .subject-name-cell {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    /* Trạng thái Pills */
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-active {
+        background-color: #dcfce7;
+        color: #15803d;
+    }
+
+    .status-paused {
+        background-color: #fef3c7;
+        color: #b45309;
+    }
+
+    .status-stopped {
+        background-color: #f1f5f9;
+        color: #475569;
+    }
+
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: currentColor;
+    }
+
+    /* Action Buttons in Table */
+    .table-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-row-action {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-action-view {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .btn-action-view:hover {
+        background: #dbeafe;
+    }
+
+    .btn-action-edit {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .btn-action-edit:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    .btn-action-delete {
+        background: #fef2f2;
+        color: #ef4444;
+    }
+
+    .btn-action-delete:hover {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    /* Table Footer & Pagination */
+    .table-footer {
+        padding: 12px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #ffffff;
+        border-top: 1px solid #f1f5f9;
+        font-size: 12.5px;
+        color: #64748b;
+    }
+
+    .pagination-custom {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .page-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12.5px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .page-btn:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .page-btn.active {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Right Column: Chi tiết môn học */
+    .detail-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        position: sticky;
+        top: 20px;
+        overflow: hidden;
+    }
+
+    .detail-header {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .detail-header-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .detail-header-title i {
+        color: #2563eb;
+    }
+
+    .btn-close-detail {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+
+    .btn-close-detail:hover {
+        color: #0f172a;
+        background: #f1f5f9;
+    }
+
+    /* Subject Hero Banner */
+    .subject-hero-banner {
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        margin: 16px;
+        padding: 16px;
+    }
+
+    .hero-top-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .hero-icon-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .hero-big-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: #2563eb;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .hero-code {
+        font-size: 14px;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .hero-name {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .hero-badges-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        font-size: 12px;
+    }
+
+    .hero-tag {
+        background: #ffffff;
+        color: #334155;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        border: 1px solid rgba(191, 219, 254, 0.8);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .hero-tag i {
+        color: #2563eb;
+    }
+
+    /* Sub Tabs in Detail */
+    .detail-tabs-nav {
+        display: flex;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0 16px;
+        gap: 16px;
+    }
+
+    .detail-tab-btn {
+        background: transparent;
+        border: none;
+        padding: 10px 0;
+        font-size: 13px;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        position: relative;
+        transition: color 0.2s;
+    }
+
+    .detail-tab-btn.active {
+        color: #2563eb;
+    }
+
+    .detail-tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    /* Detail Content Info */
+    .detail-body-content {
+        padding: 16px;
+    }
+
+    .detail-info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .detail-info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 12.5px;
+    }
+
+    .detail-info-label {
+        color: #64748b;
+        font-weight: 500;
+        width: 120px;
+        flex-shrink: 0;
+    }
+
+    .detail-info-val {
+        color: #0f172a;
+        font-weight: 600;
+        text-align: right;
+        flex: 1;
+    }
+
+    .tag-mandatory {
+        background: #eff6ff;
+        color: #2563eb;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 11.5px;
+        font-weight: 600;
+    }
+
+    /* Teacher List in Details */
+    .teacher-section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 13px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 10px;
+    }
+
+    .teacher-section-title a {
+        font-size: 11.5px;
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .teacher-item-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 12px;
+        background: #f8fafc;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        border: 1px solid #f1f5f9;
+    }
+
+    .teacher-avatar-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .teacher-avatar-img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .teacher-name {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.2;
+    }
+
+    .teacher-role-sub {
+        font-size: 11px;
+        color: #64748b;
+    }
+
+    .teacher-badge-main {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .teacher-badge-sub {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    /* Responsive */
+    @@media (max-width: 1200px) {
+        .content-grid-wrapper {
+            grid-template-columns: 1fr;
+        }
+        .detail-card {
+            position: static;
+        }
+        .kpi-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .kpi-cards-grid {
+            grid-template-columns: 1fr;
+        }
+        .filter-card {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .filter-dropdowns {
+            flex-wrap: wrap;
+        }
+        .page-title-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+        }
+    }
+</style>
+
+<div class="subject-page-wrapper">
+
+    <!-- 1. TOP BAR: TÌM KIẾM & PROFILE -->
+    <div class="top-header">
+        <div class="top-search-group">
+            <button class="btn-menu-toggle" title="Thu gọn menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="search-box-top">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm môn học, mã môn... (Ctrl + K)" />
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="notification-btn" title="Thông báo">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-alert">3</span>
+            </div>
+
+            <div class="user-pill-top">
+                <div class="user-avatar-top">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" alt="Admin Avatar" />
+                </div>
+                <div class="d-none d-sm-block text-start">
+                    <div class="fw-bold small text-dark leading-tight">@(ViewBag.FullName ?? "admin")</div>
+                    <div class="text-muted" style="font-size: 11px;">Administrator</div>
+                </div>
+                <i class="fa-solid fa-chevron-down text-muted small ms-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. BREADCRUMB & TIÊU ĐỀ TRANG -->
+    <div class="page-breadcrumb">
+        <i class="fa-solid fa-house-chimney me-1"></i>
+        <a asp-controller="Admin" asp-action="Index">Trang chủ</a>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span class="text-dark fw-semibold">Quản lý môn học</span>
+    </div>
+
+    <div class="page-title-row">
+        <div class="page-title-group">
+            <div class="page-title-icon">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div>
+                <h1 class="page-title-text">Quản lý môn học</h1>
+                <p class="page-subtitle-text">Quản lý danh sách môn học, thông tin chi tiết và phân công giảng dạy</p>
+            </div>
+        </div>
+
+        <div class="header-action-buttons">
+            <button class="btn-add-subject" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm môn học</span>
+            </button>
+            <button class="btn-import-excel" data-bs-toggle="modal" data-bs-target="#importExcelModal">
+                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                <span>Nhập Excel</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. 4 THẺ THỐNG KÊ (KPI SUMMARY CARDS) -->
+    <div class="kpi-cards-grid">
+        <!-- Card 1: Tổng số môn học -->
+        <div class="kpi-card kpi-card-blue">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-blue">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Tổng số môn học</div>
+                    <div class="kpi-value">120</div>
+                    <div class="kpi-subtext">
+                        <span class="text-success fw-bold">↑ +5</span> so với tháng trước
+                    </div>
+                </div>
+            </div>
+            <i class="fa-solid fa-book-open kpi-watermark text-primary"></i>
+        </div>
+
+        <!-- Card 2: Đang giảng dạy -->
+        <div class="kpi-card kpi-card-green">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-green">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Đang giảng dạy</div>
+                    <div class="kpi-value">98</div>
+                    <div class="kpi-subtext">81.7% tổng môn học</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chart-simple kpi-watermark text-success"></i>
+        </div>
+
+        <!-- Card 3: Tạm ngưng -->
+        <div class="kpi-card kpi-card-pink">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-pink">
+                    <i class="fa-solid fa-pause"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Tạm ngưng</div>
+                    <div class="kpi-value">12</div>
+                    <div class="kpi-subtext">10.0% tổng môn học</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-pause kpi-watermark text-danger"></i>
+        </div>
+
+        <!-- Card 4: Đã ngừng -->
+        <div class="kpi-card kpi-card-orange">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-orange">
+                    <i class="fa-solid fa-ban"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Đã ngừng</div>
+                    <div class="kpi-value">10</div>
+                    <div class="kpi-subtext">8.3% tổng môn học</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-ban kpi-watermark text-warning"></i>
+        </div>
+    </div>
+
+    <!-- 4. THANH BỘ LỌC (FILTER CARD) -->
+    <div class="filter-card">
+        <div class="filter-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="tableSearchInput" placeholder="Tìm kiếm theo tên môn, mã môn..." />
+        </div>
+
+        <div class="filter-dropdowns">
+            <select class="custom-filter-select" id="filterDept">
+                <option value="">Khoa/Bộ môn: Tất cả</option>
+                <option value="CNTT">Khoa CNTT</option>
+                <option value="Sư phạm">Khoa Sư phạm</option>
+                <option value="Kinh tế">Khoa Kinh tế</option>
+                <option value="Ngoại ngữ">Khoa Ngoại ngữ</option>
+            </select>
+
+            <select class="custom-filter-select" id="filterType">
+                <option value="">Loại môn: Tất cả</option>
+                <option value="Bắt buộc">Bắt buộc</option>
+                <option value="Tự chọn">Tự chọn</option>
+            </select>
+
+            <select class="custom-filter-select" id="filterStatus">
+                <option value="">Trạng thái: Tất cả</option>
+                <option value="Đang dạy">Đang giảng dạy</option>
+                <option value="Tạm ngưng">Tạm ngưng</option>
+                <option value="Đã ngừng">Đã ngừng</option>
+            </select>
+
+            <button class="btn-advanced-filter" type="button">
+                <i class="fa-solid fa-filter"></i>
+                <span>Lọc nâng cao</span>
+            </button>
+
+            <button class="btn-refresh-icon" title="Tải lại dữ liệu" onclick="window.location.reload();">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 5. BATCH TOOLBAR ACTIONS -->
+    <div class="batch-toolbar">
+        <div class="batch-actions-left">
+            <label class="form-check d-flex align-items-center gap-2 m-0 cursor-pointer">
+                <input type="checkbox" class="form-check-input" id="checkAllSubjects" />
+                <span class="small fw-semibold text-secondary">Chọn tất cả</span>
+            </label>
+
+            <button class="btn-batch-action" id="btnBatchActivate" disabled>
+                <i class="fa-solid fa-check text-success"></i> Kích hoạt
+            </button>
+            <button class="btn-batch-action" id="btnBatchPause" disabled>
+                <i class="fa-solid fa-pause text-warning"></i> Tạm ngưng
+            </button>
+            <button class="btn-batch-action" id="btnBatchDelete" disabled>
+                <i class="fa-solid fa-trash-can text-danger"></i> Xóa
+            </button>
+        </div>
+
+        <button class="btn-export-excel" onclick="alert('Đang xuất danh sách môn học ra file Excel...');">
+            <i class="fa-solid fa-file-arrow-down text-success"></i>
+            <span>Xuất Excel</span>
+        </button>
+    </div>
+
+    <!-- 6. KHU VỰC CHÍNH (2 CỘT: BẢNG MÔN HỌC & CHI TIẾT MÔN HỌC) -->
+    <div class="content-grid-wrapper">
+
+        <!-- CỘT TRÁI: BẢNG DỮ LIỆU MÔN HỌC -->
+        <div class="table-container-card">
+            <div class="table-responsive">
+                <table class="subject-table" id="subjectTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"><input type="checkbox" class="form-check-input" id="tableHeadCheck" /></th>
+                            <th style="width: 50px;">STT</th>
+                            <th>Mã môn</th>
+                            <th>Tên môn học</th>
+                            <th>Khoa / Bộ môn</th>
+                            <th>Loại môn</th>
+                            <th>Trạng thái</th>
+                            <th style="width: 110px;" class="text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dòng 1: CNTT01 -->
+                        <tr class="row-active" data-code="CNTT01" data-name="Lập trình hướng đối tượng" data-credits="3 tín chỉ" data-dept="Khoa CNTT (CNPM)" data-subdept="Công nghệ phần mềm" data-type="Bắt buộc" data-status="Đang giảng dạy" data-status-class="status-active" data-desc="Trang bị kiến thức cơ bản về lập trình hướng đối tượng với ngôn ngữ C#.">
+                            <td><input type="checkbox" class="form-check-input row-select-check" /></td>
+                            <td class="fw-bold text-muted">1</td>
+                            <td class="subject-code-badge">CNTT01</td>
+                            <td class="subject-name-cell">Lập trình hướng đối tượng</td>
+                            <td>Khoa CNTT (CNPM)</td>
+                            <td><span class="text-dark fw-medium">Bắt buộc</span></td>
+                            <td>
+                                <span class="status-pill status-active">
+                                    <span class="status-dot"></span> Đang dạy
+                                </span>
+                            </td>
+                            <td>
+                                <div class="table-actions justify-content-center">
+                                    <button class="btn-row-action btn-action-view" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                    <button class="btn-row-action btn-action-edit" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-row-action btn-action-delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Dòng 2: CNTT02 -->
+                        <tr data-code="CNTT02" data-name="Cơ sở dữ liệu" data-credits="3 tín chỉ" data-dept="Khoa CNTT (CNPM)" data-subdept="Hệ thống thông tin" data-type="Bắt buộc" data-status="Đang giảng dạy" data-status-class="status-active" data-desc="Trang bị các kiến thức căn bản về thiết kế CSDL quan hệ, SQL Server và chuẩn hóa dữ liệu.">
+                            <td><input type="checkbox" class="form-check-input row-select-check" /></td>
+                            <td class="fw-bold text-muted">2</td>
+                            <td class="subject-code-badge">CNTT02</td>
+                            <td class="subject-name-cell">Cơ sở dữ liệu</td>
+                            <td>Khoa CNTT (CNPM)</td>
+                            <td><span class="text-dark fw-medium">Bắt buộc</span></td>
+                            <td>
+                                <span class="status-pill status-active">
+                                    <span class="status-dot"></span> Đang dạy
+                                </span>
+                            </td>
+                            <td>
+                                <div class="table-actions justify-content-center">
+                                    <button class="btn-row-action btn-action-view" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                    <button class="btn-row-action btn-action-edit" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-row-action btn-action-delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Dòng 3: CNTT03 -->
+                        <tr data-code="CNTT03" data-name="Mạng máy tính" data-credits="3 tín chỉ" data-dept="Khoa CNTT (MMT)" data-subdept="Mạng máy tính & Truyền thông" data-type="Tự chọn" data-status="Đang giảng dạy" data-status-class="status-active" data-desc="Cung cấp các nguyên lý cơ bản về kiến trúc mạng, mô hình OSI, giao thức TCP/IP.">
+                            <td><input type="checkbox" class="form-check-input row-select-check" /></td>
+                            <td class="fw-bold text-muted">3</td>
+                            <td class="subject-code-badge">CNTT03</td>
+                            <td class="subject-name-cell">Mạng máy tính</td>
+                            <td>Khoa CNTT (MMT)</td>
+                            <td><span class="text-muted fw-medium">Tự chọn</span></td>
+                            <td>
+                                <span class="status-pill status-active">
+                                    <span class="status-dot"></span> Đang dạy
+                                </span>
+                            </td>
+                            <td>
+                                <div class="table-actions justify-content-center">
+                                    <button class="btn-row-action btn-action-view" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                    <button class="btn-row-action btn-action-edit" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-row-action btn-action-delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Dòng 4: TOAN01 -->
+                        <tr data-code="TOAN01" data-name="Toán cao cấp" data-credits="4 tín chỉ" data-dept="Khoa Sư phạm (Toán)" data-subdept="Toán giải tích" data-type="Bắt buộc" data-status="Tạm ngưng" data-status-class="status-paused" data-desc="Các kiến thức giải tích hàm một biến, chuỗi số, ma trận định thức và phương trình vi phân.">
+                            <td><input type="checkbox" class="form-check-input row-select-check" /></td>
+                            <td class="fw-bold text-muted">4</td>
+                            <td class="subject-code-badge">TOAN01</td>
+                            <td class="subject-name-cell">Toán cao cấp</td>
+                            <td>Khoa Sư phạm (Toán)</td>
+                            <td><span class="text-dark fw-medium">Bắt buộc</span></td>
+                            <td>
+                                <span class="status-pill status-paused">
+                                    <span class="status-dot"></span> Tạm ngưng
+                                </span>
+                            </td>
+                            <td>
+                                <div class="table-actions justify-content-center">
+                                    <button class="btn-row-action btn-action-view" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                    <button class="btn-row-action btn-action-edit" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-row-action btn-action-delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Dòng 5: TOAN02 -->
+                        <tr data-code="TOAN02" data-name="Xác suất thống kê" data-credits="3 tín chỉ" data-dept="Khoa Sư phạm (Toán)" data-subdept="Thống kê ứng dụng" data-type="Tự chọn" data-status="Đang giảng dạy" data-status-class="status-active" data-desc="Biến ngẫu nhiên, phân phối xác suất và ước lượng tham số thống kê mẫu.">
+                            <td><input type="checkbox" class="form-check-input row-select-check" /></td>
+                            <td class="fw-bold text-muted">5</td>
+                            <td class="subject-code-badge">TOAN02</td>
+                            <td class="subject-name-cell">Xác suất thống kê</td>
+                            <td>Khoa Sư phạm (Toán)</td>
+                            <td><span class="text-muted fw-medium">Tự chọn</span></td>
+                            <td>
+                                <span class="status-pill status-active">
+                                    <span class="status-dot"></span> Đang dạy
+                                </span>
+                            </td>
+                            <td>
+                                <div class="table-actions justify-content-center">
+                                    <button class="btn-row-action btn-action-view" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                    <button class="btn-row-action btn-action-edit" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-row-action btn-action-delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Dòng 6: KT01 -->
+                        <tr data-code="KT01" data-name="Kinh tế vi mô" data-credits="3 tín chỉ" data-dept="Khoa Kinh tế (KT)" data-subdept="Kinh tế học" data-type="Bắt buộc" data-status="Đang giảng dạy" data-status-class="status-active" data-desc="Lý thuyết hành vi người tiêu dùng, quy luật cung cầu và cấu trúc thị trường cạnh tranh.">
+                            <td><input type="checkbox" class="form-check-input row-select-check" /></td>
+                            <td class="fw-bold text-muted">6</td>
+                            <td class="subject-code-badge">KT01</td>
+                            <td class="subject-name-cell">Kinh tế vi mô</td>
+                            <td>Khoa Kinh tế (KT)</td>
+                            <td><span class="text-dark fw-medium">Bắt buộc</span></td>
+                            <td>
+                                <span class="status-pill status-active">
+                                    <span class="status-dot"></span> Đang dạy
+                                </span>
+                            </td>
+                            <td>
+                                <div class="table-actions justify-content-center">
+                                    <button class="btn-row-action btn-action-view" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                    <button class="btn-row-action btn-action-edit" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-row-action btn-action-delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Dòng 7: KT02 -->
+                        <tr data-code="KT02" data-name="Quản trị học" data-credits="3 tín chỉ" data-dept="Khoa Kinh tế (KT)" data-subdept="Quản trị kinh doanh" data-type="Tự chọn" data-status="Đang giảng dạy" data-status-class="status-active" data-desc="Các chức năng hoạch định, tổ chức, lãnh đạo và kiểm soát trong doanh nghiệp.">
+                            <td><input type="checkbox" class="form-check-input row-select-check" /></td>
+                            <td class="fw-bold text-muted">7</td>
+                            <td class="subject-code-badge">KT02</td>
+                            <td class="subject-name-cell">Quản trị học</td>
+                            <td>Khoa Kinh tế (KT)</td>
+                            <td><span class="text-muted fw-medium">Tự chọn</span></td>
+                            <td>
+                                <span class="status-pill status-active">
+                                    <span class="status-dot"></span> Đang dạy
+                                </span>
+                            </td>
+                            <td>
+                                <div class="table-actions justify-content-center">
+                                    <button class="btn-row-action btn-action-view" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                    <button class="btn-row-action btn-action-edit" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-row-action btn-action-delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Dòng 8: NN01 -->
+                        <tr data-code="NN01" data-name="Tiếng Anh cơ bản" data-credits="3 tín chỉ" data-dept="Khoa Ngoại ngữ (Tiếng Anh)" data-subdept="Ngôn ngữ Anh" data-type="Bắt buộc" data-status="Đã ngừng" data-status-class="status-stopped" data-desc="Kỹ năng nghe nói đọc viết tiếng Anh giao tiếp trình độ sơ cấp chuẩn A2/B1.">
+                            <td><input type="checkbox" class="form-check-input row-select-check" /></td>
+                            <td class="fw-bold text-muted">8</td>
+                            <td class="subject-code-badge">NN01</td>
+                            <td class="subject-name-cell">Tiếng Anh cơ bản</td>
+                            <td>Khoa Ngoại ngữ (Tiếng Anh)</td>
+                            <td><span class="text-dark fw-medium">Bắt buộc</span></td>
+                            <td>
+                                <span class="status-pill status-stopped">
+                                    <span class="status-dot"></span> Đã ngừng
+                                </span>
+                            </td>
+                            <td>
+                                <div class="table-actions justify-content-center">
+                                    <button class="btn-row-action btn-action-view" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                    <button class="btn-row-action btn-action-edit" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-row-action btn-action-delete" title="Xóa"><i class="fa-regular fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Phân trang (Pagination) -->
+            <div class="table-footer">
+                <div>
+                    Hiển thị <strong>1 – 8</strong> trong tổng số <strong>120</strong> môn học
+                </div>
+
+                <ul class="pagination-custom">
+                    <li><a href="#" class="page-btn"><i class="fa-solid fa-angles-left small"></i></a></li>
+                    <li><a href="#" class="page-btn active">1</a></li>
+                    <li><a href="#" class="page-btn">2</a></li>
+                    <li><a href="#" class="page-btn">3</a></li>
+                    <li><a href="#" class="page-btn"><i class="fa-solid fa-chevron-right small"></i></a></li>
+                    <li><a href="#" class="page-btn"><i class="fa-solid fa-angles-right small"></i></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: CHI TIẾT MÔN HỌC (CARD PANEL) -->
+        <div class="detail-card" id="subjectDetailCard">
+            <!-- Header của Panel -->
+            <div class="detail-header">
+                <div class="detail-header-title">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Chi tiết môn học</span>
+                </div>
+                <button class="btn-close-detail" title="Đóng panel" onclick="document.getElementById('subjectDetailCard').style.display='none';">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Hero Banner Môn học -->
+            <div class="subject-hero-banner">
+                <div class="hero-top-row">
+                    <div class="hero-icon-title">
+                        <div class="hero-big-icon">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div>
+                            <div class="hero-code" id="detailCode">CNTT01</div>
+                            <div class="hero-name" id="detailName">Lập trình hướng đối tượng</div>
+                        </div>
+                    </div>
+                    <span class="status-pill status-active" id="detailStatusPill">
+                        <span class="status-dot"></span> <span id="detailStatusText">Đang giảng dạy</span>
+                    </span>
+                </div>
+
+                <div class="hero-badges-row">
+                    <span class="hero-tag">
+                        <i class="fa-solid fa-graduation-cap"></i> <span id="detailCredits">3 tín chỉ</span>
+                    </span>
+                    <span class="hero-tag">
+                        <i class="fa-solid fa-landmark"></i> <span id="detailDept">Khoa CNTT (CNPM)</span>
+                    </span>
+                    <span class="hero-tag">
+                        <i class="fa-solid fa-layer-group"></i> <span id="detailType">Bắt buộc</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tab Điều hướng Chi tiết -->
+            <div class="detail-tabs-nav">
+                <button class="detail-tab-btn active" onclick="switchDetailTab(event, 'tabGeneral')">Thông tin chung</button>
+                <button class="detail-tab-btn" onclick="switchDetailTab(event, 'tabTeachers')">Giảng viên phụ trách</button>
+                <button class="detail-tab-btn" onclick="switchDetailTab(event, 'tabHistory')">Lịch sử thay đổi</button>
+            </div>
+
+            <!-- Nội dung Tab -->
+            <div class="detail-body-content">
+                <!-- TAB 1: THÔNG TIN CHUNG -->
+                <div id="tabGeneral" class="tab-pane-content">
+                    <div class="detail-info-list">
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">Mã môn học:</span>
+                            <span class="detail-info-val" id="infoCode">CNTT01</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">Tên môn học:</span>
+                            <span class="detail-info-val" id="infoName">Lập trình hướng đối tượng</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">Số tín chỉ:</span>
+                            <span class="detail-info-val" id="infoCredits">3 tín chỉ</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">Loại môn:</span>
+                            <span class="detail-info-val"><span class="tag-mandatory" id="infoType">Bắt buộc</span></span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">Khoa quản lý:</span>
+                            <span class="detail-info-val" id="infoDept">Khoa CNTT (CNPM)</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">Bộ môn phụ trách:</span>
+                            <span class="detail-info-val" id="infoSubDept">Công nghệ phần mềm</span>
+                        </div>
+                        <div class="detail-info-item" style="flex-direction: column; gap: 4px; align-items: flex-start;">
+                            <span class="detail-info-label">Mô tả:</span>
+                            <span class="text-secondary fw-normal small" id="infoDesc">Trang bị kiến thức cơ bản về lập trình hướng đối tượng với ngôn ngữ C#.</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label">Trạng thái:</span>
+                            <span class="detail-info-val">
+                                <span class="status-pill status-active" id="infoStatusPill">
+                                    <span class="status-dot"></span> <span id="infoStatus">Đang giảng dạy</span>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách giảng viên -->
+                    <div class="teacher-section-title">
+                        <span>• Danh sách giảng viên (2)</span>
+                        <a href="javascript:void(0);">Xem tất cả <i class="fa-solid fa-arrow-right small"></i></a>
+                    </div>
+
+                    <div class="teacher-item-card">
+                        <div class="teacher-avatar-info">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=An" alt="Giảng viên" class="teacher-avatar-img" />
+                            <div>
+                                <div class="teacher-name">Nguyễn Văn An</div>
+                                <div class="teacher-role-sub">Giảng viên chính</div>
+                            </div>
+                        </div>
+                        <span class="teacher-badge-main">Phụ trách</span>
+                    </div>
+
+                    <div class="teacher-item-card">
+                        <div class="teacher-avatar-info">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mai" alt="Giảng viên" class="teacher-avatar-img" />
+                            <div>
+                                <div class="teacher-name">Trần Thị Mai</div>
+                                <div class="teacher-role-sub">Giảng viên</div>
+                            </div>
+                        </div>
+                        <span class="teacher-badge-sub">Tham gia</span>
+                    </div>
+                </div>
+
+                <!-- TAB 2: GIẢNG VIÊN PHỤ TRÁCH -->
+                <div id="tabTeachers" class="tab-pane-content d-none">
+                    <p class="small text-muted mb-3">Danh sách toàn bộ giảng viên được phân công giảng dạy môn học này:</p>
+                    <div class="teacher-item-card">
+                        <div class="teacher-avatar-info">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=An" alt="Giảng viên" class="teacher-avatar-img" />
+                            <div>
+                                <div class="teacher-name">Nguyễn Văn An</div>
+                                <div class="teacher-role-sub">Khoa CNTT - an.nguyen@abc.edu.vn</div>
+                            </div>
+                        </div>
+                        <span class="teacher-badge-main">Phụ trách chính</span>
+                    </div>
+                    <div class="teacher-item-card">
+                        <div class="teacher-avatar-info">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mai" alt="Giảng viên" class="teacher-avatar-img" />
+                            <div>
+                                <div class="teacher-name">Trần Thị Mai</div>
+                                <div class="teacher-role-sub">Khoa CNTT - mai.tran@abc.edu.vn</div>
+                            </div>
+                        </div>
+                        <span class="teacher-badge-sub">Trợ giảng</span>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm w-100 mt-2" style="border-radius: 8px;">
+                        <i class="fa-solid fa-user-plus me-1"></i> Phân công thêm giảng viên
+                    </button>
+                </div>
+
+                <!-- TAB 3: LỊCH SỬ THAY ĐỔI -->
+                <div id="tabHistory" class="tab-pane-content d-none">
+                    <div class="timeline-logs small">
+                        <div class="p-2 mb-2 bg-light rounded border-start border-3 border-primary">
+                            <div class="fw-bold text-dark">Cập nhật đề cương môn học</div>
+                            <div class="text-muted" style="font-size: 11px;">Bởi <strong>Admin</strong> lúc 15/10/2025 09:20</div>
+                        </div>
+                        <div class="p-2 mb-2 bg-light rounded border-start border-3 border-success">
+                            <div class="fw-bold text-dark">Phân công giảng viên: Nguyễn Văn An</div>
+                            <div class="text-muted" style="font-size: 11px;">Bởi <strong>Trưởng bộ môn</strong> lúc 10/10/2025 14:15</div>
+                        </div>
+                        <div class="p-2 bg-light rounded border-start border-3 border-info">
+                            <div class="fw-bold text-dark">Tạo mới môn học</div>
+                            <div class="text-muted" style="font-size: 11px;">Bởi <strong>Admin</strong> lúc 01/09/2025 08:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL THÊM MÔN HỌC MỚI -->
+<div class="modal fade" id="addSubjectModal" tabindex="-1" aria-labelledby="addSubjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-book-medical"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark m-0" id="addSubjectModalLabel">Thêm môn học mới</h5>
+                        <p class="text-muted small m-0">Nhập đầy đủ thông tin để khởi tạo môn học trong chương trình đào tạo</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addSubjectForm" onsubmit="event.preventDefault(); alert('Thêm môn học thành công! (Dữ liệu Demo)'); bootstrap.Modal.getInstance(document.getElementById('addSubjectModal')).hide();">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark small">Mã môn học <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="VD: CNTT04..." required style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold text-dark small">Tên môn học <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="VD: Lập trình Web nâng cao..." required style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark small">Số tín chỉ <span class="text-danger">*</span></label>
+                            <input type="number" min="1" max="10" value="3" class="form-control" required style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark small">Loại môn học <span class="text-danger">*</span></label>
+                            <select class="form-select" required style="border-radius: 10px; padding: 10px 14px;">
+                                <option value="Bắt buộc" selected>Bắt buộc</option>
+                                <option value="Tự chọn">Tự chọn</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark small">Trạng thái ban đầu</label>
+                            <select class="form-select" style="border-radius: 10px; padding: 10px 14px;">
+                                <option value="Đang giảng dạy" selected>Đang giảng dạy</option>
+                                <option value="Tạm ngưng">Tạm ngưng</option>
+                                <option value="Đã ngừng">Đã ngừng</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Khoa quản lý <span class="text-danger">*</span></label>
+                            <select class="form-select" required style="border-radius: 10px; padding: 10px 14px;">
+                                <option value="" disabled selected>-- Chọn khoa --</option>
+                                <option value="Khoa CNTT">Khoa Công nghệ thông tin</option>
+                                <option value="Khoa Sư phạm">Khoa Sư phạm</option>
+                                <option value="Khoa Kinh tế">Khoa Kinh tế</option>
+                                <option value="Khoa Ngoại ngữ">Khoa Ngoại ngữ</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Bộ môn phụ trách</label>
+                            <input type="text" class="form-control" placeholder="VD: Công nghệ phần mềm..." style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark small">Mô tả tóm tắt môn học</label>
+                            <textarea class="form-control" rows="3" placeholder="Nhập mục tiêu và kiến thức cốt lõi của môn học..." style="border-radius: 10px; padding: 10px 14px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-primary fw-semibold px-4" style="background: #2563eb; border: none; border-radius: 10px;">Lưu môn học</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL NHẬP EXCEL -->
+<div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-file-excel"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark m-0" id="importExcelModalLabel">Nhập môn học từ Excel</h5>
+                        <p class="text-muted small m-0">Tải lên danh sách môn học hàng loạt bằng file Excel</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <div class="p-4 border-2 border-dashed rounded-3 bg-light mb-3" style="border: 2px dashed #cbd5e1; cursor: pointer;">
+                    <i class="fa-solid fa-cloud-arrow-up text-primary fs-1 mb-2"></i>
+                    <div class="fw-semibold text-dark">Kéo và thả file Excel vào đây</div>
+                    <div class="text-muted small">Hoặc bấm để duyệt file từ máy tính (.xlsx, .xls)</div>
+                    <input type="file" class="d-none" id="excelFileInput" accept=".xlsx, .xls" />
+                </div>
+                <div class="d-flex justify-content-between align-items-center text-start">
+                    <a href="javascript:void(0);" class="small text-primary text-decoration-none fw-semibold">
+                        <i class="fa-solid fa-download me-1"></i> Tải file mẫu Excel (.xlsx)
+                    </a>
+                </div>
+                <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Đóng</button>
+                    <button type="button" class="btn btn-success fw-semibold px-4" style="border-radius: 10px;" onclick="alert('Đã tải file lên thành công! (Dữ liệu Demo)'); bootstrap.Modal.getInstance(document.getElementById('importExcelModal')).hide();">Tải lên và xử lý</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tableRows = document.querySelectorAll('#subjectTable tbody tr');
+            const detailCard = document.getElementById('subjectDetailCard');
+
+            // 1. TƯƠNG TÁC CHỌN DÒNG VÀ HIỂN THỊ CHI TIẾT
+            tableRows.forEach(row => {
+                row.addEventListener('click', function (e) {
+                    // Tránh trigger khi bấm trực tiếp vào checkbox
+                    if (e.target.type === 'checkbox') return;
+
+                    tableRows.forEach(r => r.classList.remove('row-active'));
+                    this.classList.add('row-active');
+
+                    // Lấy dữ liệu từ dataset
+                    const code = this.dataset.code;
+                    const name = this.dataset.name;
+                    const credits = this.dataset.credits;
+                    const dept = this.dataset.dept;
+                    const subdept = this.dataset.subdept;
+                    const type = this.dataset.type;
+                    const status = this.dataset.status;
+                    const statusClass = this.dataset.statusClass;
+                    const desc = this.dataset.desc;
+
+                    // Đổ dữ liệu vào Hero Banner
+                    document.getElementById('detailCode').innerText = code;
+                    document.getElementById('detailName').innerText = name;
+                    document.getElementById('detailCredits').innerText = credits;
+                    document.getElementById('detailDept').innerText = dept;
+                    document.getElementById('detailType').innerText = type;
+
+                    const statusPill = document.getElementById('detailStatusPill');
+                    statusPill.className = 'status-pill ' + statusClass;
+                    document.getElementById('detailStatusText').innerText = status;
+
+                    // Đổ dữ liệu vào Tab Thông tin chung
+                    document.getElementById('infoCode').innerText = code;
+                    document.getElementById('infoName').innerText = name;
+                    document.getElementById('infoCredits').innerText = credits;
+                    document.getElementById('infoType').innerText = type;
+                    document.getElementById('infoDept').innerText = dept;
+                    document.getElementById('infoSubDept').innerText = subdept;
+                    document.getElementById('infoDesc').innerText = desc;
+
+                    const infoStatusPill = document.getElementById('infoStatusPill');
+                    infoStatusPill.className = 'status-pill ' + statusClass;
+                    document.getElementById('infoStatus').innerText = status;
+
+                    // Hiển thị panel nếu đang bị ẩn
+                    detailCard.style.display = 'block';
+                });
+            });
+
+            // 2. CHECKBOX CHỌN TẤT CẢ
+            const checkAllTop = document.getElementById('checkAllSubjects');
+            const headCheck = document.getElementById('tableHeadCheck');
+            const rowChecks = document.querySelectorAll('.row-select-check');
+            const btnActivate = document.getElementById('btnBatchActivate');
+            const btnPause = document.getElementById('btnBatchPause');
+            const btnDelete = document.getElementById('btnBatchDelete');
+
+            function updateBatchButtons() {
+                const checkedCount = document.querySelectorAll('.row-select-check:checked').length;
+                const hasSelected = checkedCount > 0;
+                btnActivate.disabled = !hasSelected;
+                btnPause.disabled = !hasSelected;
+                btnDelete.disabled = !hasSelected;
+            }
+
+            function setAllCheckboxes(checked) {
+                rowChecks.forEach(cb => cb.checked = checked);
+                checkAllTop.checked = checked;
+                headCheck.checked = checked;
+                updateBatchButtons();
+            }
+
+            if (checkAllTop) {
+                checkAllTop.addEventListener('change', function () {
+                    setAllCheckboxes(this.checked);
+                });
+            }
+
+            if (headCheck) {
+                headCheck.addEventListener('change', function () {
+                    setAllCheckboxes(this.checked);
+                });
+            }
+
+            rowChecks.forEach(cb => {
+                cb.addEventListener('change', function () {
+                    const total = rowChecks.length;
+                    const checkedCount = document.querySelectorAll('.row-select-check:checked').length;
+                    checkAllTop.checked = (total === checkedCount);
+                    headCheck.checked = (total === checkedCount);
+                    updateBatchButtons();
+                });
+            });
+
+            // 3. TÌM KIẾM DỮ LIỆU BẢNG NHANH
+            const searchInput = document.getElementById('tableSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function () {
+                    const term = this.value.toLowerCase().trim();
+                    tableRows.forEach(row => {
+                        const text = row.innerText.toLowerCase();
+                        row.style.display = text.includes(term) ? '' : 'none';
+                    });
+                });
+            }
+        });
+
+        // CHUYỂN TAB TRONG PANEL CHI TIẾT
+        function switchDetailTab(evt, tabId) {
+            const tabs = document.querySelectorAll('.detail-tab-btn');
+            tabs.forEach(t => t.classList.remove('active'));
+            evt.currentTarget.classList.add('active');
+
+            const panes = document.querySelectorAll('.tab-pane-content');
+            panes.forEach(p => p.classList.add('d-none'));
+
+            const target = document.getElementById(tabId);
+            if (target) {
+                target.classList.remove('d-none');
+            }
+        }
+    </script>
+}
+

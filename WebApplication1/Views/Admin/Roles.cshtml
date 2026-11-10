@@ -1,0 +1,1299 @@
+@{
+    ViewData["Title"] = "Vai trò & Phân quyền - ExamBank Admin";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Tổng thể trang Vai trò & Phân quyền */
+    .roles-page-wrapper {
+        padding: 24px 30px;
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Top Search & Profile Bar */
+    .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .top-search-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .btn-menu-toggle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-menu-toggle:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .search-box-top {
+        position: relative;
+        width: 380px;
+    }
+
+    .search-box-top input {
+        width: 100%;
+        padding: 9px 18px 9px 42px;
+        border-radius: 22px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        font-size: 13.5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .search-box-top input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .search-box-top i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .notification-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .notification-btn:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .badge-alert {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+    .user-pill-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 14px 4px 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .user-avatar-top {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .user-avatar-top img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Breadcrumb */
+    .page-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .page-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .page-breadcrumb a:hover {
+        color: #2563eb;
+    }
+
+    /* Page Heading Header */
+    .page-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .page-title-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .page-title-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+    }
+
+    .page-title-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .page-subtitle-text {
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 4px 0 0 0;
+    }
+
+    /* 2-Column Main Layout Grid */
+    .roles-grid-container {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 22px;
+        align-items: start;
+    }
+
+    /* Cột Trái: Danh sách vai trò */
+    .roles-list-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .roles-list-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+
+    .roles-list-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .btn-add-role {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .btn-add-role:hover {
+        background: #2563eb;
+        color: #ffffff;
+    }
+
+    .role-items-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .role-item-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 14px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .role-item-btn:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        transform: translateX(2px);
+    }
+
+    .role-item-btn.active {
+        background: #eff6ff;
+        border-color: #3b82f6;
+        box-shadow: 0 2px 10px rgba(59, 130, 246, 0.15);
+    }
+
+    .role-item-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .role-icon-box {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .icon-admin { background: #f5f3ff; color: #7c3aed; }
+    .icon-dept { background: #fff7ed; color: #ea580c; }
+    .icon-teacher { background: #eff6ff; color: #2563eb; }
+    .icon-exam { background: #f0fdf4; color: #16a34a; }
+    .icon-student { background: #ecfeff; color: #0891b2; }
+
+    .role-name-text {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.2;
+    }
+
+    .role-desc-text {
+        font-size: 11.5px;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .role-count-badge {
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 11.5px;
+        font-weight: 600;
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .role-item-btn.active .role-count-badge {
+        background: #2563eb;
+        color: #ffffff;
+    }
+
+    /* Cột Phải: Bảng Ma Trận Phân Quyền */
+    .role-detail-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .role-detail-top-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 18px;
+    }
+
+    .role-detail-header-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .role-detail-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+
+    .role-detail-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .role-detail-desc {
+        font-size: 12.5px;
+        color: #64748b;
+        margin: 3px 0 0 0;
+    }
+
+    .detail-actions-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-reset-perms {
+        background: #ffffff;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-reset-perms:hover {
+        background: #f8fafc;
+        color: #0f172a;
+    }
+
+    .btn-save-perms {
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+        transition: all 0.2s;
+    }
+
+    .btn-save-perms:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    /* Sub Tabs */
+    .role-sub-tabs {
+        display: flex;
+        gap: 18px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 20px;
+    }
+
+    .role-sub-tab-btn {
+        background: transparent;
+        border: none;
+        padding: 10px 0;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .role-sub-tab-btn.active {
+        color: #2563eb;
+    }
+
+    .role-sub-tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2.5px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    /* Permission Filter Toolbar */
+    .perm-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        gap: 12px;
+    }
+
+    .perm-search-box {
+        position: relative;
+        flex: 1;
+        max-width: 320px;
+    }
+
+    .perm-search-box input {
+        width: 100%;
+        padding: 7px 12px 7px 34px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 12.5px;
+        outline: none;
+        background: #f8fafc;
+    }
+
+    .perm-search-box input:focus {
+        background: #ffffff;
+        border-color: #3b82f6;
+    }
+
+    .perm-search-box i {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .perm-tools-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-select-all-perm {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #2563eb;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 4px 8px;
+    }
+
+    .btn-select-all-perm:hover {
+        text-decoration: underline;
+    }
+
+    .btn-copy-perms {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #475569;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        padding: 5px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .btn-copy-perms:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    /* Permission Module Group (Card) */
+    .perm-group-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        margin-bottom: 14px;
+        overflow: hidden;
+    }
+
+    .perm-group-header {
+        background: #f8fafc;
+        padding: 12px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        user-select: none;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .perm-group-header-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .perm-group-header-left i {
+        color: #2563eb;
+        font-size: 15px;
+    }
+
+    .perm-count-tag {
+        font-size: 11.5px;
+        font-weight: 600;
+        background: #e2e8f0;
+        color: #475569;
+        padding: 2px 8px;
+        border-radius: 10px;
+    }
+
+    .perm-items-grid {
+        padding: 16px 18px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .perm-item-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .perm-item-box input[type="checkbox"] {
+        width: 17px;
+        height: 17px;
+        border-radius: 4px;
+        margin-top: 2px;
+        cursor: pointer;
+    }
+
+    .perm-label-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+        line-height: 1.3;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .perm-label-desc {
+        font-size: 11.5px;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .tag-sensitive {
+        font-size: 10.5px;
+        font-weight: 700;
+        background: #fef2f2;
+        color: #ef4444;
+        border: 1px solid #fecaca;
+        padding: 1px 6px;
+        border-radius: 4px;
+    }
+
+    .tag-high-priv {
+        font-size: 10.5px;
+        font-weight: 700;
+        background: #fffbeb;
+        color: #b45309;
+        border: 1px solid #fde68a;
+        padding: 1px 6px;
+        border-radius: 4px;
+    }
+
+    /* Users List Table in Tab 2 */
+    .role-members-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 13px;
+    }
+
+    .role-members-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 10px 14px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .role-members-table tbody td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        vertical-align: middle;
+    }
+
+    /* Responsive */
+    @@media (max-width: 1024px) {
+        .roles-grid-container {
+            grid-template-columns: 1fr;
+        }
+        .perm-items-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="roles-page-wrapper">
+
+    <!-- 1. TOP BAR: TÌM KIẾM & PROFILE -->
+    <div class="top-header">
+        <div class="top-search-group">
+            <button class="btn-menu-toggle" title="Thu gọn menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="search-box-top">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm vai trò, quyền hạn... (Ctrl + K)" />
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="notification-btn" title="Thông báo">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-alert">3</span>
+            </div>
+
+            <div class="user-pill-top">
+                <div class="user-avatar-top">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" alt="Admin Avatar" />
+                </div>
+                <div class="d-none d-sm-block text-start">
+                    <div class="fw-bold small text-dark leading-tight">@(ViewBag.FullName ?? "admin")</div>
+                    <div class="text-muted" style="font-size: 11px;">Administrator</div>
+                </div>
+                <i class="fa-solid fa-chevron-down text-muted small ms-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. BREADCRUMB & TIÊU ĐỀ TRANG -->
+    <div class="page-breadcrumb">
+        <i class="fa-solid fa-house-chimney me-1"></i>
+        <a asp-controller="Admin" asp-action="Index">Trang chủ</a>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span>Quản lý người dùng</span>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span class="text-dark fw-semibold">Vai trò & phân quyền</span>
+    </div>
+
+    <div class="page-title-row">
+        <div class="page-title-group">
+            <div class="page-title-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+                <h1 class="page-title-text">Vai trò & phân quyền</h1>
+                <p class="page-subtitle-text">Thiết lập vai trò người dùng và phân quyền hạn truy cập các chức năng trong hệ thống ExamBank</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. BỐ CỤC CHIA 2 CỘT (MASTER - DETAIL) -->
+    <div class="roles-grid-container">
+
+        <!-- CỘT TRÁI: DANH SÁCH VAI TRÒ -->
+        <div class="roles-list-card">
+            <div class="roles-list-header">
+                <h5 class="roles-list-title">Danh sách vai trò (<span id="roleTotalCount">5</span>)</h5>
+                <button class="btn-add-role" data-bs-toggle="modal" data-bs-target="#addRoleModal">
+                    <i class="fa-solid fa-plus"></i> Thêm mới
+                </button>
+            </div>
+
+            <div class="role-items-wrapper">
+                <!-- VAI TRÒ 1: ADMIN -->
+                <button type="button" class="role-item-btn" data-role-id="admin" data-role-name="Quản trị viên (Admin)" data-role-icon="fa-crown" data-role-color="icon-admin" data-role-desc="Toàn quyền quản trị hệ thống, quản lý người dùng, cấu hình và giám sát dữ liệu" data-user-count="120" onclick="selectRole(this)">
+                    <div class="role-item-left">
+                        <div class="role-icon-box icon-admin">
+                            <i class="fa-solid fa-crown"></i>
+                        </div>
+                        <div>
+                            <div class="role-name-text">Quản trị viên (Admin)</div>
+                            <div class="role-desc-text">Toàn quyền hệ thống</div>
+                        </div>
+                    </div>
+                    <span class="role-count-badge">120 tk</span>
+                </button>
+
+                <!-- VAI TRÒ 2: TRƯỞNG BỘ MÔN -->
+                <button type="button" class="role-item-btn" data-role-id="truongbomon" data-role-name="Trưởng bộ môn" data-role-icon="fa-user-tie" data-role-color="icon-dept" data-role-desc="Quản lý ngân hàng câu hỏi, phê duyệt đề thi và phân công giảng viên bộ môn" data-user-count="130" onclick="selectRole(this)">
+                    <div class="role-item-left">
+                        <div class="role-icon-box icon-dept">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <div>
+                            <div class="role-name-text">Trưởng bộ môn</div>
+                            <div class="role-desc-text">Duyệt câu hỏi & đề thi</div>
+                        </div>
+                    </div>
+                    <span class="role-count-badge">130 tk</span>
+                </button>
+
+                <!-- VAI TRÒ 3: GIẢNG VIÊN (ACTIVE MẶC ĐỊNH) -->
+                <button type="button" class="role-item-btn active" data-role-id="giangvien" data-role-name="Giảng viên" data-role-icon="fa-graduation-cap" data-role-color="icon-teacher" data-role-desc="Soạn thảo câu hỏi, tạo đề thi, quản lý ngân hàng câu hỏi môn phụ trách và chấm thi" data-user-count="850" onclick="selectRole(this)">
+                    <div class="role-item-left">
+                        <div class="role-icon-box icon-teacher">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <div class="role-name-text">Giảng viên</div>
+                            <div class="role-desc-text">Soạn câu hỏi & tạo đề thi</div>
+                        </div>
+                    </div>
+                    <span class="role-count-badge">850 tk</span>
+                </button>
+
+                <!-- VAI TRÒ 4: PHÒNG KHẢO THÍ -->
+                <button type="button" class="role-item-btn" data-role-id="khaothi" data-role-name="Phòng khảo thí" data-role-icon="fa-clipboard-check" data-role-color="icon-exam" data-role-desc="Tổ chức kỳ thi, quản lý ca thi, trộn đề bảo mật, in sao đề và quản lý điểm thi" data-user-count="180" onclick="selectRole(this)">
+                    <div class="role-item-left">
+                        <div class="role-icon-box icon-exam">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </div>
+                        <div>
+                            <div class="role-name-text">Phòng khảo thí</div>
+                            <div class="role-desc-text">Tổ chức thi & in sao đề</div>
+                        </div>
+                    </div>
+                    <span class="role-count-badge">180 tk</span>
+                </button>
+
+                <!-- VAI TRÒ 5: SINH VIÊN -->
+                <button type="button" class="role-item-btn" data-role-id="sinhvien" data-role-name="Sinh viên / Thí sinh" data-role-icon="fa-book-open-reader" data-role-color="icon-student" data-role-desc="Tham gia các kỳ thi trực tuyến, làm bài thi, xem lịch thi và kết quả điểm số" data-user-count="12.850" onclick="selectRole(this)">
+                    <div class="role-item-left">
+                        <div class="role-icon-box icon-student">
+                            <i class="fa-solid fa-book-open-reader"></i>
+                        </div>
+                        <div>
+                            <div class="role-name-text">Sinh viên / Thí sinh</div>
+                            <div class="role-desc-text">Làm bài thi & xem điểm</div>
+                        </div>
+                    </div>
+                    <span class="role-count-badge">12.850 tk</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: MA TRẬN PHÂN QUYỀN VÀ THÀNH VIÊN -->
+        <div class="role-detail-card">
+
+            <!-- Header Vai trò đang chọn -->
+            <div class="role-detail-top-row">
+                <div class="role-detail-header-info">
+                    <div class="role-detail-icon icon-teacher" id="selectedRoleIcon">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <h3 class="role-detail-title" id="selectedRoleName">Giảng viên</h3>
+                            <span class="badge bg-light text-primary border" id="selectedUserCountTag">850 người dùng</span>
+                        </div>
+                        <p class="role-detail-desc" id="selectedRoleDesc">Soạn thảo câu hỏi, tạo đề thi, quản lý ngân hàng câu hỏi môn phụ trách và chấm thi</p>
+                    </div>
+                </div>
+
+                <div class="detail-actions-group">
+                    <button class="btn-reset-perms" type="button" onclick="alert('Đã khôi phục quyền mặc định của vai trò!');">
+                        <i class="fa-solid fa-rotate-left"></i> Khôi phục
+                    </button>
+                    <button class="btn-save-perms" type="button" onclick="alert('Lưu phân quyền thành công!');">
+                        <i class="fa-regular fa-floppy-disk"></i> Lưu quyền
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sub Navigation Tabs -->
+            <div class="role-sub-tabs">
+                <button class="role-sub-tab-btn active" onclick="switchRoleSubTab(event, 'tabPermissions')">
+                    <i class="fa-solid fa-list-check"></i> Phân quyền chức năng
+                </button>
+                <button class="role-sub-tab-btn" onclick="switchRoleSubTab(event, 'tabMembers')">
+                    <i class="fa-solid fa-users"></i> Danh sách thành viên (<span id="tabMemberCount">850</span>)
+                </button>
+            </div>
+
+            <!-- TAB 1: MA TRẬN PHÂN QUYỀN CHỨC NĂNG -->
+            <div id="tabPermissions" class="role-tab-pane">
+
+                <!-- Toolbar Lọc & Thao tác nhanh -->
+                <div class="perm-toolbar">
+                    <div class="perm-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="searchPermInput" placeholder="Tìm nhanh quyền hạn..." />
+                    </div>
+
+                    <div class="perm-tools-right">
+                        <button class="btn-select-all-perm" id="btnToggleAllPerms" onclick="toggleAllPermissions()">Chọn tất cả</button>
+                        <button class="btn-copy-perms" onclick="alert('Mở hộp thoại sao chép quyền từ vai trò khác (Demo)');">
+                            <i class="fa-regular fa-copy me-1"></i> Sao chép quyền
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1. NHÓM QUYỀN: NGÂN HÀNG CÂU HỎI -->
+                <div class="perm-group-card">
+                    <div class="perm-group-header">
+                        <div class="perm-group-header-left">
+                            <i class="fa-solid fa-database"></i>
+                            <span>1. Ngân hàng câu hỏi & Thẩm định</span>
+                        </div>
+                        <span class="perm-count-tag">5 quyền</span>
+                    </div>
+                    <div class="perm-items-grid">
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" checked id="p_q1" />
+                            <label for="p_q1">
+                                <div class="perm-label-title">Xem ngân hàng câu hỏi</div>
+                                <div class="perm-label-desc">Xem danh sách các câu hỏi thuộc môn học được phân công</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" checked id="p_q2" />
+                            <label for="p_q2">
+                                <div class="perm-label-title">Soạn thảo & Nhập câu hỏi</div>
+                                <div class="perm-label-desc">Tạo câu hỏi thủ công hoặc import hàng loạt từ file Word / Excel</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" checked id="p_q3" />
+                            <label for="p_q3">
+                                <div class="perm-label-title">Chỉnh sửa & Xóa câu hỏi</div>
+                                <div class="perm-label-desc">Chỉnh sửa nội dung, đáp án câu hỏi do chính mình biên soạn</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" id="p_q4" />
+                            <label for="p_q4">
+                                <div class="perm-label-title">
+                                    Phê duyệt câu hỏi chính thức
+                                    <span class="tag-sensitive">Nhạy cảm</span>
+                                </div>
+                                <div class="perm-label-desc">Thẩm định chất lượng câu hỏi đưa vào ngân hàng đề thi chung</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" checked id="p_q5" />
+                            <label for="p_q5">
+                                <div class="perm-label-title">Xuất ngân hàng câu hỏi</div>
+                                <div class="perm-label-desc">Tải dữ liệu câu hỏi và đáp án ra định dạng Word / Excel</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. NHÓM QUYỀN: QUẢN LÝ ĐỀ THI & MA TRẬN ĐỀ -->
+                <div class="perm-group-card">
+                    <div class="perm-group-header">
+                        <div class="perm-group-header-left">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span>2. Quản lý đề thi & Ma trận đề</span>
+                        </div>
+                        <span class="perm-count-tag">5 quyền</span>
+                    </div>
+                    <div class="perm-items-grid">
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" checked id="p_e1" />
+                            <label for="p_e1">
+                                <div class="perm-label-title">Xem danh sách đề thi</div>
+                                <div class="perm-label-desc">Xem các đề thi thuộc bộ môn và môn học quản lý</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" checked id="p_e2" />
+                            <label for="p_e2">
+                                <div class="perm-label-title">Tạo ma trận cấu trúc đề</div>
+                                <div class="perm-label-desc">Thiết lập ma trận câu hỏi theo chuẩn Bloom (Nhận biết, Vận dụng...)</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" checked id="p_e3" />
+                            <label for="p_e3">
+                                <div class="perm-label-title">Sinh đề thi tự động & Thủ công</div>
+                                <div class="perm-label-desc">Rút câu hỏi tự động theo ma trận hoặc tự chọn từng câu</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" id="p_e4" />
+                            <label for="p_e4">
+                                <div class="perm-label-title">
+                                    Phê duyệt đề thi chính thức
+                                    <span class="tag-sensitive">Bảo mật</span>
+                                </div>
+                                <div class="perm-label-desc">Ký duyệt ban hành đề thi chính thức cho kỳ thi</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" id="p_e5" />
+                            <label for="p_e5">
+                                <div class="perm-label-title">
+                                    Trộn đề & In sao đề thi bảo mật
+                                    <span class="tag-high-priv">Khảo thí</span>
+                                </div>
+                                <div class="perm-label-desc">Đảo câu hỏi, đảo phương án, in sao đề thi có watermark chống lộ</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. NHÓM QUYỀN: TỔ CHỨC THI & CHẤM THI -->
+                <div class="perm-group-card">
+                    <div class="perm-group-header">
+                        <div class="perm-group-header-left">
+                            <i class="fa-regular fa-calendar-check"></i>
+                            <span>3. Tổ chức kỳ thi & Chấm thi</span>
+                        </div>
+                        <span class="perm-count-tag">4 quyền</span>
+                    </div>
+                    <div class="perm-items-grid">
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" id="p_t1" />
+                            <label for="p_t1">
+                                <div class="perm-label-title">Lập lịch thi & Ca thi</div>
+                                <div class="perm-label-desc">Xếp lịch thi, phân phòng thi và danh sách thí sinh</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" id="p_t2" />
+                            <label for="p_t2">
+                                <div class="perm-label-title">Phân công giám thị</div>
+                                <div class="perm-label-desc">Chỉ định cán bộ coi thi cho từng phòng thi</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" checked id="p_t3" />
+                            <label for="p_t3">
+                                <div class="perm-label-title">Chấm bài thi & Nhập điểm</div>
+                                <div class="perm-label-desc">Chấm bài tự luận và giám sát kết quả chấm trắc nghiệm tự động</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" id="p_t4" />
+                            <label for="p_t4">
+                                <div class="perm-label-title">Công bố điểm & Xử lý phúc khảo</div>
+                                <div class="perm-label-desc">Chốt bảng điểm và phản hồi đơn phúc khảo của sinh viên</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. NHÓM QUYỀN: QUẢN TRỊ DANH MỤC & HỆ THỐNG -->
+                <div class="perm-group-card">
+                    <div class="perm-group-header">
+                        <div class="perm-group-header-left">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>4. Quản trị danh mục & Báo cáo</span>
+                        </div>
+                        <span class="perm-count-tag">4 quyền</span>
+                    </div>
+                    <div class="perm-items-grid">
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" id="p_s1" />
+                            <label for="p_s1">
+                                <div class="perm-label-title">Quản lý Khoa / Bộ môn / Môn học</div>
+                                <div class="perm-label-desc">Thêm sửa xóa cơ cấu tổ chức và danh mục học phần</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" id="p_s2" />
+                            <label for="p_s2">
+                                <div class="perm-label-title">Quản lý tài khoản & Phân quyền</div>
+                                <div class="perm-label-desc">Cấp quyền, tạo tài khoản và khóa truy cập người dùng</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" checked id="p_s3" />
+                            <label for="p_s3">
+                                <div class="perm-label-title">Xem báo cáo & Thống kê phổ điểm</div>
+                                <div class="perm-label-desc">Xem biểu đồ phân tích độ khó câu hỏi và phổ điểm thi</div>
+                            </label>
+                        </div>
+
+                        <div class="perm-item-box">
+                            <input type="checkbox" class="perm-checkbox" id="p_s4" />
+                            <label for="p_s4">
+                                <div class="perm-label-title">
+                                    Xem nhật ký hệ thống (Audit Log)
+                                    <span class="tag-high-priv">Admin</span>
+                                </div>
+                                <div class="perm-label-desc">Truy vết ai đã xem, sửa, xóa hoặc in sao đề thi</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 2: DANH SÁCH THÀNH VIÊN THUỘC VAI TRÒ -->
+            <div id="tabMembers" class="role-tab-pane d-none">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <p class="small text-muted m-0">Hiển thị các tài khoản đang được gán vai trò này trong hệ thống:</p>
+                    <button class="btn btn-sm btn-outline-primary" style="border-radius: 8px;" onclick="alert('Mở hộp thoại gán thêm người dùng vào vai trò (Demo)');">
+                        <i class="fa-solid fa-user-plus me-1"></i> Gán thêm người dùng
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="role-members-table">
+                        <thead>
+                            <tr>
+                                <th>Họ và tên</th>
+                                <th>Email</th>
+                                <th>Khoa / Đơn vị</th>
+                                <th>Ngày gán</th>
+                                <th class="text-end">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold text-dark">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mai" width="28" height="28" class="rounded-circle" />
+                                        <span>Trần Thị Mai</span>
+                                    </div>
+                                </td>
+                                <td>mai.tran@abc.edu.vn</td>
+                                <td>Khoa Công nghệ</td>
+                                <td>12/10/2025</td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-light text-danger" title="Gỡ vai trò" onclick="alert('Đã gỡ vai trò của người dùng (Demo)');">
+                                        <i class="fa-solid fa-user-minus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tuan" width="28" height="28" class="rounded-circle" />
+                                        <span>Hoàng Minh Tuấn</span>
+                                    </div>
+                                </td>
+                                <td>tuan.hoang@abc.edu.vn</td>
+                                <td>Khoa Công nghệ</td>
+                                <td>05/10/2025</td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-light text-danger" title="Gỡ vai trò" onclick="alert('Đã gỡ vai trò của người dùng (Demo)');">
+                                        <i class="fa-solid fa-user-minus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Dung" width="28" height="28" class="rounded-circle" />
+                                        <span>Phạm Thị Dung</span>
+                                    </div>
+                                </td>
+                                <td>dung.pham@abc.edu.vn</td>
+                                <td>Khoa Sư phạm</td>
+                                <td>08/10/2025</td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-light text-danger" title="Gỡ vai trò" onclick="alert('Đã gỡ vai trò của người dùng (Demo)');">
+                                        <i class="fa-solid fa-user-minus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL THÊM VAI TRÒ MỚI -->
+<div class="modal fade" id="addRoleModal" tabindex="-1" aria-labelledby="addRoleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-shield-plus"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark m-0" id="addRoleModalLabel">Thêm vai trò mới</h5>
+                        <p class="text-muted small m-0">Tạo nhóm quyền tùy chỉnh cho đối tượng người dùng cụ thể</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addRoleForm" onsubmit="event.preventDefault(); alert('Tạo vai trò mới thành công! (Dữ liệu Demo)'); bootstrap.Modal.getInstance(document.getElementById('addRoleModal')).hide();">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Tên vai trò <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="VD: Giảng viên thỉnh giảng..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Mã định danh vai trò <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="VD: VisitingLecturer..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Sao chép quyền từ vai trò có sẵn</label>
+                        <select class="form-select" style="border-radius: 10px; padding: 10px 14px;">
+                            <option value="">-- Không sao chép (tự cấu hình) --</option>
+                            <option value="giangvien">Giảng viên</option>
+                            <option value="truongbomon">Trưởng bộ môn</option>
+                            <option value="khaothi">Phòng khảo thí</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Mô tả nhiệm vụ vai trò</label>
+                        <textarea class="form-control" rows="2" placeholder="Ghi chú mục đích của vai trò này..." style="border-radius: 10px; padding: 10px 14px;"></textarea>
+                    </div>
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Hủy</button>
+                        <button type="submit" class="btn btn-primary fw-semibold px-4" style="background: #2563eb; border: none; border-radius: 10px;">Tạo vai trò</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // 1. CHUYỂN ĐỔI VAI TRÒ Ở CỘT TRÁI
+        function selectRole(button) {
+            document.querySelectorAll('.role-item-btn').forEach(b => b.classList.remove('active'));
+            button.classList.add('active');
+
+            const roleName = button.dataset.roleName;
+            const roleDesc = button.dataset.roleDesc;
+            const roleIcon = button.dataset.roleIcon;
+            const roleColor = button.dataset.roleColor;
+            const userCount = button.dataset.userCount;
+            const roleId = button.dataset.roleId;
+
+            document.getElementById('selectedRoleName').innerText = roleName;
+            document.getElementById('selectedRoleDesc').innerText = roleDesc;
+            document.getElementById('selectedUserCountTag').innerText = userCount + ' người dùng';
+            document.getElementById('tabMemberCount').innerText = userCount;
+
+            const iconContainer = document.getElementById('selectedRoleIcon');
+            iconContainer.className = 'role-detail-icon ' + roleColor;
+            iconContainer.innerHTML = `<i class="fa-solid ${roleIcon}"></i>`;
+
+            // Cập nhật trạng thái mẫu của checkbox tùy theo vai trò
+            const checkboxes = document.querySelectorAll('.perm-checkbox');
+            if (roleId === 'admin') {
+                checkboxes.forEach(cb => cb.checked = true);
+            } else if (roleId === 'sinhvien') {
+                checkboxes.forEach(cb => cb.checked = false);
+            } else if (roleId === 'truongbomon') {
+                checkboxes.forEach((cb, index) => cb.checked = (index % 2 === 0 || index < 10));
+            } else if (roleId === 'khaothi') {
+                checkboxes.forEach((cb, index) => cb.checked = (index > 4 && index < 15));
+            } else {
+                // Giảng viên mặc định
+                document.getElementById('p_q1').checked = true;
+                document.getElementById('p_q2').checked = true;
+                document.getElementById('p_q3').checked = true;
+                document.getElementById('p_q4').checked = false;
+                document.getElementById('p_q5').checked = true;
+                document.getElementById('p_e1').checked = true;
+                document.getElementById('p_e2').checked = true;
+                document.getElementById('p_e3').checked = true;
+                document.getElementById('p_e4').checked = false;
+                document.getElementById('p_e5').checked = false;
+            }
+        }
+
+        // 2. CHUYỂN SUB TAB (PHÂN QUYỀN / THÀNH VIÊN)
+        function switchRoleSubTab(evt, tabId) {
+            const tabs = document.querySelectorAll('.role-sub-tab-btn');
+            tabs.forEach(t => t.classList.remove('active'));
+            evt.currentTarget.classList.add('active');
+
+            const panes = document.querySelectorAll('.role-tab-pane');
+            panes.forEach(p => p.classList.add('d-none'));
+
+            const target = document.getElementById(tabId);
+            if (target) {
+                target.classList.remove('d-none');
+            }
+        }
+
+        // 3. CHỌN TẤT CẢ / BỎ CHỌN TẤT CẢ QUYỀN
+        let allChecked = false;
+        function toggleAllPermissions() {
+            const checkboxes = document.querySelectorAll('.perm-checkbox');
+            allChecked = !allChecked;
+            checkboxes.forEach(cb => cb.checked = allChecked);
+            document.getElementById('btnToggleAllPerms').innerText = allChecked ? 'Bỏ chọn tất cả' : 'Chọn tất cả';
+        }
+
+        // 4. TÌM KIẾM QUYỀN HẠN NHANH
+        const searchInput = document.getElementById('searchPermInput');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function () {
+                const term = this.value.toLowerCase().trim();
+                const items = document.querySelectorAll('.perm-item-box');
+                items.forEach(item => {
+                    const text = item.innerText.toLowerCase();
+                    item.style.display = text.includes(term) ? 'flex' : 'none';
+                });
+            });
+        }
+    </script>
+}
+

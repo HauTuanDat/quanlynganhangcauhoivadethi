@@ -1,0 +1,784 @@
+@{
+    ViewData["Title"] = "Tổng quan Quản trị - ExamBank";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Tổng quan giao diện Dashboard theo đúng chuẩn hình mẫu */
+    .dashboard-wrapper {
+        padding: 24px 30px;
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Top Search & Profile Bar */
+    .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .search-box {
+        position: relative;
+        width: 340px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 10px 16px 10px 42px;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        font-size: 13.5px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .search-box input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .action-btn-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .action-btn-circle:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+    .user-pill {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 5px 14px 5px 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    /* Hero Campus Banner (Theo đúng ảnh mẫu bạn gửi) */
+    .hero-banner {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        min-height: 340px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: linear-gradient(90deg, rgba(10, 25, 60, 0.90) 0%, rgba(10, 25, 60, 0.68) 38%, rgba(10, 25, 60, 0.25) 75%, rgba(10, 25, 60, 0.10) 100%), 
+                    url('/img/university-campus-banner.jpg') center 28% / cover no-repeat;
+        color: white;
+        padding: 38px 36px 32px 36px;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 25px rgba(10, 25, 60, 0.2);
+    }
+
+    .hero-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 35px;
+    }
+
+    .hero-title-group {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .hero-logo-box {
+        width: 58px;
+        height: 58px;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-title {
+        font-size: 30px;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -0.5px;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-subtitle {
+        font-size: 14.5px;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 4px 0 0 0;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .year-filter-btn {
+        background: rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        color: white;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .year-filter-btn:hover {
+        background: rgba(255, 255, 255, 0.32);
+        color: white;
+    }
+
+    /* 4 Thẻ Thống kê Màu Trắng nổi khối (Chuẩn hình ảnh mẫu) */
+    .stat-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+    }
+
+    .stat-card-white {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        color: #1e293b;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card-white:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .stat-icon.purple { background: #ede9fe; color: #7c3aed; }
+    .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
+    .stat-icon.green { background: #dcfce7; color: #16a34a; }
+    .stat-icon.orange { background: #fef3c7; color: #d97706; }
+
+    .stat-number {
+        font-size: 22px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+    }
+
+    .stat-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 6px;
+        background: #dcfce7;
+        color: #16a34a;
+        margin-left: 6px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 500;
+        margin-top: 3px;
+    }
+
+    /* Common Card Section */
+    .dashboard-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 22px 24px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        border: 1px solid #f1f5f9;
+        margin-bottom: 24px;
+        height: calc(100% - 24px);
+    }
+
+    .card-header-custom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+    }
+
+    .card-header-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-header-title i {
+        font-size: 18px;
+        color: #3b82f6;
+    }
+
+    /* Activity Items */
+    .activity-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 11px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .activity-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .activity-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 2px;
+    }
+
+    .activity-desc {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    .activity-time {
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    /* Quick Notice */
+    .notice-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .notice-item.info { background: #eff6ff; color: #1e40af; }
+    .notice-item.success { background: #f0fdf4; color: #166534; }
+    .notice-item.warning { background: #fffbeb; color: #92400e; }
+
+    .notice-time {
+        margin-left: auto;
+        font-size: 11px;
+        opacity: 0.75;
+        white-space: nowrap;
+    }
+
+    /* Donut Legend */
+    .donut-legend-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 13px;
+    }
+
+    .donut-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+    }
+
+    @@media (max-width: 1200px) {
+        .stat-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .stat-cards-grid {
+            grid-template-columns: 1fr;
+        }
+        .dashboard-wrapper {
+            padding: 16px;
+        }
+    }
+</style>
+
+<div class="dashboard-wrapper">
+
+    <!-- 1. TOP BAR: TÌM KIẾM & PROFILE -->
+    <div class="top-header">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Tìm kiếm đề thi, câu hỏi, tài khoản..." />
+        </div>
+
+        <div class="header-actions">
+            <div class="action-btn-circle" title="Thông báo">
+                <i class="fa-regular fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </div>
+            <div class="action-btn-circle" title="Tạo mới">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+
+            <div class="user-pill">
+                <div class="user-avatar">
+                    @(ViewBag.FullName != null ? ViewBag.FullName.ToString().Substring(0, 1).ToUpper() : "A")
+                </div>
+                <div class="d-none d-sm-block text-start">
+                    <div class="fw-bold small text-dark leading-tight">@(ViewBag.FullName ?? "Quản trị viên")</div>
+                    <div class="text-muted" style="font-size: 11px;">@(ViewBag.Role ?? "Admin")</div>
+                </div>
+                <i class="fa-solid fa-chevron-down text-muted small ms-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. HERO BANNER VỚI ẢNH NỀN KHUÔN VIÊN TRƯỜNG HỌC -->
+    <div class="hero-banner">
+        <div class="hero-top">
+            <div class="hero-title-group">
+                <div class="hero-logo-box">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="hero-title">ExamBank</h1>
+                    <p class="hero-subtitle">Nền tảng quản lý đề thi và ngân hàng câu hỏi hiện đại - Trường ĐH CNTT & TT</p>
+                </div>
+            </div>
+
+            <button class="year-filter-btn">
+                <i class="fa-regular fa-calendar-days"></i>
+                <span>Năm học 2025 - 2026</span>
+                <i class="fa-solid fa-chevron-down ms-1 small"></i>
+            </button>
+        </div>
+
+        <!-- 4 THẺ THỐNG KÊ (STAT CARDS NỀN TRẮNG NỔI KHỐI) -->
+        <div class="stat-cards-grid">
+            <!-- Thẻ 1: Tổng người dùng -->
+            <div class="stat-card-white">
+                <div class="stat-icon purple">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                    <div>
+                        <span class="stat-number">12.850</span>
+                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 8%</span>
+                    </div>
+                    <div class="stat-label">Tổng người sử dụng</div>
+                </div>
+            </div>
+
+            <!-- Thẻ 2: Đang hoạt động -->
+            <div class="stat-card-white">
+                <div class="stat-icon blue">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <div>
+                        <span class="stat-number">8.620</span>
+                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 12%</span>
+                    </div>
+                    <div class="stat-label">Số người đang hoạt động</div>
+                </div>
+            </div>
+
+            <!-- Thẻ 3: Tổng môn học -->
+            <div class="stat-card-white">
+                <div class="stat-icon green">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div>
+                    <div>
+                        <span class="stat-number">24</span>
+                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 5%</span>
+                    </div>
+                    <div class="stat-label">Tổng môn học</div>
+                </div>
+            </div>
+
+            <!-- Thẻ 4: Tổng khoa / Bộ môn -->
+            <div class="stat-card-white">
+                <div class="stat-icon orange">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div>
+                    <div>
+                        <span class="stat-number">15</span>
+                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 3%</span>
+                    </div>
+                    <div class="stat-label">Tổng khoa / Bộ môn</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. HÀNG 2: BIỂU ĐỒ TIẾN ĐỘ & HOẠT ĐỘNG GẦN ĐÂY -->
+    <div class="row g-4 mb-2">
+        <!-- Biểu đồ khối lượng công việc (Line Chart) -->
+        <div class="col-lg-8">
+            <div class="dashboard-card">
+                <div class="card-header-custom">
+                    <div class="card-header-title">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Khối lượng công việc theo trạng thái</span>
+                    </div>
+                    <select class="form-select form-select-sm border-0 bg-light fw-bold text-muted" style="width: auto;">
+                        <option>7 ngày gần đây</option>
+                        <option>30 ngày gần đây</option>
+                        <option>Học kỳ này</option>
+                    </select>
+                </div>
+                <div style="height: 270px;">
+                    <canvas id="workloadChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danh sách hoạt động gần đây -->
+        <div class="col-lg-4">
+            <div class="dashboard-card">
+                <div class="card-header-custom">
+                    <div class="card-header-title">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Hoạt động gần đây</span>
+                    </div>
+                    <a href="#" class="text-primary text-decoration-none small fw-bold">Xem tất cả <i class="fa-solid fa-arrow-right small"></i></a>
+                </div>
+
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-left">
+                            <div class="activity-icon bg-primary bg-opacity-10 text-primary">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+                            <div>
+                                <div class="activity-title">Thêm đề thi mới</div>
+                                <div class="activity-desc">Đề thi giữa kỳ - Toán cao cấp</div>
+                            </div>
+                        </div>
+                        <div class="activity-time">2 phút trước</div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-left">
+                            <div class="activity-icon bg-success bg-opacity-10 text-success">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </div>
+                            <div>
+                                <div class="activity-title">Cập nhật câu hỏi</div>
+                                <div class="activity-desc">Câu 1024 - Môn Cơ sở dữ liệu</div>
+                            </div>
+                        </div>
+                        <div class="activity-time">5 phút trước</div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-left">
+                            <div class="activity-icon bg-info bg-opacity-10 text-info">
+                                <i class="fa-solid fa-user-plus"></i>
+                            </div>
+                            <div>
+                                <div class="activity-title">Thêm người dùng</div>
+                                <div class="activity-desc">Nguyễn Văn A (Sinh viên)</div>
+                            </div>
+                        </div>
+                        <div class="activity-time">10 phút trước</div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-left">
+                            <div class="activity-icon bg-warning bg-opacity-10 text-warning">
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                            <div>
+                                <div class="activity-title">Cập nhật lịch thi</div>
+                                <div class="activity-desc">Thi giữa kỳ - 25/11/2026</div>
+                            </div>
+                        </div>
+                        <div class="activity-time">15 phút trước</div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-left">
+                            <div class="activity-icon bg-danger bg-opacity-10 text-danger">
+                                <i class="fa-solid fa-check-double"></i>
+                            </div>
+                            <div>
+                                <div class="activity-title">Đánh dấu hoàn thành</div>
+                                <div class="activity-desc">Xử lý đơn đăng ký thi</div>
+                            </div>
+                        </div>
+                        <div class="activity-time">20 phút trước</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. HÀNG 3: PHÂN BỔ NGƯỜI DÙNG & THÔNG BÁO NHANH -->
+    <div class="row g-4">
+        <!-- Biểu đồ phân bổ người dùng (Donut Chart) -->
+        <div class="col-lg-5">
+            <div class="dashboard-card">
+                <div class="card-header-custom">
+                    <div class="card-header-title">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Phân bổ người dùng theo yêu cầu</span>
+                    </div>
+                    <select class="form-select form-select-sm border-0 bg-light fw-bold text-muted" style="width: auto;">
+                        <option>Theo vai trò</option>
+                        <option>Theo khoa</option>
+                    </select>
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-6 position-relative" style="height: 180px;">
+                        <canvas id="userDonutChart"></canvas>
+                        <!-- Nhãn số trung tâm Donut -->
+                        <div class="position-absolute top-50 start-50 translate-middle text-center" style="pointer-events: none;">
+                            <div class="fw-bold fs-5 text-dark">12.850</div>
+                            <div class="text-muted" style="font-size: 10px;">Tổng người dùng</div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="donut-legend-item">
+                            <div><span class="donut-dot" style="background: #3b82f6;"></span> Sinh viên</div>
+                            <span class="fw-bold text-dark">68.0%</span>
+                        </div>
+                        <div class="donut-legend-item">
+                            <div><span class="donut-dot" style="background: #8b5cf6;"></span> Giảng viên</div>
+                            <span class="fw-bold text-dark">22.0%</span>
+                        </div>
+                        <div class="donut-legend-item">
+                            <div><span class="donut-dot" style="background: #10b981;"></span> Admin</div>
+                            <span class="fw-bold text-dark">10.0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danh sách thông báo nhanh -->
+        <div class="col-lg-7">
+            <div class="dashboard-card">
+                <div class="card-header-custom">
+                    <div class="card-header-title">
+                        <i class="fa-solid fa-bell"></i>
+                        <span>Thông báo nhanh</span>
+                    </div>
+                    <a href="#" class="text-primary text-decoration-none small fw-bold">Xem tất cả <i class="fa-solid fa-arrow-right small"></i></a>
+                </div>
+
+                <div>
+                    <div class="notice-item info">
+                        <i class="fa-solid fa-circle-info fs-5"></i>
+                        <span>Hệ thống sẽ bảo trì định kỳ vào 22:00 ngày 15/11/2026.</span>
+                        <span class="notice-time">1 giờ trước</span>
+                    </div>
+
+                    <div class="notice-item success">
+                        <i class="fa-solid fa-circle-check fs-5"></i>
+                        <span>Đã cập nhật phiên bản hệ thống v2.1.0 với nhiều tính năng mới.</span>
+                        <span class="notice-time">2 giờ trước</span>
+                    </div>
+
+                    <div class="notice-item warning">
+                        <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                        <span>Có 1 đề thi sắp hết hạn (trong 1 ngày).</span>
+                        <span class="notice-time">3 giờ trước</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- SCRIPT KHỞI TẠO CHART.JS (CHUẨN THEO HÌNH MẪU BẠN GỬI) -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. BIỂU ĐỒ ĐƯỜNG: KHỐI LƯỢNG CÔNG VIỆC THEO TRẠNG THÁI
+        const ctxWorkload = document.getElementById('workloadChart').getContext('2d');
+        new Chart(ctxWorkload, {
+            type: 'line',
+            data: {
+                labels: ['28/10', '29/10', '30/10', '31/10', '01/11', '02/11', '03/11', '04/11'],
+                datasets: [
+                    {
+                        label: 'Chờ xử lý',
+                        data: [470, 610, 750, 670, 740, 870, 890, 920],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#2563eb',
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Đang thực hiện',
+                        data: [370, 420, 510, 460, 520, 650, 680, 710],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.05)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#8b5cf6',
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Đã hoàn thành',
+                        data: [250, 260, 360, 290, 310, 420, 440, 460],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#10b981',
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: { boxWidth: 10, usePointStyle: true }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 1000,
+                        ticks: { stepSize: 250 },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // 2. BIỂU ĐỒ DONUT: PHÂN BỔ NGƯỜI DÙNG
+        const ctxDonut = document.getElementById('userDonutChart').getContext('2d');
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sinh viên', 'Giảng viên', 'Admin'],
+                datasets: [{
+                    data: [68, 22, 10],
+                    backgroundColor: ['#3b82f6', '#8b5cf6', '#10b981'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '72%',
+                plugins: {
+                }
+                    legend: { display: false }
+            }
+        });
+    });
+</script>

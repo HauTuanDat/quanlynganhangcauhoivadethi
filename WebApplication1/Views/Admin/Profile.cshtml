@@ -1,0 +1,1099 @@
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân - ExamBank Admin";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Tổng thể trang Hồ sơ cá nhân */
+    .profile-page-wrapper {
+        padding: 24px 30px;
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Top Search & Profile Bar */
+    .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .top-search-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .btn-menu-toggle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-menu-toggle:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .search-box-top {
+        position: relative;
+        width: 380px;
+    }
+
+    .search-box-top input {
+        width: 100%;
+        padding: 9px 18px 9px 42px;
+        border-radius: 22px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        font-size: 13.5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .search-box-top input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .search-box-top i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .notification-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .notification-btn:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .badge-alert {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+    .user-pill-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 14px 4px 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .user-avatar-top {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .user-avatar-top img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Breadcrumb */
+    .page-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .page-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .page-breadcrumb a:hover {
+        color: #2563eb;
+    }
+
+    /* Page Heading Header */
+    .page-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+    .page-title-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .page-title-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+    }
+
+    .page-title-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .page-subtitle-text {
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 4px 0 0 0;
+    }
+
+    .btn-edit-profile {
+        background: #ffffff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit-profile:hover {
+        background: #eff6ff;
+        border-color: #2563eb;
+        color: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    /* 2-Column Main Layout Grid */
+    .profile-grid-container {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 24px;
+        align-items: start;
+    }
+
+    /* Left Column: Avatar & Summary Card */
+    .left-profile-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .profile-summary-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 1px solid #e2e8f0;
+        padding: 32px 24px 26px 24px;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .avatar-wrapper {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 18px auto;
+        border-radius: 50%;
+        padding: 6px;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    }
+
+    .avatar-wrapper img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #ffffff;
+    }
+
+    .avatar-camera-btn {
+        position: absolute;
+        bottom: 4px;
+        right: 4px;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #2563eb;
+        color: #ffffff;
+        border: 3px solid #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+        transition: all 0.2s;
+    }
+
+    .avatar-camera-btn:hover {
+        background: #1d4ed8;
+        transform: scale(1.08);
+    }
+
+    .profile-user-name {
+        font-size: 22px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 6px;
+    }
+
+    .role-badge-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 14px;
+        border-radius: 20px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 12.5px;
+        font-weight: 700;
+        margin-bottom: 14px;
+    }
+
+    .profile-bio-text {
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.5;
+        margin-bottom: 22px;
+        padding: 0 6px;
+    }
+
+    .profile-contact-list {
+        border-top: 1px solid #f1f5f9;
+        padding-top: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        text-align: left;
+        margin-bottom: 20px;
+    }
+
+    .profile-contact-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+        color: #334155;
+    }
+
+    .contact-icon-box {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        flex-shrink: 0;
+    }
+
+    .contact-date-label {
+        font-size: 11px;
+        color: #94a3b8;
+    }
+
+    .contact-date-val {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    /* Pill Trạng thái */
+    .status-pill-big {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 12.5px;
+        font-weight: 600;
+        background-color: #dcfce7;
+        color: #15803d;
+    }
+
+    .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: currentColor;
+    }
+
+    /* Card Thông tin hệ thống */
+    .system-info-card {
+        background: #f8faff;
+        border-radius: 16px;
+        border: 1px solid #e0e7ff;
+        padding: 20px;
+    }
+
+    .system-info-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #2563eb;
+        margin-bottom: 14px;
+    }
+
+    .system-info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .system-info-row {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .system-info-label {
+        font-size: 11.5px;
+        color: #64748b;
+    }
+
+    .system-info-value {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    /* Right Column: Sections */
+    .right-profile-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .profile-section-card {
+        background: #ffffff;
+        border-radius: 18px;
+        border: 1px solid #e2e8f0;
+        padding: 22px 26px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .section-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 16px;
+        margin-bottom: 18px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .section-card-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .section-card-title i {
+        color: #2563eb;
+        font-size: 18px;
+    }
+
+    .section-view-all-link {
+        font-size: 13px;
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .section-view-all-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Section 1: Thông tin cá nhân Grid */
+    .info-details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 36px;
+        row-gap: 16px;
+    }
+
+    .info-detail-item {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        font-size: 13px;
+    }
+
+    .info-detail-label {
+        color: #64748b;
+        font-weight: 500;
+        width: 105px;
+        flex-shrink: 0;
+    }
+
+    .info-detail-val {
+        color: #0f172a;
+        font-weight: 600;
+        flex: 1;
+    }
+
+    /* Section 2: Bảo mật tài khoản Rows */
+    .security-rows-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .security-row-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 1px solid #f1f5f9;
+    }
+
+    .security-item-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .security-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+    }
+
+    .security-item-title {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.2;
+    }
+
+    .security-item-status-col {
+        font-size: 13px;
+        color: #334155;
+    }
+
+    .btn-security-action {
+        background: #ffffff;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-security-action:hover {
+        background: #f1f5f9;
+        border-color: #94a3b8;
+        color: #0f172a;
+    }
+
+    /* Section 3: Hoạt động gần đây Table */
+    .activity-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 13px;
+    }
+
+    .activity-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 10px 14px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .activity-table tbody td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        vertical-align: middle;
+    }
+
+    .activity-table tbody tr:hover td {
+        background: #f8fafc;
+    }
+
+    .activity-time-cell {
+        font-weight: 600;
+        color: #1e293b;
+        white-space: nowrap;
+    }
+
+    .activity-action-cell {
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .device-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+        color: #475569;
+    }
+
+    .browser-icon-chrome {
+        color: #ea4335;
+    }
+
+    .browser-icon-edge {
+        color: #0078d7;
+    }
+
+    /* Responsive */
+    @@media (max-width: 1024px) {
+        .profile-grid-container {
+            grid-template-columns: 1fr;
+        }
+        .info-details-grid {
+            grid-template-columns: 1fr;
+        }
+        .search-box-top {
+            width: 260px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-title-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .security-row-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+    }
+</style>
+
+<div class="profile-page-wrapper">
+
+    <!-- 1. TOP BAR: TÌM KIẾM & PROFILE -->
+    <div class="top-header">
+        <div class="top-search-group">
+            <button class="btn-menu-toggle" title="Thu gọn menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="search-box-top">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm nhanh... (Ctrl + K)" />
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="notification-btn" title="Thông báo">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-alert">3</span>
+            </div>
+
+            <div class="user-pill-top">
+                <div class="user-avatar-top">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" alt="Admin Avatar" />
+                </div>
+                <div class="d-none d-sm-block text-start">
+                    <div class="fw-bold small text-dark leading-tight">@(ViewBag.FullName ?? "admin")</div>
+                    <div class="text-muted" style="font-size: 11px;">Administrator</div>
+                </div>
+                <i class="fa-solid fa-chevron-down text-muted small ms-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. BREADCRUMB & TIÊU ĐỀ TRANG -->
+    <div class="page-breadcrumb">
+        <i class="fa-solid fa-house-chimney me-1"></i>
+        <a asp-controller="Admin" asp-action="Index">Trang chủ</a>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span class="text-dark fw-semibold">Hồ sơ cá nhân</span>
+    </div>
+
+    <div class="page-title-row">
+        <div class="page-title-group">
+            <div class="page-title-icon">
+                <i class="fa-solid fa-user-gear"></i>
+            </div>
+            <div>
+                <h1 class="page-title-text">Hồ sơ cá nhân</h1>
+                <p class="page-subtitle-text">Quản lý thông tin cá nhân và bảo mật tài khoản</p>
+            </div>
+        </div>
+
+        <button class="btn-edit-profile" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+            <i class="fa-solid fa-pen"></i>
+            <span>Chỉnh sửa thông tin</span>
+        </button>
+    </div>
+
+    <!-- 3. KHU VỰC CHÍNH (2 CỘT) -->
+    <div class="profile-grid-container">
+
+        <!-- CỘT TRÁI: AVATAR, LIÊN HỆ & THÔNG TIN HỆ THỐNG -->
+        <div class="left-profile-column">
+            <!-- Thẻ tóm tắt Profile -->
+            <div class="profile-summary-card">
+                <div class="avatar-wrapper">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=AnNguyenAdmin" alt="Nguyễn Văn An" id="profileAvatarDisplay" />
+                    <button class="avatar-camera-btn" title="Đổi ảnh đại diện" onclick="alert('Chọn ảnh đại diện mới từ máy tính (Demo)');">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
+
+                <div class="profile-user-name">Nguyễn Văn An</div>
+
+                <div>
+                    <span class="role-badge-pill">
+                        <i class="fa-solid fa-crown text-warning"></i> Administrator
+                    </span>
+                </div>
+
+                <p class="profile-bio-text">
+                    Quản trị hệ thống, đảm bảo hoạt động ổn định và hiệu quả cho nhà trường.
+                </p>
+
+                <!-- Thông tin liên hệ -->
+                <div class="profile-contact-list">
+                    <div class="profile-contact-item">
+                        <div class="contact-icon-box">
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+                        <span class="fw-medium">an.nguyen@abc.edu.vn</span>
+                    </div>
+
+                    <div class="profile-contact-item">
+                        <div class="contact-icon-box">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <span class="fw-medium">0987 654 321</span>
+                    </div>
+
+                    <div class="profile-contact-item">
+                        <div class="contact-icon-box">
+                            <i class="fa-regular fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <div class="contact-date-label">Ngày tham gia</div>
+                            <div class="contact-date-val">15/01/2024</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trạng thái -->
+                <div class="pt-2">
+                    <span class="status-pill-big">
+                        <span class="status-dot"></span> Đang hoạt động
+                    </span>
+                </div>
+            </div>
+
+            <!-- Thẻ Thông tin hệ thống -->
+            <div class="system-info-card">
+                <div class="system-info-header">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Thông tin hệ thống</span>
+                </div>
+                <div class="system-info-list">
+                    <div class="system-info-row">
+                        <span class="system-info-label">Lần đăng nhập gần nhất</span>
+                        <span class="system-info-value">10/11/2025 14:30</span>
+                    </div>
+                    <div class="system-info-row">
+                        <span class="system-info-label">Thiết bị đăng nhập</span>
+                        <span class="system-info-value">Windows 11 - Chrome</span>
+                    </div>
+                    <div class="system-info-row">
+                        <span class="system-info-label">Địa chỉ IP</span>
+                        <span class="system-info-value">192.168.1.100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: CHI TIẾT THÔNG TIN, BẢO MẬT & HOẠT ĐỘNG -->
+        <div class="right-profile-column">
+
+            <!-- 1. THẺ THÔNG TIN CÁ NHÂN -->
+            <div class="profile-section-card">
+                <div class="section-card-header">
+                    <h5 class="section-card-title">
+                        <i class="fa-solid fa-user-circle"></i>
+                        <span>Thông tin cá nhân</span>
+                    </h5>
+                </div>
+
+                <div class="info-details-grid">
+                    <div class="info-detail-item">
+                        <span class="info-detail-label">Họ và tên:</span>
+                        <span class="info-detail-val">Nguyễn Văn An</span>
+                    </div>
+                    <div class="info-detail-item">
+                        <span class="info-detail-label">Vai trò:</span>
+                        <span class="info-detail-val">
+                            <span class="role-badge-pill m-0">
+                                <i class="fa-solid fa-crown text-warning"></i> Administrator
+                            </span>
+                        </span>
+                    </div>
+
+                    <div class="info-detail-item">
+                        <span class="info-detail-label">Email:</span>
+                        <span class="info-detail-val">an.nguyen@abc.edu.vn</span>
+                    </div>
+                    <div class="info-detail-item">
+                        <span class="info-detail-label">Đơn vị công tác:</span>
+                        <span class="info-detail-val">Ban Công nghệ thông tin</span>
+                    </div>
+
+                    <div class="info-detail-item">
+                        <span class="info-detail-label">Số điện thoại:</span>
+                        <span class="info-detail-val">0987 654 321</span>
+                    </div>
+                    <div class="info-detail-item">
+                        <span class="info-detail-label">Trạng thái:</span>
+                        <span class="info-detail-val">
+                            <span class="status-pill-big">
+                                <span class="status-dot"></span> Đang hoạt động
+                            </span>
+                        </span>
+                    </div>
+
+                    <div class="info-detail-item">
+                        <span class="info-detail-label">Ngày sinh:</span>
+                        <span class="info-detail-val">01/01/1990</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. THẺ BẢO MẬT TÀI KHOẢN -->
+            <div class="profile-section-card">
+                <div class="section-card-header">
+                    <h5 class="section-card-title">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Bảo mật tài khoản</span>
+                    </h5>
+                </div>
+
+                <div class="security-rows-list">
+                    <!-- Dòng 1: Mật khẩu -->
+                    <div class="security-row-item">
+                        <div class="security-item-left">
+                            <div class="security-icon">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <div class="security-item-title">Mật khẩu</div>
+                        </div>
+
+                        <div class="security-item-status-col fw-bold letter-spacing-1">
+                            •••••••••
+                        </div>
+
+                        <button class="btn-security-action" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            <i class="fa-solid fa-key text-primary"></i>
+                            <span>Đổi mật khẩu</span>
+                        </button>
+                    </div>
+
+                    <!-- Dòng 2: Xác thực 2 lớp (2FA) -->
+                    <div class="security-row-item">
+                        <div class="security-item-left">
+                            <div class="security-icon">
+                                <i class="fa-solid fa-mobile-screen"></i>
+                            </div>
+                            <div class="security-item-title">Xác thực 2 lớp (2FA)</div>
+                        </div>
+
+                        <div class="security-item-status-col">
+                            <span class="status-pill-big">
+                                <span class="status-dot"></span> Đã bật
+                            </span>
+                        </div>
+
+                        <button class="btn-security-action" onclick="alert('Đã gửi yêu cầu cấu hình 2FA (Demo)');">
+                            <i class="fa-solid fa-power-off text-danger"></i>
+                            <span>Tắt 2FA</span>
+                        </button>
+                    </div>
+
+                    <!-- Dòng 3: Thông báo qua email -->
+                    <div class="security-row-item">
+                        <div class="security-item-left">
+                            <div class="security-icon">
+                                <i class="fa-regular fa-envelope"></i>
+                            </div>
+                            <div class="security-item-title">Thông báo qua email</div>
+                        </div>
+
+                        <div class="security-item-status-col">
+                            <span class="status-pill-big">
+                                <span class="status-dot"></span> Đã bật
+                            </span>
+                        </div>
+
+                        <button class="btn-security-action" onclick="alert('Mở bảng cấu hình nhận thông báo email (Demo)');">
+                            <i class="fa-regular fa-bell text-warning"></i>
+                            <span>Cài đặt thông báo</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. THẺ HOẠT ĐỘNG GẦN ĐÂY -->
+            <div class="profile-section-card">
+                <div class="section-card-header">
+                    <h5 class="section-card-title">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Hoạt động gần đây</span>
+                    </h5>
+                    <a href="javascript:void(0);" class="section-view-all-link">
+                        <span>Xem tất cả</span>
+                        <i class="fa-solid fa-arrow-right small"></i>
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>Thời gian</th>
+                                <th>Hành động</th>
+                                <th>Chi tiết</th>
+                                <th>Thiết bị</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="activity-time-cell">10/11/2025 14:30</td>
+                                <td class="activity-action-cell">Đăng nhập</td>
+                                <td>Từ IP: 192.168.1.100</td>
+                                <td>
+                                    <span class="device-badge">
+                                        <i class="fa-brands fa-chrome browser-icon-chrome"></i> Chrome - Windows
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="activity-time-cell">09/11/2025 16:20</td>
+                                <td class="activity-action-cell">Cập nhật thông tin</td>
+                                <td>Thay đổi số điện thoại</td>
+                                <td>
+                                    <span class="device-badge">
+                                        <i class="fa-brands fa-chrome browser-icon-chrome"></i> Chrome - Windows
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="activity-time-cell">08/11/2025 09:15</td>
+                                <td class="activity-action-cell">Phân quyền</td>
+                                <td>Cấp quyền cho Giảng viên</td>
+                                <td>
+                                    <span class="device-badge">
+                                        <i class="fa-brands fa-edge browser-icon-edge"></i> Edge - Windows
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="activity-time-cell">05/11/2025 13:45</td>
+                                <td class="activity-action-cell">Đăng xuất</td>
+                                <td>-</td>
+                                <td>
+                                    <span class="device-badge">
+                                        <i class="fa-brands fa-chrome browser-icon-chrome"></i> Chrome - Windows
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL CHỈNH SỬA THÔNG TIN CÁ NHÂN -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-user-pen"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark m-0" id="editProfileModalLabel">Chỉnh sửa thông tin cá nhân</h5>
+                        <p class="text-muted small m-0">Cập nhật lại thông tin định danh và liên hệ của bạn</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="editProfileForm" onsubmit="event.preventDefault(); alert('Cập nhật thông tin thành công! (Dữ liệu Demo)'); bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Họ và tên <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" value="Nguyễn Văn An" required style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Email liên hệ <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" value="an.nguyen@abc.edu.vn" required style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Số điện thoại</label>
+                            <input type="tel" class="form-control" value="0987 654 321" style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Ngày sinh</label>
+                            <input type="date" class="form-control" value="1990-01-01" style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Đơn vị công tác</label>
+                            <input type="text" class="form-control" value="Ban Công nghệ thông tin" readonly style="border-radius: 10px; padding: 10px 14px; background-color: #f8fafc;" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Vai trò hệ thống</label>
+                            <input type="text" class="form-control" value="Administrator (Quản trị viên)" readonly style="border-radius: 10px; padding: 10px 14px; background-color: #f8fafc;" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark small">Giới thiệu ngắn (Bio)</label>
+                            <textarea class="form-control" rows="2" style="border-radius: 10px; padding: 10px 14px;">Quản trị hệ thống, đảm bảo hoạt động ổn định và hiệu quả cho nhà trường.</textarea>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-primary fw-semibold px-4" style="background: #2563eb; border: none; border-radius: 10px;">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ĐỔI MẬT KHẨU -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark m-0" id="changePasswordModalLabel">Đổi mật khẩu</h5>
+                        <p class="text-muted small m-0">Đảm bảo mật khẩu dài ít nhất 8 ký tự và có ký tự đặc biệt</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="changePasswordForm" onsubmit="event.preventDefault(); alert('Đổi mật khẩu thành công! (Dữ liệu Demo)'); bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Mật khẩu hiện tại <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" placeholder="Nhập mật khẩu hiện tại..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Mật khẩu mới <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" placeholder="Nhập mật khẩu mới..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" placeholder="Nhập lại mật khẩu mới..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Đóng</button>
+                        <button type="submit" class="btn btn-primary fw-semibold px-4" style="background: #2563eb; border: none; border-radius: 10px;">Cập nhật mật khẩu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

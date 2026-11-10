@@ -1,0 +1,1144 @@
+@{
+    ViewData["Title"] = "Quản lý tài khoản - ExamBank Admin";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Tổng thể trang Quản lý tài khoản */
+    .user-management-wrapper {
+        padding: 24px 30px;
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Top Search & Profile Bar */
+    .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+    .search-box-top {
+        position: relative;
+        width: 380px;
+    }
+
+    .search-box-top input {
+        width: 100%;
+        padding: 10px 18px 10px 44px;
+        border-radius: 24px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        font-size: 13.5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .search-box-top input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .search-box-top i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .notification-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .notification-btn:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .badge-alert {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+    .user-pill-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 14px 4px 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .user-avatar-top {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    /* Page Heading Header */
+    .page-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .page-title-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .page-title-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+
+    .page-title-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .page-subtitle-text {
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 3px 0 0 0;
+    }
+
+    .btn-add-account {
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        transition: all 0.2s ease;
+    }
+
+    .btn-add-account:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        color: #ffffff;
+    }
+
+    /* 4 Thẻ Thống kê (KPI Summary Cards) */
+    .kpi-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .kpi-card {
+        border-radius: 16px;
+        padding: 20px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .kpi-card-blue {
+        background: linear-gradient(135deg, #f0f7ff 0%, #e0effe 100%);
+        border-color: #bfdbfe;
+    }
+
+    .kpi-card-green {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border-color: #bbf7d0;
+    }
+
+    .kpi-card-red {
+        background: linear-gradient(135deg, #fff5f5 0%, #fee2e2 100%);
+        border-color: #fecaca;
+    }
+
+    .kpi-card-orange {
+        background: linear-gradient(135deg, #fffcf0 0%, #fef3c7 100%);
+        border-color: #fde68a;
+    }
+
+    .kpi-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        z-index: 1;
+    }
+
+    .kpi-icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .kpi-icon-blue { background: #dbeafe; color: #2563eb; }
+    .kpi-icon-green { background: #16a34a; color: #ffffff; }
+    .kpi-icon-red { background: #ef4444; color: #ffffff; border-radius: 12px; }
+    .kpi-icon-orange { background: #f59e0b; color: #ffffff; }
+
+    .kpi-label {
+        font-size: 13px;
+        color: #475569;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    .kpi-value {
+        font-size: 26px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+    }
+
+    .kpi-subtext {
+        font-size: 11.5px;
+        color: #64748b;
+        margin-top: 4px;
+        font-weight: 500;
+    }
+
+    .kpi-subtext-green {
+        color: #16a34a;
+        font-weight: 700;
+    }
+
+    .kpi-watermark {
+        position: absolute;
+        right: 15px;
+        bottom: 10px;
+        font-size: 60px;
+        opacity: 0.12;
+        pointer-events: none;
+    }
+
+    /* Role Filter Tabs */
+    .role-tabs-wrapper {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+        border: 1px solid #e2e8f0;
+        overflow-x: auto;
+    }
+
+    .role-tab-btn {
+        padding: 8px 18px;
+        border-radius: 10px;
+        border: none;
+        background: transparent;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .role-tab-btn:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .role-tab-btn.active {
+        background: #2563eb;
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    }
+
+    /* Filter Controls Bar */
+    .filter-bar-wrapper {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #e2e8f0;
+        flex-wrap: wrap;
+    }
+
+    .filter-search-box {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .filter-search-box input {
+        width: 100%;
+        padding: 9px 16px 9px 38px;
+        border-radius: 9px;
+        border: 1px solid #e2e8f0;
+        font-size: 13.5px;
+        outline: none;
+        background: #ffffff;
+    }
+
+    .filter-search-box input:focus {
+        border-color: #3b82f6;
+    }
+
+    .filter-search-box i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .filter-select {
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        padding: 9px 14px;
+        font-size: 13.5px;
+        color: #334155;
+        background-color: #ffffff;
+        outline: none;
+        cursor: pointer;
+        min-width: 160px;
+    }
+
+    .btn-filter-advanced {
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        padding: 9px 16px;
+        border-radius: 9px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-filter-advanced:hover {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+    }
+
+    .btn-reload {
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-reload:hover {
+        background: #f8fafc;
+        color: #0f172a;
+    }
+
+    /* Table Styling */
+    .table-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .table-custom {
+        width: 100%;
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-custom th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 14px 18px;
+        border-bottom: 1px solid #e2e8f0;
+        white-space: nowrap;
+    }
+
+    .table-custom td {
+        padding: 14px 18px;
+        font-size: 13.5px;
+        color: #1e293b;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .table-custom tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    /* User Cell */
+    .user-table-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-table-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #e2e8f0;
+    }
+
+    .user-table-name {
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.2;
+    }
+
+    .user-table-email {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    /* Role Badges */
+    .badge-role {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12.5px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-role-admin { background: #f3e8ff; color: #9333ea; }
+    .badge-role-teacher { background: #eff6ff; color: #2563eb; }
+    .badge-role-examoffice { background: #ecfdf5; color: #059669; }
+    .badge-role-headdept { background: #fff7ed; color: #ea580c; }
+
+    /* Status Pills */
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    .status-active { background: #dcfce7; color: #15803d; }
+    .status-pending { background: #ffedd5; color: #c2410c; }
+    .status-locked { background: #fee2e2; color: #b91c1c; }
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .status-active .status-dot { background: #15803d; }
+    .status-pending .status-dot { background: #c2410c; }
+    .status-locked .status-dot { background: #b91c1c; }
+
+    /* Action Buttons */
+    .action-btn-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .table-action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: #f1f5f9;
+        border: none;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .table-action-btn:hover {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    /* Pagination Footer */
+    .table-footer {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #ffffff;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .pagination-custom {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .page-btn {
+        min-width: 34px;
+        height: 34px;
+        padding: 0 8px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .page-btn:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #0f172a;
+    }
+
+    .page-btn.active {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #ffffff;
+    }
+
+    @@media (max-width: 1200px) {
+        .kpi-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .kpi-cards-grid {
+            grid-template-columns: 1fr;
+        }
+        .user-management-wrapper {
+            padding: 16px;
+        }
+    }
+</style>
+
+<div class="user-management-wrapper">
+
+    <!-- 1. TOP BAR: TÌM KIẾM & PROFILE -->
+    <div class="top-header">
+        <div class="search-box-top">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Tìm kiếm tài khoản theo tên, email, mã tài khoản..." />
+        </div>
+
+        <div class="header-actions">
+            <div class="notification-btn" title="Thông báo">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-alert">3</span>
+            </div>
+
+            <div class="user-pill-top">
+                <div class="user-avatar-top">
+                    @(ViewBag.FullName != null ? ViewBag.FullName.ToString().Substring(0, 1).ToUpper() : "A")
+                </div>
+                <div class="d-none d-sm-block text-start">
+                    <div class="fw-bold small text-dark leading-tight">@(ViewBag.FullName ?? "admin")</div>
+                    <div class="text-muted" style="font-size: 11px;">Administrator</div>
+                </div>
+                <i class="fa-solid fa-chevron-down text-muted small ms-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. TIÊU ĐỀ TRANG & NÚT THÊM TÀI KHOẢN -->
+    <div class="page-title-row">
+        <div class="page-title-group">
+            <div class="page-title-icon">
+                <i class="fa-solid fa-house-chimney"></i>
+            </div>
+            <div>
+                <h1 class="page-title-text">Quản lý tài khoản</h1>
+                <p class="page-subtitle-text">Quản lý, theo dõi và kiểm soát tài khoản người dùng trong hệ thống</p>
+            </div>
+        </div>
+
+        <button class="btn-add-account" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            <i class="fa-solid fa-plus"></i>
+            <span>Thêm tài khoản</span>
+        </button>
+    </div>
+
+    <!-- 3. 4 THẺ THỐNG KÊ (KPI SUMMARY CARDS) -->
+    <div class="kpi-cards-grid">
+        <!-- Thẻ 1: Tổng tài khoản -->
+        <div class="kpi-card kpi-card-blue">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-blue">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Tổng tài khoản</div>
+                    <div class="kpi-value">1.280</div>
+                    <div class="kpi-subtext"><span class="kpi-subtext-green">↑ +15</span> so với tháng trước</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-users kpi-watermark text-primary"></i>
+        </div>
+
+        <!-- Thẻ 2: Đang hoạt động -->
+        <div class="kpi-card kpi-card-green">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-green">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Đang hoạt động</div>
+                    <div class="kpi-value">1.210</div>
+                    <div class="kpi-subtext">94,5% tổng tài khoản</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chart-simple kpi-watermark text-success"></i>
+        </div>
+
+        <!-- Thẻ 3: Đã khóa -->
+        <div class="kpi-card kpi-card-red">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-red">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Đã khóa</div>
+                    <div class="kpi-value">40</div>
+                    <div class="kpi-subtext">3,1% tổng tài khoản</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-lock kpi-watermark text-danger"></i>
+        </div>
+
+        <!-- Thẻ 4: Chờ kích hoạt -->
+        <div class="kpi-card kpi-card-orange">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-orange">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Chờ kích hoạt</div>
+                    <div class="kpi-value">30</div>
+                    <div class="kpi-subtext">2,3% tổng tài khoản</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-clock kpi-watermark text-warning"></i>
+        </div>
+    </div>
+
+    <!-- 4. THANH CHUYỂN TAB VAI TRÒ (ROLE TABS) -->
+    <div class="role-tabs-wrapper">
+        <a href="#" class="role-tab-btn active">
+            <i class="fa-solid fa-users"></i>
+            <span>Tất cả (1.280)</span>
+        </a>
+        <a href="#" class="role-tab-btn">
+            <i class="fa-solid fa-crown text-warning"></i>
+            <span>Admin (120)</span>
+        </a>
+        <a href="#" class="role-tab-btn">
+            <i class="fa-solid fa-graduation-cap text-primary"></i>
+            <span>Giảng viên (850)</span>
+        </a>
+        <a href="#" class="role-tab-btn">
+            <i class="fa-solid fa-clipboard-check text-success"></i>
+            <span>Phòng khảo thí (180)</span>
+        </a>
+        <a href="#" class="role-tab-btn">
+            <i class="fa-solid fa-user-tie text-info"></i>
+            <span>Trưởng bộ môn (130)</span>
+        </a>
+    </div>
+
+    <!-- 5. BỘ LỌC DỮ LIỆU & TÌM KIẾM (FILTER CONTROLS) -->
+    <div class="filter-bar-wrapper">
+        <div class="filter-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Nhập tên, email, mã tài khoản..." />
+        </div>
+
+        <select class="filter-select">
+            <option>Tất cả vai trò</option>
+            <option>Admin</option>
+            <option>Giảng viên</option>
+            <option>Phòng khảo thí</option>
+            <option>Trưởng bộ môn</option>
+        </select>
+
+        <select class="filter-select">
+            <option>Tất cả trạng thái</option>
+            <option>Hoạt động</option>
+            <option>Chờ kích hoạt</option>
+            <option>Đã khóa</option>
+        </select>
+
+        <select class="filter-select">
+            <option>Tất cả khoa / bộ môn</option>
+            <option>Phòng CNTT</option>
+            <option>Khoa Công nghệ</option>
+            <option>Phòng Khảo thí</option>
+            <option>Khoa Sư phạm</option>
+            <option>Khoa Kinh tế</option>
+        </select>
+
+        <button class="btn-filter-advanced">
+            <i class="fa-solid fa-filter"></i>
+            <span>Lọc nâng cao</span>
+            <i class="fa-solid fa-chevron-down small"></i>
+        </button>
+
+        <button class="btn-reload" title="Tải lại">
+            <i class="fa-solid fa-rotate-right"></i>
+        </button>
+    </div>
+
+    <!-- 6. BẢNG DANH SÁCH TÀI KHOẢN (DATA TABLE) -->
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">
+                            <input type="checkbox" class="form-check-input" />
+                        </th>
+                        <th style="width: 50px;">STT</th>
+                        <th>Thông tin tài khoản</th>
+                        <th>Vai trò</th>
+                        <th>Khoa / Bộ môn</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th class="text-center" style="width: 120px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dòng 1: Nguyễn Văn An -->
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input" /></td>
+                        <td class="fw-bold text-muted">1</td>
+                        <td>
+                            <div class="user-table-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=An" alt="Avatar" class="user-table-avatar" />
+                                <div>
+                                    <div class="user-table-name">Nguyễn Văn An</div>
+                                    <div class="user-table-email">an.nguyen@abc.edu.vn</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-role badge-role-admin">
+                                <i class="fa-solid fa-crown text-purple"></i> Admin
+                            </span>
+                        </td>
+                        <td class="fw-medium text-dark">Phòng CNTT</td>
+                        <td>
+                            <span class="status-pill status-active">
+                                <span class="status-dot"></span> Hoạt động
+                            </span>
+                        </td>
+                        <td class="text-muted">15/10/2025 09:24</td>
+                        <td>
+                            <div class="action-btn-group justify-content-center">
+                                <button class="table-action-btn" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                <button class="table-action-btn" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                <button class="table-action-btn" title="Tùy chọn khác"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Dòng 2: Trần Thị Mai -->
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input" /></td>
+                        <td class="fw-bold text-muted">2</td>
+                        <td>
+                            <div class="user-table-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mai" alt="Avatar" class="user-table-avatar" />
+                                <div>
+                                    <div class="user-table-name">Trần Thị Mai</div>
+                                    <div class="user-table-email">mai.tran@abc.edu.vn</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-role badge-role-teacher">
+                                <i class="fa-solid fa-graduation-cap"></i> Giảng viên
+                            </span>
+                        </td>
+                        <td class="fw-medium text-dark">Khoa Công nghệ</td>
+                        <td>
+                            <span class="status-pill status-active">
+                                <span class="status-dot"></span> Hoạt động
+                            </span>
+                        </td>
+                        <td class="text-muted">12/10/2025 14:37</td>
+                        <td>
+                            <div class="action-btn-group justify-content-center">
+                                <button class="table-action-btn" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                <button class="table-action-btn" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                <button class="table-action-btn" title="Tùy chọn khác"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Dòng 3: Lê Văn Bình -->
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input" /></td>
+                        <td class="fw-bold text-muted">3</td>
+                        <td>
+                            <div class="user-table-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Binh" alt="Avatar" class="user-table-avatar" />
+                                <div>
+                                    <div class="user-table-name">Lê Văn Bình</div>
+                                    <div class="user-table-email">binh.le@abc.edu.vn</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-role badge-role-examoffice">
+                                <i class="fa-solid fa-clipboard-check"></i> Phòng khảo thí
+                            </span>
+                        </td>
+                        <td class="fw-medium text-dark">Phòng Khảo thí</td>
+                        <td>
+                            <span class="status-pill status-pending">
+                                <span class="status-dot"></span> Chờ kích hoạt
+                            </span>
+                        </td>
+                        <td class="text-muted">10/10/2025 16:20</td>
+                        <td>
+                            <div class="action-btn-group justify-content-center">
+                                <button class="table-action-btn" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                <button class="table-action-btn" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                <button class="table-action-btn" title="Tùy chọn khác"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Dòng 4: Phạm Thị Dung -->
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input" /></td>
+                        <td class="fw-bold text-muted">4</td>
+                        <td>
+                            <div class="user-table-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Dung" alt="Avatar" class="user-table-avatar" />
+                                <div>
+                                    <div class="user-table-name">Phạm Thị Dung</div>
+                                    <div class="user-table-email">dung.pham@abc.edu.vn</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-role badge-role-headdept">
+                                <i class="fa-solid fa-user-tie"></i> Trưởng bộ môn
+                            </span>
+                        </td>
+                        <td class="fw-medium text-dark">Khoa Sư phạm</td>
+                        <td>
+                            <span class="status-pill status-active">
+                                <span class="status-dot"></span> Hoạt động
+                            </span>
+                        </td>
+                        <td class="text-muted">08/10/2025 11:15</td>
+                        <td>
+                            <div class="action-btn-group justify-content-center">
+                                <button class="table-action-btn" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                <button class="table-action-btn" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                <button class="table-action-btn" title="Tùy chọn khác"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Dòng 5: Hoàng Minh Tuấn -->
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input" /></td>
+                        <td class="fw-bold text-muted">5</td>
+                        <td>
+                            <div class="user-table-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tuan" alt="Avatar" class="user-table-avatar" />
+                                <div>
+                                    <div class="user-table-name">Hoàng Minh Tuấn</div>
+                                    <div class="user-table-email">tuan.hoang@abc.edu.vn</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-role badge-role-teacher">
+                                <i class="fa-solid fa-graduation-cap"></i> Giảng viên
+                            </span>
+                        </td>
+                        <td class="fw-medium text-dark">Khoa Công nghệ</td>
+                        <td>
+                            <span class="status-pill status-locked">
+                                <span class="status-dot"></span> Đã khóa
+                            </span>
+                        </td>
+                        <td class="text-muted">05/10/2025 10:30</td>
+                        <td>
+                            <div class="action-btn-group justify-content-center">
+                                <button class="table-action-btn" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                <button class="table-action-btn" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                <button class="table-action-btn" title="Tùy chọn khác"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Dòng 6: Đỗ Thị Hương -->
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input" /></td>
+                        <td class="fw-bold text-muted">6</td>
+                        <td>
+                            <div class="user-table-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Huong" alt="Avatar" class="user-table-avatar" />
+                                <div>
+                                    <div class="user-table-name">Đỗ Thị Hương</div>
+                                    <div class="user-table-email">huong.do@abc.edu.vn</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-role badge-role-headdept">
+                                <i class="fa-solid fa-user-tie"></i> Trưởng bộ môn
+                            </span>
+                        </td>
+                        <td class="fw-medium text-dark">Khoa Kinh tế</td>
+                        <td>
+                            <span class="status-pill status-active">
+                                <span class="status-dot"></span> Hoạt động
+                            </span>
+                        </td>
+                        <td class="text-muted">03/10/2025 15:45</td>
+                        <td>
+                            <div class="action-btn-group justify-content-center">
+                                <button class="table-action-btn" title="Xem chi tiết"><i class="fa-regular fa-eye"></i></button>
+                                <button class="table-action-btn" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                                <button class="table-action-btn" title="Tùy chọn khác"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 7. PHÂN TRANG (PAGINATION) -->
+        <div class="table-footer">
+            <div>
+                Hiển thị <strong>1 – 6</strong> trong tổng số <strong>1.280</strong> tài khoản
+            </div>
+
+            <ul class="pagination-custom">
+                <li><a href="#" class="page-btn"><i class="fa-solid fa-angles-left small"></i></a></li>
+                <li><a href="#" class="page-btn"><i class="fa-solid fa-chevron-left small"></i></a></li>
+                <li><a href="#" class="page-btn active">1</a></li>
+                <li><a href="#" class="page-btn">2</a></li>
+                <li><a href="#" class="page-btn">3</a></li>
+                <li><span class="px-2 text-muted">...</span></li>
+                <li><a href="#" class="page-btn">213</a></li>
+                <li><a href="#" class="page-btn"><i class="fa-solid fa-chevron-right small"></i></a></li>
+                <li><a href="#" class="page-btn"><i class="fa-solid fa-angles-right small"></i></a></li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL THÊM TÀI KHOẢN MỚI (MOCKUP UI) -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark m-0" id="addUserModalLabel">Thêm tài khoản mới</h5>
+                        <p class="text-muted small m-0">Tạo tài khoản và phân quyền người dùng trong hệ thống</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addUserForm" onsubmit="event.preventDefault(); alert('Thêm tài khoản thành công! (Dữ liệu Demo)'); bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Họ và tên <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" placeholder="Nhập họ và tên..." required style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Email đăng nhập <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" placeholder="example@abc.edu.vn" required style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Vai trò <span class="text-danger">*</span></label>
+                            <select class="form-select" required style="border-radius: 10px; padding: 10px 14px;">
+                                <option value="" selected disabled>-- Chọn vai trò --</option>
+                                <option value="Admin">Admin (Quản trị viên)</option>
+                                <option value="GiangVien">Giảng viên</option>
+                                <option value="PhongKhaoThi">Phòng khảo thí</option>
+                                <option value="TruongBoMon">Trưởng bộ môn</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Khoa / Bộ môn</label>
+                            <select class="form-select" style="border-radius: 10px; padding: 10px 14px;">
+                                <option value="" selected>-- Chọn khoa / bộ môn --</option>
+                                <option value="CNTT">Phòng CNTT</option>
+                                <option value="CN">Khoa Công nghệ</option>
+                                <option value="KT">Khoa Kinh tế</option>
+                                <option value="SP">Khoa Sư phạm</option>
+                                <option value="KT">Phòng Khảo thí</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Mật khẩu khởi tạo</label>
+                            <input type="password" class="form-control" value="Abc@123456" style="border-radius: 10px; padding: 10px 14px;" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark small">Trạng thái ban đầu</label>
+                            <select class="form-select" style="border-radius: 10px; padding: 10px 14px;">
+                                <option value="Active" selected>Hoạt động</option>
+                                <option value="Pending">Chờ kích hoạt</option>
+                                <option value="Locked">Đã khóa</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-primary fw-semibold px-4" style="background: #2563eb; border: none; border-radius: 10px;">Lưu tài khoản</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Checkbox Chọn tất cả
+            const checkAll = document.getElementById('selectAllRows');
+            const rowCheckboxes = document.querySelectorAll('.user-table tbody input[type="checkbox"]');
+            if (checkAll) {
+                checkAll.addEventListener('change', function () {
+                    rowCheckboxes.forEach(cb => cb.checked = checkAll.checked);
+                });
+            }
+
+            // Chuyển Tab vai trò
+            const tabButtons = document.querySelectorAll('.role-tab-btn');
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    tabButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Tìm kiếm nhanh bảng
+            const searchInput = document.querySelector('.search-input-group input');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function () {
+                    const term = this.value.toLowerCase().trim();
+                    const rows = document.querySelectorAll('.user-table tbody tr');
+                    rows.forEach(r => {
+                        const text = r.innerText.toLowerCase();
+                        r.style.display = text.includes(term) ? '' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
+}

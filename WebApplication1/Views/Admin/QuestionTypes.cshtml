@@ -1,0 +1,655 @@
+@{
+    ViewData["Title"] = "Loại câu hỏi & Độ khó - ExamBank Admin";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Tổng thể trang Loại câu hỏi & Độ khó */
+    .qtype-page-wrapper {
+        padding: 24px 30px;
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Top Search & Profile Bar */
+    .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .top-search-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .btn-menu-toggle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-menu-toggle:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .search-box-top {
+        position: relative;
+        width: 380px;
+    }
+
+    .search-box-top input {
+        width: 100%;
+        padding: 9px 18px 9px 42px;
+        border-radius: 22px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        font-size: 13.5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .search-box-top input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .search-box-top i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .notification-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .notification-btn:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .badge-alert {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+    .user-pill-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 14px 4px 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .user-avatar-top {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .user-avatar-top img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Breadcrumb */
+    .page-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .page-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .page-breadcrumb a:hover {
+        color: #2563eb;
+    }
+
+    /* Page Heading Header */
+    .page-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .page-title-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .page-title-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+    }
+
+    .page-title-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .page-subtitle-text {
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 4px 0 0 0;
+    }
+
+    .btn-add-primary {
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn-add-primary:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        color: #ffffff;
+    }
+
+    /* 4 Thang Độ Khó Bloom Grid */
+    .bloom-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .bloom-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .bloom-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+    }
+
+    .bloom-badge {
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .bloom-nb { background: #dcfce7; color: #15803d; }
+    .bloom-th { background: #e0f2fe; color: #0369a1; }
+    .bloom-vd { background: #fef3c7; color: #b45309; }
+    .bloom-vdc { background: #fee2e2; color: #b91c1c; }
+
+    .bloom-title {
+        font-size: 16px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 4px;
+    }
+
+    .bloom-desc {
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.4;
+        margin-bottom: 14px;
+        min-height: 34px;
+    }
+
+    .bloom-meta-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12.5px;
+        padding-top: 10px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    /* Bảng Loại Hình Câu Hỏi */
+    .qtype-table-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .qtype-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+    }
+
+    .qtype-card-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 13px;
+    }
+
+    .custom-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 14px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .custom-table tbody td {
+        padding: 13px 14px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        vertical-align: middle;
+    }
+
+    .custom-table tbody tr:hover td {
+        background: #f8fafc;
+    }
+
+    .qtype-icon-box {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+    }
+
+    /* Responsive */
+    @@media (max-width: 1200px) {
+        .bloom-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .bloom-cards-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="qtype-page-wrapper">
+
+    <!-- 1. TOP BAR: TÌM KIẾM & PROFILE -->
+    <div class="top-header">
+        <div class="top-search-group">
+            <button class="btn-menu-toggle" title="Thu gọn menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="search-box-top">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm loại câu hỏi, thang đo..." />
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="notification-btn" title="Thông báo">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-alert">3</span>
+            </div>
+
+            <div class="user-pill-top">
+                <div class="user-avatar-top">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" alt="Admin Avatar" />
+                </div>
+                <div class="d-none d-sm-block text-start">
+                    <div class="fw-bold small text-dark leading-tight">@(ViewBag.FullName ?? "admin")</div>
+                    <div class="text-muted" style="font-size: 11px;">Administrator</div>
+                </div>
+                <i class="fa-solid fa-chevron-down text-muted small ms-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. BREADCRUMB & TIÊU ĐỀ TRANG -->
+    <div class="page-breadcrumb">
+        <i class="fa-solid fa-house-chimney me-1"></i>
+        <a asp-controller="Admin" asp-action="Index">Trang chủ</a>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span>Quản lý danh mục</span>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span class="text-dark fw-semibold">Loại câu hỏi & độ khó</span>
+    </div>
+
+    <div class="page-title-row">
+        <div class="page-title-group">
+            <div class="page-title-icon">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div>
+                <h1 class="page-title-text">Loại câu hỏi & độ khó</h1>
+                <p class="page-subtitle-text">Chuẩn hóa hình thức câu hỏi thi và thang đo mức độ nhận thức (Bloom Taxonomy) cho ngân hàng câu hỏi</p>
+            </div>
+        </div>
+
+        <button class="btn-add-primary" data-bs-toggle="modal" data-bs-target="#addQTypeModal">
+            <i class="fa-solid fa-plus"></i>
+            <span>Thêm Loại câu hỏi</span>
+        </button>
+    </div>
+
+    <!-- 3. BỐN MỨC ĐỘ NHẬN THỨC THEO THANG BLOOM -->
+    <div class="bloom-cards-grid">
+        <!-- 1. NHẬN BIẾT -->
+        <div class="bloom-card">
+            <div class="bloom-card-header">
+                <span class="bloom-badge bloom-nb">Mức 1</span>
+                <span class="text-muted small fw-semibold">40% ngân hàng</span>
+            </div>
+            <div class="bloom-title">Nhận biết (Recall)</div>
+            <div class="bloom-desc">Ghi nhớ định nghĩa, khái niệm, thuật ngữ và sự kiện cơ bản không cần giải thích.</div>
+            <div class="bloom-meta-row">
+                <span>Điểm chuẩn: <strong>0.25đ</strong></span>
+                <span>Thời gian: <strong>45s</strong></span>
+                <span class="text-success fw-bold">5.016 câu</span>
+            </div>
+        </div>
+
+        <!-- 2. THÔNG HIỂU -->
+        <div class="bloom-card">
+            <div class="bloom-card-header">
+                <span class="bloom-badge bloom-th">Mức 2</span>
+                <span class="text-muted small fw-semibold">35% ngân hàng</span>
+            </div>
+            <div class="bloom-title">Thông hiểu (Understand)</div>
+            <div class="bloom-desc">Giải thích ý nghĩa, so sánh, phân biệt và tóm tắt bản chất vấn đề.</div>
+            <div class="bloom-meta-row">
+                <span>Điểm chuẩn: <strong>0.25đ</strong></span>
+                <span>Thời gian: <strong>60s</strong></span>
+                <span class="text-primary fw-bold">4.389 câu</span>
+            </div>
+        </div>
+
+        <!-- 3. VẬN DỤNG -->
+        <div class="bloom-card">
+            <div class="bloom-card-header">
+                <span class="bloom-badge bloom-vd">Mức 3</span>
+                <span class="text-muted small fw-semibold">20% ngân hàng</span>
+            </div>
+            <div class="bloom-title">Vận dụng (Apply)</div>
+            <div class="bloom-desc">Vận dụng lý thuyết vào giải quyết tình huống quen thuộc, tính toán có công thức.</div>
+            <div class="bloom-meta-row">
+                <span>Điểm chuẩn: <strong>0.5đ</strong></span>
+                <span>Thời gian: <strong>90s</strong></span>
+                <span class="text-warning fw-bold">2.508 câu</span>
+            </div>
+        </div>
+
+        <!-- 4. VẬN DỤNG CAO -->
+        <div class="bloom-card">
+            <div class="bloom-card-header">
+                <span class="bloom-badge bloom-vdc">Mức 4</span>
+                <span class="text-muted small fw-semibold">5% ngân hàng</span>
+            </div>
+            <div class="bloom-title">Vận dụng cao (Analyze)</div>
+            <div class="bloom-desc">Phân tích bài toán phức tạp, thiết kế giải thuật và đánh giá giải pháp mới.</div>
+            <div class="bloom-meta-row">
+                <span>Điểm chuẩn: <strong>1.0đ</strong></span>
+                <span>Thời gian: <strong>150s</strong></span>
+                <span class="text-danger fw-bold">627 câu</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. BẢNG DANH MỤC CÁC LOẠI HÌNH CÂU HỎI -->
+    <div class="qtype-table-card">
+        <div class="qtype-card-header">
+            <h5 class="qtype-card-title">Hình thức câu hỏi thi được hỗ trợ trong hệ thống (8 loại)</h5>
+            <span class="small text-muted">Có thể bật/tắt hoặc điều chỉnh cho các kỳ thi trực tuyến và thi trên giấy</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">Icon</th>
+                        <th>Tên hình thức câu hỏi</th>
+                        <th>Mã loại</th>
+                        <th>Chấm tự động</th>
+                        <th>Đảo phương án</th>
+                        <th>Đính kèm Media</th>
+                        <th>Số lượng hiện có</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="qtype-icon-box"><i class="fa-regular fa-circle-dot"></i></div>
+                        </td>
+                        <td class="fw-bold text-dark">Trắc nghiệm 1 đáp án đúng (Single Choice)</td>
+                        <td><code>SINGLE_CHOICE</code></td>
+                        <td><span class="badge bg-success-subtle text-success">Có</span></td>
+                        <td><span class="badge bg-primary-subtle text-primary">Hỗ trợ</span></td>
+                        <td>Ảnh, Âm thanh, LaTeX</td>
+                        <td class="fw-bold">8.420 câu</td>
+                        <td><span class="badge bg-success">Đang dùng</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light text-primary" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="qtype-icon-box"><i class="fa-regular fa-square-check"></i></div>
+                        </td>
+                        <td class="fw-bold text-dark">Trắc nghiệm nhiều đáp án đúng (Multiple Choice)</td>
+                        <td><code>MULTI_CHOICE</code></td>
+                        <td><span class="badge bg-success-subtle text-success">Có</span></td>
+                        <td><span class="badge bg-primary-subtle text-primary">Hỗ trợ</span></td>
+                        <td>Ảnh, LaTeX</td>
+                        <td class="fw-bold">1.850 câu</td>
+                        <td><span class="badge bg-success">Đang dùng</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light text-primary" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="qtype-icon-box"><i class="fa-solid fa-toggle-on"></i></div>
+                        </td>
+                        <td class="fw-bold text-dark">Đúng / Sai (True / False)</td>
+                        <td><code>TRUE_FALSE</code></td>
+                        <td><span class="badge bg-success-subtle text-success">Có</span></td>
+                        <td><span class="badge bg-secondary-subtle text-secondary">Không</span></td>
+                        <td>Ảnh</td>
+                        <td class="fw-bold">940 câu</td>
+                        <td><span class="badge bg-success">Đang dùng</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light text-primary" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="qtype-icon-box"><i class="fa-solid fa-pen-nib"></i></div>
+                        </td>
+                        <td class="fw-bold text-dark">Điền vào chỗ trống (Fill-in-the-blank)</td>
+                        <td><code>FILL_BLANK</code></td>
+                        <td><span class="badge bg-success-subtle text-success">Có (Từ khóa)</span></td>
+                        <td><span class="badge bg-secondary-subtle text-secondary">Không</span></td>
+                        <td>Văn bản</td>
+                        <td class="fw-bold">530 câu</td>
+                        <td><span class="badge bg-success">Đang dùng</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light text-primary" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="qtype-icon-box"><i class="fa-solid fa-arrows-split-up-and-left"></i></div>
+                        </td>
+                        <td class="fw-bold text-dark">Ghép đôi (Matching)</td>
+                        <td><code>MATCHING</code></td>
+                        <td><span class="badge bg-success-subtle text-success">Có</span></td>
+                        <td><span class="badge bg-primary-subtle text-primary">Hỗ trợ</span></td>
+                        <td>Ảnh, Chữ</td>
+                        <td class="fw-bold">320 câu</td>
+                        <td><span class="badge bg-success">Đang dùng</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light text-primary" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="qtype-icon-box"><i class="fa-solid fa-file-signature"></i></div>
+                        </td>
+                        <td class="fw-bold text-dark">Tự luận tự do (Essay)</td>
+                        <td><code>ESSAY</code></td>
+                        <td><span class="badge bg-warning-subtle text-warning-emphasis">Chấm tay</span></td>
+                        <td><span class="badge bg-secondary-subtle text-secondary">Không</span></td>
+                        <td>Đính kèm file, LaTeX</td>
+                        <td class="fw-bold">480 câu</td>
+                        <td><span class="badge bg-success">Đang dùng</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light text-primary" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL THÊM LOẠI CÂU HỎI MỚI -->
+<div class="modal fade" id="addQTypeModal" tabindex="-1" aria-labelledby="addQTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark m-0" id="addQTypeModalLabel">Thêm Hình thức câu hỏi mới</h5>
+                        <p class="text-muted small m-0">Đăng ký thêm format câu hỏi thi vào hệ thống</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addQTypeForm" onsubmit="event.preventDefault(); alert('Thêm hình thức câu hỏi mới thành công! (Dữ liệu Demo)'); bootstrap.Modal.getInstance(document.getElementById('addQTypeModal')).hide();">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Tên hình thức câu hỏi <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="VD: Câu hỏi chọn đáp án âm thanh (Audio Choice)..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Mã loại định danh <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="VD: AUDIO_CHOICE..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="autoGradeCheck" checked>
+                            <label class="form-check-label fw-semibold small" for="autoGradeCheck">Hỗ trợ chấm điểm tự động</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="shuffleCheck" checked>
+                            <label class="form-check-label fw-semibold small" for="shuffleCheck">Hỗ trợ hoán vị (đảo thứ tự phương án)</label>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Hủy</button>
+                        <button type="submit" class="btn btn-primary fw-semibold px-4" style="background: #2563eb; border: none; border-radius: 10px;">Lưu loại câu hỏi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

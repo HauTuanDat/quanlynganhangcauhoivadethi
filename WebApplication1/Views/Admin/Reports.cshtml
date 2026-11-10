@@ -1,0 +1,757 @@
+@{
+    ViewData["Title"] = "Báo cáo & Thống kê - ExamBank Admin";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Tổng thể trang Báo cáo & Thống kê */
+    .reports-page-wrapper {
+        padding: 24px 30px;
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Top Search & Profile Bar */
+    .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .top-search-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .btn-menu-toggle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-menu-toggle:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .search-box-top {
+        position: relative;
+        width: 380px;
+    }
+
+    .search-box-top input {
+        width: 100%;
+        padding: 9px 18px 9px 42px;
+        border-radius: 22px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        font-size: 13.5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .search-box-top input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .search-box-top i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .notification-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .notification-btn:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .badge-alert {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+    .user-pill-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 14px 4px 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .user-avatar-top {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .user-avatar-top img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Breadcrumb */
+    .page-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .page-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .page-breadcrumb a:hover {
+        color: #2563eb;
+    }
+
+    /* Page Heading Header */
+    .page-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .page-title-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .page-title-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+    }
+
+    .page-title-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .page-subtitle-text {
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 4px 0 0 0;
+    }
+
+    .header-actions-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-export-pdf {
+        background: #ffffff;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn-export-pdf:hover {
+        background: #fee2e2;
+    }
+
+    .btn-export-excel {
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn-export-excel:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        color: #ffffff;
+    }
+
+    /* 4 Thẻ Thống kê KPI */
+    .kpi-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .kpi-card {
+        border-radius: 16px;
+        padding: 20px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
+        transition: transform 0.2s ease;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .kpi-card-blue { background: linear-gradient(135deg, #f0f7ff 0%, #e0effe 100%); border-color: #bfdbfe; }
+    .kpi-card-green { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-color: #bbf7d0; }
+    .kpi-card-purple { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-color: #e9d5ff; }
+    .kpi-card-orange { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-color: #fde68a; }
+
+    .kpi-info { display: flex; align-items: center; gap: 16px; z-index: 1; }
+    .kpi-icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+    .kpi-icon-blue { background: #dbeafe; color: #2563eb; }
+    .kpi-icon-green { background: #16a34a; color: #ffffff; }
+    .kpi-icon-purple { background: #9333ea; color: #ffffff; }
+    .kpi-icon-orange { background: #f59e0b; color: #ffffff; }
+
+    .kpi-label { font-size: 13px; color: #475569; font-weight: 600; margin-bottom: 2px; }
+    .kpi-value { font-size: 26px; font-weight: 800; color: #0f172a; line-height: 1.1; }
+    .kpi-subtext { font-size: 11.5px; color: #64748b; margin-top: 4px; font-weight: 500; }
+    .kpi-watermark { position: absolute; right: 15px; bottom: 8px; font-size: 58px; opacity: 0.12; pointer-events: none; }
+
+    /* Filter Bar */
+    .filter-card {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 14px 18px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .custom-select {
+        padding: 8px 32px 8px 14px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 13px;
+        color: #1e293b;
+        background-color: #f8fafc;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px 10px;
+    }
+
+    /* 2 Charts Grid */
+    .charts-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .chart-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 22px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .chart-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+    }
+
+    .chart-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .chart-title i {
+        color: #2563eb;
+    }
+
+    /* Tables Grid */
+    .reports-table-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 22px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 13px;
+    }
+
+    .custom-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .custom-table tbody td {
+        padding: 13px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        vertical-align: middle;
+    }
+
+    .custom-table tbody tr:hover td {
+        background: #f8fafc;
+    }
+
+    /* Responsive */
+    @@media (max-width: 1024px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+        .kpi-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+
+<div class="reports-page-wrapper">
+
+    <!-- 1. TOP BAR: TÌM KIẾM & PROFILE -->
+    <div class="top-header">
+        <div class="top-search-group">
+            <button class="btn-menu-toggle" title="Thu gọn menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="search-box-top">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm báo cáo thống kê kỳ thi..." />
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="notification-btn" title="Thông báo">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-alert">3</span>
+            </div>
+
+            <div class="user-pill-top">
+                <div class="user-avatar-top">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" alt="Admin Avatar" />
+                </div>
+                <div class="d-none d-sm-block text-start">
+                    <div class="fw-bold small text-dark leading-tight">@(ViewBag.FullName ?? "admin")</div>
+                    <div class="text-muted" style="font-size: 11px;">Administrator</div>
+                </div>
+                <i class="fa-solid fa-chevron-down text-muted small ms-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. BREADCRUMB & TIÊU ĐỀ TRANG -->
+    <div class="page-breadcrumb">
+        <i class="fa-solid fa-house-chimney me-1"></i>
+        <a asp-controller="Admin" asp-action="Index">Trang chủ</a>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span>Quản trị hệ thống</span>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span class="text-dark fw-semibold">Báo cáo & thống kê</span>
+    </div>
+
+    <div class="page-title-row">
+        <div class="page-title-group">
+            <div class="page-title-icon">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div>
+                <h1 class="page-title-text">Báo cáo & thống kê</h1>
+                <p class="page-subtitle-text">Thống kê toàn diện về ngân hàng câu hỏi, chất lượng đề thi và phân tích phổ điểm kỳ thi toàn trường</p>
+            </div>
+        </div>
+
+        <div class="header-actions-group">
+            <button class="btn-export-pdf" onclick="alert('Đang trích xuất file PDF Báo cáo tổng kết chất lượng đề thi...');">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span>Xuất Báo cáo PDF</span>
+            </button>
+            <button class="btn-export-excel" onclick="alert('Đang xuất toàn bộ số liệu thống kê ra file Excel...');">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>Xuất Dữ liệu Excel</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. 4 THẺ THỐNG KÊ (KPI CARDS) -->
+    <div class="kpi-cards-grid">
+        <div class="kpi-card kpi-card-blue">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-blue">
+                    <i class="fa-solid fa-file-signature"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Tổng đề thi phát hành</div>
+                    <div class="kpi-value">320</div>
+                    <div class="kpi-subtext"><span class="text-success fw-bold">↑ +18%</span> so với kỳ trước</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-file-signature kpi-watermark text-primary"></i>
+        </div>
+
+        <div class="kpi-card kpi-card-green">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-green">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Điểm trung bình toàn trường</div>
+                    <div class="kpi-value">7.42</div>
+                    <div class="kpi-subtext">Thang điểm 10.0</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-graduation-cap kpi-watermark text-success"></i>
+        </div>
+
+        <div class="kpi-card kpi-card-purple">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-purple">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Độ phân biệt câu hỏi chuẩn</div>
+                    <div class="kpi-value">92.4%</div>
+                    <div class="kpi-subtext">Chỉ số D &ge; 0.30</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-circle-check kpi-watermark text-secondary"></i>
+        </div>
+
+        <div class="kpi-card kpi-card-orange">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-orange">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Tổng câu hỏi tích lũy</div>
+                    <div class="kpi-value">12.540</div>
+                    <div class="kpi-subtext">Trong ngân hàng đề</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-database kpi-watermark text-warning"></i>
+        </div>
+    </div>
+
+    <!-- 4. THANH BỘ LỌC KỲ THI & NĂM HỌC -->
+    <div class="filter-card">
+        <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="small fw-bold text-dark"><i class="fa-regular fa-calendar-days text-primary me-1"></i> Năm học:</span>
+                <select class="custom-select">
+                    <option selected>2025 - 2026</option>
+                    <option>2024 - 2025</option>
+                    <option>2023 - 2024</option>
+                </select>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <span class="small fw-bold text-dark">Học kỳ:</span>
+                <select class="custom-select">
+                    <option selected>Học kỳ 1</option>
+                    <option>Học kỳ 2</option>
+                    <option>Học kỳ Hè</option>
+                </select>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                <span class="small fw-bold text-dark">Đơn vị:</span>
+                <select class="custom-select">
+                    <option value="">-- Toàn bộ các Khoa --</option>
+                    <option value="CNTT">Khoa Công nghệ thông tin</option>
+                    <option value="KT">Khoa Kinh tế</option>
+                    <option value="SP">Khoa Sư phạm</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-sm btn-light border px-3 py-2" title="Cập nhật biểu đồ" onclick="alert('Đã cập nhật biểu đồ theo bộ lọc!');">
+            <i class="fa-solid fa-arrows-rotate me-1"></i> Làm mới báo cáo
+        </button>
+    </div>
+
+    <!-- 5. 2 BIỂU ĐỒ TRỰC QUAN (CHARTS GRID) -->
+    <div class="charts-grid">
+        <!-- Biểu đồ 1: Phổ điểm thi -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h5 class="chart-title">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Phổ điểm thi học kỳ (Toàn trường)</span>
+                </h5>
+                <span class="badge bg-light text-primary border">24.500 lượt thi</span>
+            </div>
+            <div style="height: 280px; position: relative;">
+                <canvas id="scoreDistChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Biểu đồ 2: Tỷ lệ câu hỏi theo độ khó Bloom -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h5 class="chart-title">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Tỷ lệ phân bổ độ khó theo chuẩn Bloom</span>
+                </h5>
+                <span class="badge bg-light text-success border">12.540 câu hỏi</span>
+            </div>
+            <div style="height: 280px; position: relative;">
+                <canvas id="bloomDistChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. BẢNG TOP CÁC MÔN HỌC & ĐÁNH GIÁ CHẤT LƯỢNG NGÂN HÀNG ĐỀ -->
+    <div class="reports-table-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark m-0">Top học phần có ngân hàng câu hỏi & đề thi chuẩn hóa cao nhất</h5>
+            <span class="small text-muted">Đánh giá theo chỉ số độ phân biệt (D) và độ khó trung bình (P)</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Mã học phần</th>
+                        <th>Tên môn học</th>
+                        <th>Khoa quản lý</th>
+                        <th>Số lượng câu hỏi</th>
+                        <th>Đề thi đã sinh</th>
+                        <th>Độ phân biệt (D)</th>
+                        <th>Đánh giá chất lượng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-bold text-dark">CNTT01</td>
+                        <td class="fw-semibold text-primary">Lập trình hướng đối tượng</td>
+                        <td>Khoa CNTT</td>
+                        <td><strong class="text-dark">450 câu</strong></td>
+                        <td>24 đề</td>
+                        <td><span class="fw-bold text-success">0.42</span> (Rất tốt)</td>
+                        <td><span class="badge bg-success-subtle text-success">Xuất sắc</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-dark">CNTT02</td>
+                        <td class="fw-semibold text-primary">Cơ sở dữ liệu</td>
+                        <td>Khoa CNTT</td>
+                        <td><strong class="text-dark">520 câu</strong></td>
+                        <td>30 đề</td>
+                        <td><span class="fw-bold text-success">0.38</span> (Tốt)</td>
+                        <td><span class="badge bg-success-subtle text-success">Đạt chuẩn</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-dark">TOAN01</td>
+                        <td class="fw-semibold text-primary">Toán cao cấp</td>
+                        <td>Khoa Sư phạm</td>
+                        <td><strong class="text-dark">600 câu</strong></td>
+                        <td>36 đề</td>
+                        <td><span class="fw-bold text-success">0.35</span> (Tốt)</td>
+                        <td><span class="badge bg-success-subtle text-success">Đạt chuẩn</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-dark">KT01</td>
+                        <td class="fw-semibold text-primary">Kinh tế vi mô</td>
+                        <td>Khoa Kinh tế</td>
+                        <td><strong class="text-dark">410 câu</strong></td>
+                        <td>18 đề</td>
+                        <td><span class="fw-bold text-success">0.36</span> (Tốt)</td>
+                        <td><span class="badge bg-success-subtle text-success">Đạt chuẩn</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-dark">NN01</td>
+                        <td class="fw-semibold text-primary">Tiếng Anh cơ bản</td>
+                        <td>Khoa Ngoại ngữ</td>
+                        <td><strong class="text-dark">750 câu</strong></td>
+                        <td>45 đề</td>
+                        <td><span class="fw-bold text-primary">0.45</span> (Rất tốt)</td>
+                        <td><span class="badge bg-success-subtle text-success">Xuất sắc</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. Biểu đồ phổ điểm thi (Bar Chart)
+            const ctxScore = document.getElementById('scoreDistChart').getContext('2d');
+            new Chart(ctxScore, {
+                type: 'bar',
+                data: {
+                    labels: ['0-3.9 (Kém)', '4.0-5.4 (TB)', '5.5-6.9 (Khá)', '7.0-8.4 (Giỏi)', '8.5-10 (Xuất sắc)'],
+                    datasets: [{
+                        label: 'Số lượng sinh viên',
+                        data: [1200, 4800, 9200, 7100, 2200],
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.75)',
+                            'rgba(245, 158, 11, 0.75)',
+                            'rgba(59, 130, 246, 0.75)',
+                            'rgba(16, 185, 129, 0.75)',
+                            'rgba(139, 92, 246, 0.75)'
+                        ],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // 2. Biểu đồ độ khó Bloom (Doughnut Chart)
+            const ctxBloom = document.getElementById('bloomDistChart').getContext('2d');
+            new Chart(ctxBloom, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Nhận biết (40%)', 'Thông hiểu (35%)', 'Vận dụng (20%)', 'Vận dụng cao (5%)'],
+                    datasets: [{
+                        data: [5016, 4389, 2508, 627],
+                        backgroundColor: [
+                            '#22c55e',
+                            '#0ea5e9',
+                            '#f59e0b',
+                            '#ef4444'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, font: { size: 12 } }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,1198 @@
+@{
+    ViewData["Title"] = "Khoa & Bộ môn - ExamBank Admin";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Tổng thể trang Khoa & Bộ môn */
+    .dept-page-wrapper {
+        padding: 24px 30px;
+        background-color: #f4f6fa;
+        min-height: 100vh;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Top Search & Profile Bar */
+    .top-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .top-search-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .btn-menu-toggle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-menu-toggle:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .search-box-top {
+        position: relative;
+        width: 380px;
+    }
+
+    .search-box-top input {
+        width: 100%;
+        padding: 9px 18px 9px 42px;
+        border-radius: 22px;
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        font-size: 13.5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .search-box-top input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .search-box-top i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .notification-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .notification-btn:hover {
+        background: #f8fafc;
+        color: #1e293b;
+    }
+
+    .badge-alert {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: #ef4444;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+
+    .user-pill-top {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 14px 4px 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .user-avatar-top {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    .user-avatar-top img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Breadcrumb */
+    .page-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12.5px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .page-breadcrumb a {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .page-breadcrumb a:hover {
+        color: #2563eb;
+    }
+
+    /* Page Heading Header */
+    .page-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .page-title-group {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .page-title-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+    }
+
+    .page-title-text {
+        font-size: 24px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .page-subtitle-text {
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 4px 0 0 0;
+    }
+
+    .header-actions-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-add-primary {
+        background: #2563eb;
+        color: #ffffff;
+        border: none;
+        padding: 9px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn-add-primary:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        color: #ffffff;
+    }
+
+    .btn-add-outline {
+        background: #ffffff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        padding: 9px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn-add-outline:hover {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    /* 4 Thẻ Thống kê (KPI Cards) */
+    .kpi-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .kpi-card {
+        border-radius: 16px;
+        padding: 20px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid transparent;
+        transition: transform 0.2s ease;
+    }
+
+    .kpi-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .kpi-card-blue {
+        background: linear-gradient(135deg, #f0f7ff 0%, #e0effe 100%);
+        border-color: #bfdbfe;
+    }
+
+    .kpi-card-green {
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border-color: #bbf7d0;
+    }
+
+    .kpi-card-orange {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border-color: #fde68a;
+    }
+
+    .kpi-card-purple {
+        background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+        border-color: #e9d5ff;
+    }
+
+    .kpi-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        z-index: 1;
+    }
+
+    .kpi-icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .kpi-icon-blue { background: #dbeafe; color: #2563eb; }
+    .kpi-icon-green { background: #16a34a; color: #ffffff; }
+    .kpi-icon-orange { background: #f59e0b; color: #ffffff; }
+    .kpi-icon-purple { background: #9333ea; color: #ffffff; }
+
+    .kpi-label {
+        font-size: 13px;
+        color: #475569;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    .kpi-value {
+        font-size: 26px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
+    }
+
+    .kpi-subtext {
+        font-size: 11.5px;
+        color: #64748b;
+        margin-top: 4px;
+        font-weight: 500;
+    }
+
+    .kpi-watermark {
+        position: absolute;
+        right: 15px;
+        bottom: 8px;
+        font-size: 58px;
+        opacity: 0.12;
+        pointer-events: none;
+    }
+
+    /* 2-Column Split Layout */
+    .org-grid-container {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 22px;
+        align-items: start;
+    }
+
+    /* Cột Trái: Cây cơ cấu phân cấp */
+    .org-tree-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .tree-search-box {
+        position: relative;
+        margin-bottom: 16px;
+    }
+
+    .tree-search-box input {
+        width: 100%;
+        padding: 8px 12px 8px 34px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 13px;
+        outline: none;
+        background: #f8fafc;
+    }
+
+    .tree-search-box input:focus {
+        background: #ffffff;
+        border-color: #3b82f6;
+    }
+
+    .tree-search-box i {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    .tree-group-item {
+        margin-bottom: 10px;
+    }
+
+    .faculty-header-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 11px 14px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+    }
+
+    .faculty-header-btn:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+
+    .faculty-header-btn.active {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+        color: #1e3a8a;
+    }
+
+    .faculty-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .faculty-left i.fa-landmark {
+        color: #2563eb;
+        font-size: 15px;
+    }
+
+    .dept-children-list {
+        padding-left: 20px;
+        margin-top: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        border-left: 2px dashed #cbd5e1;
+        margin-left: 18px;
+    }
+
+    .dept-child-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: none;
+        background: transparent;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #475569;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .dept-child-btn:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .dept-child-btn.active {
+        background: #2563eb;
+        color: #ffffff !important;
+    }
+
+    .dept-child-btn.active .badge {
+        background: rgba(255, 255, 255, 0.25) !important;
+        color: #ffffff !important;
+    }
+
+    /* Cột Phải: Bảng thông tin chi tiết */
+    .org-detail-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .unit-hero-banner {
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 22px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .unit-hero-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .unit-hero-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: #2563eb;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .unit-hero-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+    }
+
+    .unit-hero-meta {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 6px;
+        font-size: 12.5px;
+        color: #475569;
+    }
+
+    .unit-hero-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .unit-hero-meta i {
+        color: #2563eb;
+    }
+
+    /* Sub Tabs in Detail */
+    .unit-sub-tabs {
+        display: flex;
+        gap: 20px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 20px;
+    }
+
+    .unit-sub-tab-btn {
+        background: transparent;
+        border: none;
+        padding: 10px 0;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .unit-sub-tab-btn.active {
+        color: #2563eb;
+    }
+
+    .unit-sub-tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2.5px;
+        background: #2563eb;
+        border-radius: 2px;
+    }
+
+    /* Table in Detail */
+    .custom-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 13px;
+    }
+
+    .custom-table thead th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 10px 14px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .custom-table tbody td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        vertical-align: middle;
+    }
+
+    .custom-table tbody tr:hover td {
+        background: #f8fafc;
+    }
+
+    /* Responsive */
+    @@media (max-width: 1200px) {
+        .kpi-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .org-grid-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dept-page-wrapper">
+
+    <!-- 1. TOP BAR: TÌM KIẾM & PROFILE -->
+    <div class="top-header">
+        <div class="top-search-group">
+            <button class="btn-menu-toggle" title="Thu gọn menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="search-box-top">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm khoa, bộ môn... (Ctrl + K)" />
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="notification-btn" title="Thông báo">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-alert">3</span>
+            </div>
+
+            <div class="user-pill-top">
+                <div class="user-avatar-top">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin" alt="Admin Avatar" />
+                </div>
+                <div class="d-none d-sm-block text-start">
+                    <div class="fw-bold small text-dark leading-tight">@(ViewBag.FullName ?? "admin")</div>
+                    <div class="text-muted" style="font-size: 11px;">Administrator</div>
+                </div>
+                <i class="fa-solid fa-chevron-down text-muted small ms-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. BREADCRUMB & TIÊU ĐỀ TRANG -->
+    <div class="page-breadcrumb">
+        <i class="fa-solid fa-house-chimney me-1"></i>
+        <a asp-controller="Admin" asp-action="Index">Trang chủ</a>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span>Quản lý danh mục</span>
+        <i class="fa-solid fa-chevron-right small text-muted mx-1" style="font-size: 10px;"></i>
+        <span class="text-dark fw-semibold">Khoa & bộ môn</span>
+    </div>
+
+    <div class="page-title-row">
+        <div class="page-title-group">
+            <div class="page-title-icon">
+                <i class="fa-solid fa-landmark"></i>
+            </div>
+            <div>
+                <h1 class="page-title-text">Khoa & bộ môn</h1>
+                <p class="page-subtitle-text">Quản lý cơ cấu tổ chức đào tạo, phân cấp quản lý giảng viên và ngân hàng đề thi theo từng bộ môn</p>
+            </div>
+        </div>
+
+        <div class="header-actions-group">
+            <button class="btn-add-primary" data-bs-toggle="modal" data-bs-target="#addFacultyModal">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm Khoa mới</span>
+            </button>
+            <button class="btn-add-outline" data-bs-toggle="modal" data-bs-target="#addDeptModal">
+                <i class="fa-solid fa-folder-plus"></i>
+                <span>Thêm Bộ môn</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. 4 THẺ THỐNG KÊ (KPI SUMMARY CARDS) -->
+    <div class="kpi-cards-grid">
+        <div class="kpi-card kpi-card-blue">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-blue">
+                    <i class="fa-solid fa-landmark"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Tổng số Khoa / Viện</div>
+                    <div class="kpi-value">6</div>
+                    <div class="kpi-subtext">Đơn vị quản lý đào tạo</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-landmark kpi-watermark text-primary"></i>
+        </div>
+
+        <div class="kpi-card kpi-card-green">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-green">
+                    <i class="fa-solid fa-sitemap"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Tổng số Bộ môn</div>
+                    <div class="kpi-value">24</div>
+                    <div class="kpi-subtext">Chuyên môn trực thuộc</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-sitemap kpi-watermark text-success"></i>
+        </div>
+
+        <div class="kpi-card kpi-card-orange">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-orange">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Tổng Giảng viên</div>
+                    <div class="kpi-value">850</div>
+                    <div class="kpi-subtext">Đã phân bổ về bộ môn</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chalkboard-user kpi-watermark text-warning"></i>
+        </div>
+
+        <div class="kpi-card kpi-card-purple">
+            <div class="kpi-info">
+                <div class="kpi-icon-circle kpi-icon-purple">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div>
+                    <div class="kpi-label">Môn học trực thuộc</div>
+                    <div class="kpi-value">120</div>
+                    <div class="kpi-subtext">Có ngân hàng đề thi</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-book-open kpi-watermark text-secondary"></i>
+        </div>
+    </div>
+
+    <!-- 4. KHU VỰC CHÍNH (CÂY PHÂN CẤP & CHI TIẾT) -->
+    <div class="org-grid-container">
+
+        <!-- CỘT TRÁI: CÂY CƠ CẤU TỔ CHỨC -->
+        <div class="org-tree-card">
+            <div class="tree-search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm khoa, bộ môn..." id="treeSearchInput" />
+            </div>
+
+            <div class="tree-list-wrapper">
+                <!-- KHOA 1: CNTT -->
+                <div class="tree-group-item">
+                    <button class="faculty-header-btn active" onclick="selectFaculty(this, 'CNTT', 'Khoa Công nghệ thông tin', 'TS. Nguyễn Văn Nam', 'Tầng 4, Tòa A1', 'cntt@university.edu.vn', '5', '42', '35')">
+                        <div class="faculty-left">
+                            <i class="fa-solid fa-landmark"></i>
+                            <span>Khoa Công nghệ thông tin</span>
+                        </div>
+                        <span class="badge bg-light text-primary border">5 BM</span>
+                    </button>
+                    <div class="dept-children-list">
+                        <button class="dept-child-btn active" onclick="selectDept(this, 'CNPM', 'Bộ môn Công nghệ phần mềm', 'Khoa CNTT', 'ThS. Trần Văn An', '12', '10')">
+                            <span>🔹 BM Công nghệ phần mềm</span>
+                            <span class="badge bg-secondary-subtle text-secondary">10 môn</span>
+                        </button>
+                        <button class="dept-child-btn" onclick="selectDept(this, 'MMT', 'Bộ môn Mạng máy tính & TT', 'Khoa CNTT', 'TS. Lê Minh Tuấn', '10', '8')">
+                            <span>🔹 BM Mạng máy tính & TT</span>
+                            <span class="badge bg-secondary-subtle text-secondary">8 môn</span>
+                        </button>
+                        <button class="dept-child-btn" onclick="selectDept(this, 'HTTT', 'Bộ môn Hệ thống thông tin', 'Khoa CNTT', 'ThS. Hoàng Mai', '8', '7')">
+                            <span>🔹 BM Hệ thống thông tin</span>
+                            <span class="badge bg-secondary-subtle text-secondary">7 môn</span>
+                        </button>
+                        <button class="dept-child-btn" onclick="selectDept(this, 'KHMT', 'Bộ môn Khoa học máy tính', 'Khoa CNTT', 'TS. Đỗ Hùng', '7', '6')">
+                            <span>🔹 BM Khoa học máy tính</span>
+                            <span class="badge bg-secondary-subtle text-secondary">6 môn</span>
+                        </button>
+                        <button class="dept-child-btn" onclick="selectDept(this, 'KTMT', 'Bộ môn Kỹ thuật máy tính', 'Khoa CNTT', 'ThS. Vũ Long', '5', '4')">
+                            <span>🔹 BM Kỹ thuật máy tính</span>
+                            <span class="badge bg-secondary-subtle text-secondary">4 môn</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KHOA 2: KINH TẾ -->
+                <div class="tree-group-item">
+                    <button class="faculty-header-btn" onclick="selectFaculty(this, 'KT', 'Khoa Kinh tế & Quản trị kinh doanh', 'PGS.TS. Trần Thị Hương', 'Tầng 3, Tòa B2', 'kinhte@university.edu.vn', '4', '35', '28')">
+                        <div class="faculty-left">
+                            <i class="fa-solid fa-landmark"></i>
+                            <span>Khoa Kinh tế & QTKD</span>
+                        </div>
+                        <span class="badge bg-light text-secondary border">4 BM</span>
+                    </button>
+                    <div class="dept-children-list d-none">
+                        <button class="dept-child-btn" onclick="selectDept(this, 'QTKD', 'Bộ môn Quản trị kinh doanh', 'Khoa Kinh tế', 'TS. Phạm Hùng', '10', '9')">
+                            <span>🔹 BM Quản trị kinh doanh</span>
+                            <span class="badge bg-secondary-subtle text-secondary">9 môn</span>
+                        </button>
+                        <button class="dept-child-btn" onclick="selectDept(this, 'KTKT', 'Bộ môn Kế toán - Kiểm toán', 'Khoa Kinh tế', 'ThS. Đỗ Nga', '12', '10')">
+                            <span>🔹 BM Kế toán - Kiểm toán</span>
+                            <span class="badge bg-secondary-subtle text-secondary">10 môn</span>
+                        </button>
+                        <button class="dept-child-btn" onclick="selectDept(this, 'TCNH', 'Bộ môn Tài chính - Ngân hàng', 'Khoa Kinh tế', 'TS. Nguyễn Bình', '8', '6')">
+                            <span>🔹 BM Tài chính - Ngân hàng</span>
+                            <span class="badge bg-secondary-subtle text-secondary">6 môn</span>
+                        </button>
+                        <button class="dept-child-btn" onclick="selectDept(this, 'KTS', 'Bộ môn Kinh tế số', 'Khoa Kinh tế', 'ThS. Lê Thảo', '5', '3')">
+                            <span>🔹 BM Kinh tế số</span>
+                            <span class="badge bg-secondary-subtle text-secondary">3 môn</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KHOA 3: SƯ PHẠM -->
+                <div class="tree-group-item">
+                    <button class="faculty-header-btn" onclick="selectFaculty(this, 'SP', 'Khoa Sư phạm', 'TS. Đặng Thanh', 'Tầng 2, Tòa C1', 'supham@university.edu.vn', '3', '28', '22')">
+                        <div class="faculty-left">
+                            <i class="fa-solid fa-landmark"></i>
+                            <span>Khoa Sư phạm</span>
+                        </div>
+                        <span class="badge bg-light text-secondary border">3 BM</span>
+                    </button>
+                    <div class="dept-children-list d-none">
+                        <button class="dept-child-btn" onclick="selectDept(this, 'TOAN', 'Bộ môn Toán học', 'Khoa Sư phạm', 'TS. Hoàng Hải', '12', '10')">
+                            <span>🔹 BM Toán học</span>
+                            <span class="badge bg-secondary-subtle text-secondary">10 môn</span>
+                        </button>
+                        <button class="dept-child-btn" onclick="selectDept(this, 'VATLY', 'Bộ môn Vật lý', 'Khoa Sư phạm', 'ThS. Nguyễn Vinh', '9', '7')">
+                            <span>🔹 BM Vật lý</span>
+                            <span class="badge bg-secondary-subtle text-secondary">7 môn</span>
+                        </button>
+                        <button class="dept-child-btn" onclick="selectDept(this, 'HOAHOC', 'Bộ môn Hóa học', 'Khoa Sư phạm', 'TS. Mai Phương', '7', '5')">
+                            <span>🔹 BM Hóa học</span>
+                            <span class="badge bg-secondary-subtle text-secondary">5 môn</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KHOA 4: NGOẠI NGỮ -->
+                <div class="tree-group-item">
+                    <button class="faculty-header-btn" onclick="selectFaculty(this, 'NN', 'Khoa Ngoại ngữ', 'TS. Vũ Thu Trang', 'Tầng 1, Tòa D1', 'ngoaingu@university.edu.vn', '2', '20', '15')">
+                        <div class="faculty-left">
+                            <i class="fa-solid fa-landmark"></i>
+                            <span>Khoa Ngoại ngữ</span>
+                        </div>
+                        <span class="badge bg-light text-secondary border">2 BM</span>
+                    </button>
+                    <div class="dept-children-list d-none">
+                        <button class="dept-child-btn" onclick="selectDept(this, 'TIENGANH', 'Bộ môn Tiếng Anh', 'Khoa Ngoại ngữ', 'ThS. John Smith', '14', '10')">
+                            <span>🔹 BM Tiếng Anh</span>
+                            <span class="badge bg-secondary-subtle text-secondary">10 môn</span>
+                        </button>
+                        <button class="dept-child-btn" onclick="selectDept(this, 'TIENGTRUNG', 'Bộ môn Tiếng Trung', 'Khoa Ngoại ngữ', 'ThS. Trần Linh', '6', '5')">
+                            <span>🔹 BM Tiếng Trung</span>
+                            <span class="badge bg-secondary-subtle text-secondary">5 môn</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: BẢNG THÔNG TIN CHI TIẾT -->
+        <div class="org-detail-card">
+
+            <!-- Banner Đơn vị -->
+            <div class="unit-hero-banner">
+                <div class="unit-hero-left">
+                    <div class="unit-hero-icon" id="detailUnitIcon">
+                        <i class="fa-solid fa-sitemap"></i>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <h3 class="unit-hero-title" id="detailUnitName">Bộ môn Công nghệ phần mềm</h3>
+                            <span class="badge bg-primary" id="detailUnitCode">CNPM</span>
+                        </div>
+                        <div class="unit-hero-meta">
+                            <span><i class="fa-solid fa-user-tie"></i> Trưởng đơn vị: <strong id="detailUnitLeader">ThS. Trần Văn An</strong></span>
+                            <span><i class="fa-solid fa-location-dot"></i> Đơn vị quản lý: <strong id="detailUnitParent">Khoa CNTT</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-light border" title="Chỉnh sửa" onclick="alert('Chỉnh sửa thông tin đơn vị (Demo)');">
+                        <i class="fa-solid fa-pen text-primary"></i>
+                    </button>
+                    <button class="btn btn-sm btn-light border text-danger" title="Xóa" onclick="if(confirm('Bạn có chắc chắn muốn xóa đơn vị này?')) alert('Đã xóa đơn vị (Demo)');">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sub Navigation Tabs -->
+            <div class="unit-sub-tabs">
+                <button class="unit-sub-tab-btn active" onclick="switchUnitTab(event, 'tabUnitSubjects')">
+                    <i class="fa-solid fa-book-open"></i> Danh sách môn học phụ trách (<span id="countSubj">10</span>)
+                </button>
+                <button class="unit-sub-tab-btn" onclick="switchUnitTab(event, 'tabUnitTeachers')">
+                    <i class="fa-solid fa-chalkboard-user"></i> Danh sách Giảng viên (<span id="countTeacher">12</span>)
+                </button>
+            </div>
+
+            <!-- TAB 1: DANH SÁCH MÔN HỌC -->
+            <div id="tabUnitSubjects" class="unit-tab-pane">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="small text-muted">Các môn học có ngân hàng câu hỏi do đơn vị trực tiếp quản lý và thẩm định:</span>
+                    <a asp-controller="Admin" asp-action="Subjects" class="btn btn-sm btn-outline-primary" style="border-radius: 8px;">
+                        <i class="fa-solid fa-plus me-1"></i> Quản lý môn học
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Mã môn</th>
+                                <th>Tên môn học</th>
+                                <th>Số tín chỉ</th>
+                                <th>Loại môn</th>
+                                <th>Số câu hỏi ngân hàng</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold text-dark">CNTT01</td>
+                                <td class="fw-semibold text-primary">Lập trình hướng đối tượng</td>
+                                <td>3 tín chỉ</td>
+                                <td><span class="badge bg-light text-primary border">Bắt buộc</span></td>
+                                <td class="fw-bold">450 câu</td>
+                                <td><span class="badge bg-success-subtle text-success">Đang giảng dạy</span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">CNTT02</td>
+                                <td class="fw-semibold text-primary">Cơ sở dữ liệu</td>
+                                <td>3 tín chỉ</td>
+                                <td><span class="badge bg-light text-primary border">Bắt buộc</span></td>
+                                <td class="fw-bold">520 câu</td>
+                                <td><span class="badge bg-success-subtle text-success">Đang giảng dạy</span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">CNTT05</td>
+                                <td class="fw-semibold text-primary">Kiểm thử phần mềm</td>
+                                <td>3 tín chỉ</td>
+                                <td><span class="badge bg-light text-secondary border">Tự chọn</span></td>
+                                <td class="fw-bold">310 câu</td>
+                                <td><span class="badge bg-success-subtle text-success">Đang giảng dạy</span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-dark">CNTT08</td>
+                                <td class="fw-semibold text-primary">Kiến trúc phần mềm</td>
+                                <td>3 tín chỉ</td>
+                                <td><span class="badge bg-light text-primary border">Bắt buộc</span></td>
+                                <td class="fw-bold">280 câu</td>
+                                <td><span class="badge bg-success-subtle text-success">Đang giảng dạy</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: DANH SÁCH GIẢNG VIÊN -->
+            <div id="tabUnitTeachers" class="unit-tab-pane d-none">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="small text-muted">Danh sách cán bộ, giảng viên cơ hữu thuộc biên chế đơn vị:</span>
+                    <a asp-controller="Admin" asp-action="Users" class="btn btn-sm btn-outline-primary" style="border-radius: 8px;">
+                        <i class="fa-solid fa-user-plus me-1"></i> Điều phối giảng viên
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Giảng viên</th>
+                                <th>Email</th>
+                                <th>Chức danh</th>
+                                <th>Số môn phụ trách</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=An" width="30" height="30" class="rounded-circle" />
+                                        <span>ThS. Trần Văn An</span>
+                                    </div>
+                                </td>
+                                <td>an.tran@abc.edu.vn</td>
+                                <td><span class="badge bg-warning-subtle text-warning-emphasis">Trưởng bộ môn</span></td>
+                                <td>3 môn</td>
+                                <td><span class="badge bg-success-subtle text-success">Đang công tác</span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mai" width="30" height="30" class="rounded-circle" />
+                                        <span>TS. Trần Thị Mai</span>
+                                    </div>
+                                </td>
+                                <td>mai.tran@abc.edu.vn</td>
+                                <td><span class="badge bg-info-subtle text-info-emphasis">Giảng viên chính</span></td>
+                                <td>2 môn</td>
+                                <td><span class="badge bg-success-subtle text-success">Đang công tác</span></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tuan" width="30" height="30" class="rounded-circle" />
+                                        <span>ThS. Hoàng Minh Tuấn</span>
+                                    </div>
+                                </td>
+                                <td>tuan.hoang@abc.edu.vn</td>
+                                <td><span class="badge bg-light text-secondary border">Giảng viên</span></td>
+                                <td>2 môn</td>
+                                <td><span class="badge bg-success-subtle text-success">Đang công tác</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL THÊM KHOA MỚI -->
+<div class="modal fade" id="addFacultyModal" tabindex="-1" aria-labelledby="addFacultyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-landmark"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark m-0" id="addFacultyModalLabel">Thêm Khoa / Viện mới</h5>
+                        <p class="text-muted small m-0">Tạo đơn vị đào tạo cấp cao trong cơ cấu trường</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addFacultyForm" onsubmit="event.preventDefault(); alert('Thêm Khoa mới thành công! (Dữ liệu Demo)'); bootstrap.Modal.getInstance(document.getElementById('addFacultyModal')).hide();">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Mã Khoa <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="VD: CNTT, KT..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Tên Khoa / Viện <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="VD: Khoa Công nghệ thông tin..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Trưởng Khoa</label>
+                        <input type="text" class="form-control" placeholder="VD: TS. Nguyễn Văn Nam..." style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Văn phòng khoa & Email</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="text" class="form-control" placeholder="Tầng 4, Tòa A1..." style="border-radius: 10px; padding: 10px 14px;" />
+                            </div>
+                            <div class="col-6">
+                                <input type="email" class="form-control" placeholder="khoa@university.edu.vn" style="border-radius: 10px; padding: 10px 14px;" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Hủy</button>
+                        <button type="submit" class="btn btn-primary fw-semibold px-4" style="background: #2563eb; border: none; border-radius: 10px;">Lưu Khoa</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL THÊM BỘ MÔN MỚI -->
+<div class="modal fade" id="addDeptModal" tabindex="-1" aria-labelledby="addDeptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                        <i class="fa-solid fa-sitemap"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark m-0" id="addDeptModalLabel">Thêm Bộ môn mới</h5>
+                        <p class="text-muted small m-0">Tạo đơn vị chuyên môn trực thuộc Khoa</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="addDeptForm" onsubmit="event.preventDefault(); alert('Thêm Bộ môn mới thành công! (Dữ liệu Demo)'); bootstrap.Modal.getInstance(document.getElementById('addDeptModal')).hide();">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Thuộc Khoa <span class="text-danger">*</span></label>
+                        <select class="form-select" required style="border-radius: 10px; padding: 10px 14px;">
+                            <option value="CNTT" selected>Khoa Công nghệ thông tin</option>
+                            <option value="KT">Khoa Kinh tế & QTKD</option>
+                            <option value="SP">Khoa Sư phạm</option>
+                            <option value="NN">Khoa Ngoại ngữ</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Mã Bộ môn <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="VD: CNPM, MMT..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Tên Bộ môn <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" placeholder="VD: Bộ môn Công nghệ phần mềm..." required style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">Trưởng Bộ môn</label>
+                        <input type="text" class="form-control" placeholder="VD: ThS. Trần Văn An..." style="border-radius: 10px; padding: 10px 14px;" />
+                    </div>
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light fw-medium px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Hủy</button>
+                        <button type="submit" class="btn btn-success fw-semibold px-4" style="border: none; border-radius: 10px;">Lưu Bộ môn</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // 1. CHỌN KHOA TRÊN CÂY
+        function selectFaculty(btn, code, name, leader, office, email, deptCount, teacherCount, subjectCount) {
+            document.querySelectorAll('.faculty-header-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.dept-child-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Mở accordion con
+            const parent = btn.closest('.tree-group-item');
+            const childrenList = parent.querySelector('.dept-children-list');
+            if (childrenList) {
+                childrenList.classList.toggle('d-none');
+            }
+
+            // Đổ dữ liệu vào Hero Banner
+            document.getElementById('detailUnitName').innerText = name;
+            document.getElementById('detailUnitCode').innerText = code;
+            document.getElementById('detailUnitLeader').innerText = leader;
+            document.getElementById('detailUnitParent').innerText = office + ' - ' + email;
+            document.getElementById('countSubj').innerText = subjectCount;
+            document.getElementById('countTeacher').innerText = teacherCount;
+
+            const iconContainer = document.getElementById('detailUnitIcon');
+            iconContainer.innerHTML = '<i class="fa-solid fa-landmark"></i>';
+        }
+
+        // 2. CHỌN BỘ MÔN TRÊN CÂY
+        function selectDept(btn, code, name, parentName, leader, teacherCount, subjectCount) {
+            document.querySelectorAll('.dept-child-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.getElementById('detailUnitName').innerText = name;
+            document.getElementById('detailUnitCode').innerText = code;
+            document.getElementById('detailUnitLeader').innerText = leader;
+            document.getElementById('detailUnitParent').innerText = parentName;
+            document.getElementById('countSubj').innerText = subjectCount;
+            document.getElementById('countTeacher').innerText = teacherCount;
+
+            const iconContainer = document.getElementById('detailUnitIcon');
+            iconContainer.innerHTML = '<i class="fa-solid fa-sitemap"></i>';
+        }
+
+        // 3. CHUYỂN SUB TABS CHI TIẾT
+        function switchUnitTab(evt, tabId) {
+            const tabs = document.querySelectorAll('.unit-sub-tab-btn');
+            tabs.forEach(t => t.classList.remove('active'));
+            evt.currentTarget.classList.add('active');
+
+            const panes = document.querySelectorAll('.unit-tab-pane');
+            panes.forEach(p => p.classList.add('d-none'));
+
+            const target = document.getElementById(tabId);
+            if (target) {
+                target.classList.remove('d-none');
+            }
+        }
+    </script>
+}
+
