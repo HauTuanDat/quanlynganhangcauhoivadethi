@@ -1,0 +1,118 @@
+@{
+    ViewData["Title"] = "Tiến độ biên soạn câu hỏi của Giảng viên - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a asp-controller="DepartmentHead" asp-action="Index" class="text-decoration-none text-secondary">Trưởng bộ môn</a></li>
+            <li class="breadcrumb-item active fw-bold" style="color: #6366f1;" aria-current="page">Tiến độ nộp câu hỏi của Giảng viên</li>
+        </ol>
+    </nav>
+    <div>
+        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
+            Học kỳ 1 - Năm học 2026-2027
+        </span>
+    </div>
+</div>
+
+<div class="p-4" style="background-color: #f8fafc; min-height: calc(100vh - 75px);">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 px-4 border-bottom d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold text-dark mb-0">Bảng theo dõi chỉ tiêu ngân hàng câu hỏi theo Giảng viên</h5>
+                <small class="text-muted">Định mức quy định: 50 câu hỏi mới/học kỳ/giảng viên</small>
+            </div>
+            <button class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                <i class="fa-solid fa-file-excel me-1"></i> Xuất báo cáo Excel
+            </button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="ps-4">Giảng viên</th>
+                        <th>Môn học phụ trách</th>
+                        <th>Chỉ tiêu giao</th>
+                        <th>Đã nộp</th>
+                        <th>Đã duyệt Cấp 1</th>
+                        <th>Yêu cầu sửa</th>
+                        <th>Tỷ lệ hoàn thành</th>
+                        <th class="text-end pe-4">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold text-dark">TS. Lê Hoàng Nam</div>
+                            <small class="text-muted">lehoangnam@university.edu.vn</small>
+                        </td>
+                        <td>Cơ sở dữ liệu nâng cao</td>
+                        <td>50 câu</td>
+                        <td class="fw-bold">50 câu</td>
+                        <td class="text-success fw-bold">48 câu</td>
+                        <td>2 câu</td>
+                        <td style="width: 180px;">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 100%"></div>
+                                </div>
+                                <span class="small fw-bold text-success">100%</span>
+                            </div>
+                        </td>
+                        <td class="text-end pe-4">
+                            <span class="badge bg-success-subtle text-success">Hoàn thành chỉ tiêu</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold text-dark">ThS. Nguyễn Văn A</div>
+                            <small class="text-muted">nguyenvana@university.edu.vn</small>
+                        </td>
+                        <td>Cơ sở dữ liệu (IT3020)</td>
+                        <td>50 câu</td>
+                        <td class="fw-bold">42 câu</td>
+                        <td class="text-success fw-bold">38 câu</td>
+                        <td>4 câu</td>
+                        <td style="width: 180px;">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" style="width: 84%"></div>
+                                </div>
+                                <span class="small fw-bold text-primary">84%</span>
+                            </div>
+                        </td>
+                        <td class="text-end pe-4">
+                            <span class="badge bg-primary-subtle text-primary">Đúng tiến độ</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold text-dark">ThS. Phạm Thu Trang</div>
+                            <small class="text-muted">phamthutrang@university.edu.vn</small>
+                        </td>
+                        <td>Hệ quản trị CSDL</td>
+                        <td>50 câu</td>
+                        <td class="fw-bold">28 câu</td>
+                        <td class="text-success fw-bold">25 câu</td>
+                        <td>3 câu</td>
+                        <td style="width: 180px;">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="height: 6px;">
+                                    <div class="progress-bar bg-warning" style="width: 56%"></div>
+                                </div>
+                                <span class="small fw-bold text-warning">56%</span>
+                            </div>
+                        </td>
+                        <td class="text-end pe-4">
+                            <span class="badge bg-warning-subtle text-warning">Chậm tiến độ</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

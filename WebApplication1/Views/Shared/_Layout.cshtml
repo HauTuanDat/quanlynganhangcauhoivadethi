@@ -18,6 +18,9 @@
         <!-- Nhúng Sidebar dùng chung tại đây -->
         <partial name="_Sidebar" />
 
+        <!-- Nền mờ điều khiển đóng Sidebar trên thiết bị di động -->
+        <div id="sidebarBackdrop" class="sidebar-backdrop d-lg-none"></div>
+
         <!-- Nội dung chính của từng trang sẽ hiển thị ở bên phải -->
         <div class="flex-grow-1 d-flex flex-column" style="min-width: 0; overflow-x: hidden;">
             @RenderBody()

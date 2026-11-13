@@ -1,0 +1,287 @@
+@{
+    ViewData["Title"] = "Nhập câu hỏi từ Word / Excel - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+        <a asp-action="Questions" class="btn btn-light rounded-3 border p-2 text-secondary" title="Quay lại">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-controller="Teacher" asp-action="Index" class="text-decoration-none text-secondary">Giảng viên</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Teacher" asp-action="Questions" class="text-decoration-none text-secondary">Ngân hàng của tôi</a></li>
+                <li class="breadcrumb-item active fw-semibold text-primary" aria-current="page">Nhập từ Word / Excel</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-outline-primary rounded-3 px-3 fs-7" onclick="downloadTemplate('docx');">
+            <i class="fa-solid fa-file-word text-primary me-1"></i> Tải file mẫu Word (.docx)
+        </button>
+        <button type="button" class="btn btn-outline-success rounded-3 px-3 fs-7" onclick="downloadTemplate('xlsx');">
+            <i class="fa-solid fa-file-excel text-success me-1"></i> Tải file mẫu Excel (.xlsx)
+        </button>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="p-4 flex-grow-1" style="background-color: #f4f6fa;">
+    <div class="container-fluid" style="max-width: 1200px;">
+        
+        <div class="row g-4 mb-4">
+            
+            <!-- CỘT TRÁI (7 CỘT): VÙNG TẢI FILE LÊN & THIẾT LẬP MÔN -->
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm rounded-4 bg-white h-100">
+                    <div class="card-header bg-white border-0 py-3 px-4">
+                        <h6 class="fw-bold text-dark mb-0">
+                            <i class="fa-solid fa-cloud-arrow-up me-2 text-primary"></i>Tải lên tệp chứa ngân hàng câu hỏi
+                        </h6>
+                        <small class="text-muted">Hỗ trợ trích xuất tự động văn bản, công thức và đáp án</small>
+                    </div>
+                    <div class="card-body p-4 pt-0">
+                        
+                        <!-- Chọn Môn học áp dụng -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold fs-7 text-dark">Môn học áp dụng <span class="text-danger">*</span></label>
+                                <select class="form-select bg-light" id="importSubject">
+                                    <option value="CS201" selected>Lập trình Hướng đối tượng (CS201)</option>
+                                    <option value="DS102">Cấu trúc dữ liệu & GT (DS102)</option>
+                                    <option value="DB301">Cơ sở dữ liệu nâng cao (DB301)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold fs-7 text-dark">Chương mặc định</label>
+                                <select class="form-select bg-light" id="importTopic">
+                                    <option value="auto">Tự động nhận diện từ tiêu đề file</option>
+                                    <option value="1">Chương 1: Tổng quan</option>
+                                    <option value="2">Chương 2: Lớp và đối tượng</option>
+                                    <option value="3">Chương 3: Kế thừa & Đa hình</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Vùng kéo thả File (Drag and Drop Area) -->
+                        <div class="border border-2 border-dashed rounded-4 p-5 text-center bg-light mb-3 position-relative" 
+                             id="dropZone" style="border-color: #93c5fd !important; cursor: pointer;"
+                             onclick="document.getElementById('fileUpload').click();">
+                            <input type="file" id="fileUpload" class="d-none" accept=".docx,.doc,.xlsx,.xls" onchange="handleFileSelect(event)" />
+                            
+                            <div class="mb-3">
+                                <i class="fa-solid fa-file-arrow-up text-primary" style="font-size: 54px;"></i>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-1">Kéo và thả tệp Word (.docx) hoặc Excel (.xlsx) vào đây</h6>
+                            <p class="text-muted small mb-3">hoặc nhấp chuột để duyệt tệp từ máy tính của Thầy/Cô</p>
+                            <span class="btn btn-primary btn-sm px-3 rounded-pill fw-semibold">
+                                <i class="fa-solid fa-folder-open me-1"></i> Chọn tệp từ máy tính
+                            </span>
+                        </div>
+
+                        <!-- Trạng thái tệp đã chọn -->
+                        <div id="fileInfoBox" class="p-3 bg-primary bg-opacity-10 border border-primary border-opacity-25 rounded-3 d-none mb-3">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="fa-solid fa-file-word text-primary fs-3" id="fileIcon"></i>
+                                    <div>
+                                        <div class="fw-bold text-dark" id="fileName">Ngan_Hang_Cau_Hoi_OOP_2026.docx</div>
+                                        <small class="text-muted" id="fileSize">Kích thước: 148 KB • Đã sẵn sàng phân tích</small>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-primary px-3 fw-bold rounded-3" onclick="processExtraction();">
+                                    <i class="fa-solid fa-bolt me-1"></i> Trích xuất câu hỏi
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- CỘT PHẢI (5 CỘT): HƯỚNG DẪN QUY CHUẨN ĐỊNH DẠNG FILE -->
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm rounded-4 bg-white h-100">
+                    <div class="card-header bg-white border-0 py-3 px-4">
+                        <h6 class="fw-bold text-dark mb-0">
+                            <i class="fa-solid fa-book-open-reader me-2 text-success"></i>Quy chuẩn cấu trúc file mẫu
+                        </h6>
+                    </div>
+                    <div class="card-body p-4 pt-0">
+                        <div class="alert alert-light border rounded-3 p-3 fs-7 mb-3">
+                            <div class="fw-bold text-primary mb-2">
+                                <i class="fa-regular fa-lightbulb me-1"></i> Mẫu câu hỏi trong file Word (.docx):
+                            </div>
+                            <pre class="bg-dark text-light p-3 rounded-3 small mb-0" style="font-family: Consolas, monospace;">
+Câu 1: [NB] [CLO1] Trong C#, đâu là từ khóa khai báo lớp con kế thừa lớp cha?
+A. extends
+B. :
+C. inherit
+D. implements
+Đáp án: B
+Hướng dẫn: Trong C#, cú pháp kế thừa là class Con : Cha</pre>
+                        </div>
+
+                        <div class="small text-secondary">
+                            <h6 class="fw-bold text-dark fs-7 mb-2">Quy tắc nhận diện tự động:</h6>
+                            <ul class="ps-3 mb-0">
+                                <li>Mỗi câu hỏi bắt đầu bằng cụm từ: <code>Câu [Số]:</code> hoặc <code>Bài [Số]:</code></li>
+                                <li>Các phương án bắt đầu bằng: <code>A.</code>, <code>B.</code>, <code>C.</code>, <code>D.</code></li>
+                                <li>Đáp án đúng: Có thể định dạng gạch chân, bôi đậm hoặc có dòng <code>Đáp án: A</code> ở cuối câu.</li>
+                                <li>Ký hiệu mức độ: <code>[NB]</code> (Nhận biết), <code>[TH]</code> (Thông hiểu), <code>[VD]</code> (Vận dụng), <code>[VDC]</code> (Vận dụng cao).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- VÙNG PREVIEW DANH SÁCH CÂU HỎI ĐƯỢC PHÂN TÍCH TỰ ĐỘNG -->
+        <div id="previewSection" class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden mb-4 d-none">
+            <div class="card-header bg-white border-0 py-3 px-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div>
+                    <h6 class="fw-bold text-dark mb-0">
+                        <i class="fa-solid fa-list-check me-2 text-success"></i>Kết quả phân tích trích xuất (Trích xuất thành công 3 câu hỏi)
+                    </h6>
+                    <small class="text-muted">Thầy/Cô hãy kiểm tra lại trước khi lưu vào ngân hàng</small>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-secondary rounded-3 fs-7" onclick="saveImported('draft');">
+                        <i class="fa-regular fa-floppy-disk me-1"></i> Lưu tất cả vào Bản nháp
+                    </button>
+                    <button type="button" class="btn btn-success fw-bold rounded-3 fs-7" onclick="saveImported('submit');">
+                        <i class="fa-solid fa-paper-plane me-1"></i> Lưu & Gửi duyệt Trưởng bộ môn
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light fs-8 text-uppercase text-secondary">
+                            <tr>
+                                <th class="ps-4" style="width: 80px;">STT</th>
+                                <th>Nội dung câu hỏi trích xuất</th>
+                                <th style="width: 140px;">Phương án & Đáp án</th>
+                                <th style="width: 120px;">Mức độ Bloom</th>
+                                <th style="width: 100px;">CLO</th>
+                                <th class="text-end pe-4" style="width: 90px;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="fs-7">
+                            
+                            <!-- Hàng 1 -->
+                            <tr>
+                                <td class="ps-4 fw-bold text-primary">Câu 1</td>
+                                <td>
+                                    <div class="fw-bold text-dark">Trong C#, đâu là từ khóa khai báo lớp con kế thừa lớp cha?</div>
+                                    <small class="text-muted">Môn: Lập trình OOP (CS201)</small>
+                                </td>
+                                <td>
+                                    <div class="small">
+                                        <div>A. extends</div>
+                                        <div class="text-success fw-bold"><i class="fa-solid fa-check me-1"></i>B. : (Đúng)</div>
+                                        <div>C. inherit</div>
+                                        <div>D. implements</div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-info text-dark">Nhận biết [NB]</span></td>
+                                <td><span class="badge bg-light text-dark border">CLO1</span></td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light border text-danger" title="Xóa câu này" onclick="this.closest('tr').remove();">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Hàng 2 -->
+                            <tr>
+                                <td class="ps-4 fw-bold text-primary">Câu 2</td>
+                                <td>
+                                    <div class="fw-bold text-dark">Khái niệm nào sau đây mô tả khả năng một đối tượng có thể hành xử theo nhiều cách khác nhau?</div>
+                                    <small class="text-muted">Môn: Lập trình OOP (CS201)</small>
+                                </td>
+                                <td>
+                                    <div class="small">
+                                        <div>A. Đóng gói (Encapsulation)</div>
+                                        <div>B. Kế thừa (Inheritance)</div>
+                                        <div class="text-success fw-bold"><i class="fa-solid fa-check me-1"></i>C. Đa hình (Polymorphism)</div>
+                                        <div>D. Trừu tượng (Abstraction)</div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-warning text-dark">Thông hiểu [TH]</span></td>
+                                <td><span class="badge bg-light text-dark border">CLO2</span></td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light border text-danger" title="Xóa" onclick="this.closest('tr').remove();">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Hàng 3 -->
+                            <tr>
+                                <td class="ps-4 fw-bold text-primary">Câu 3</td>
+                                <td>
+                                    <div class="fw-bold text-dark">Trong lập trình hướng đối tượng, tại sao nên hạn chế việc lạm dụng quá nhiều tầng kế thừa sâu?</div>
+                                    <small class="text-muted">Môn: Lập trình OOP (CS201)</small>
+                                </td>
+                                <td>
+                                    <div class="small">
+                                        <div class="text-success fw-bold"><i class="fa-solid fa-check me-1"></i>A. Làm tăng mức độ kết dính (tight coupling), khó bảo trì</div>
+                                        <div>B. Trình biên dịch không cho phép quá 3 tầng</div>
+                                        <div>C. Gây tràn bộ nhớ Stack trong mọi trường hợp</div>
+                                        <div>D. Làm giảm tốc độ mạng khi giao tiếp</div>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-primary text-white">Vận dụng [VD]</span></td>
+                                <td><span class="badge bg-light text-dark border">CLO3</span></td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light border text-danger" title="Xóa" onclick="this.closest('tr').remove();">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function downloadTemplate(type) {
+        alert(`Bắt đầu tải về file mẫu: Mau_Cau_Hoi_ExamBank.${type}`);
+    }
+
+    function handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (file) {
+            document.getElementById('fileName').innerText = file.name;
+            document.getElementById('fileSize').innerText = `Kích thước: ${(file.size / 1024).toFixed(1)} KB • Sẵn sàng trích xuất`;
+            document.getElementById('fileInfoBox').classList.remove('d-none');
+        }
+    }
+
+    function processExtraction() {
+        // Mô phỏng trích xuất câu hỏi từ file
+        document.getElementById('previewSection').classList.remove('d-none');
+        document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function saveImported(mode) {
+        if (mode === 'draft') {
+            alert('Đã lưu thành công 3 câu hỏi vào danh sách "Bản nháp" của Thầy/Cô!');
+        } else {
+            alert('Đã lưu và gửi toàn bộ 3 câu hỏi lên Trưởng bộ môn phê duyệt thành công!');
+        }
+        window.location.href = '@Url.Action("Questions", "Teacher")';
+    }
+</script>
+}
+

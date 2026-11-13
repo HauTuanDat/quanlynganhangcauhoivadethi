@@ -1,0 +1,189 @@
+@{
+    ViewData["Title"] = "Hồ sơ Giảng viên - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-light d-md-none p-2 rounded-3 border" type="button">
+            <i class="fa-solid fa-bars text-secondary"></i>
+        </button>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-controller="Teacher" asp-action="Index" class="text-decoration-none text-secondary">Giảng viên</a></li>
+                <li class="breadcrumb-item active fw-semibold text-primary" aria-current="page">Hồ sơ cá nhân</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <button type="button" class="btn btn-success fw-bold rounded-3 px-3 shadow-sm" onclick="alert('Đã cập nhật thông tin hồ sơ giảng viên thành công!');">
+            <i class="fa-regular fa-floppy-disk me-1"></i> Lưu thay đổi
+        </button>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="p-4 flex-grow-1" style="background-color: #f4f6fa;">
+    <div class="container-fluid" style="max-width: 1100px;">
+        
+        <div class="row g-4">
+            
+            <!-- CỘT TRÁI (4 CỘT): THẺ TỔNG QUAN AVATAR & QUYỀN HẠN -->
+            <div class="col-lg-4">
+                
+                <!-- Avatar Card -->
+                <div class="card border-0 shadow-sm rounded-4 bg-white p-4 text-center mb-4">
+                    <div class="position-relative d-inline-block mx-auto mb-3">
+                        <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(ViewBag.FullName ?? "Giang Vien"))&background=059669&color=fff&size=128&bold=true"
+                             alt="Avatar" class="rounded-circle shadow" width="110" height="110" />
+                        <button class="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0 p-2 shadow-sm" 
+                                style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
+                                onclick="alert('Chọn ảnh đại diện mới từ máy tính');">
+                            <i class="fa-solid fa-camera fs-8"></i>
+                        </button>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">@ViewBag.FullName</h5>
+                    <div class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-1 rounded-pill mb-2">
+                        <i class="fa-solid fa-chalkboard-user me-1"></i> Giảng viên chính
+                    </div>
+                    <div class="small text-muted mb-3">Mã giảng viên: <strong>GV2026-089</strong></div>
+                    <div class="p-3 bg-light rounded-3 text-start small">
+                        <div class="mb-1"><i class="fa-solid fa-building-columns text-primary me-2"></i>Khoa: <strong>Khoa Công nghệ thông tin</strong></div>
+                        <div class="mb-1"><i class="fa-solid fa-landmark text-success me-2"></i>Bộ môn: <strong>Công nghệ phần mềm</strong></div>
+                        <div><i class="fa-regular fa-envelope text-info me-2"></i>Email: <strong>hai.nguyen@university.edu.vn</strong></div>
+                    </div>
+                </div>
+
+                <!-- Card Quyền hạn trên hệ thống ExamBank -->
+                <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="fa-solid fa-shield-halved me-2 text-primary"></i>Quyền hạn hệ thống
+                    </h6>
+                    <div class="d-flex flex-column gap-2 fs-7">
+                        <div class="d-flex align-items-center gap-2 text-success">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span class="text-dark">Biên soạn, chỉnh sửa câu hỏi</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 text-success">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span class="text-dark">Gửi duyệt câu hỏi lên Trưởng bộ môn</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 text-success">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span class="text-dark">Theo dõi & nhận phản hồi thẩm định</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 text-success">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span class="text-dark">Nhập câu hỏi từ Word / Excel</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 text-success fw-bold">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span class="text-success">Tạo đề thi theo ma trận (Được cấp quyền)</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CỘT PHẢI (8 CỘT): FORM THÔNG TIN & HỌC PHẦN GIẢNG DẠY -->
+            <div class="col-lg-8">
+                
+                <!-- Card Form thông tin chi tiết -->
+                <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                    <div class="card-header bg-white border-0 py-3 px-4">
+                        <h6 class="fw-bold text-dark mb-0">
+                            <i class="fa-solid fa-user-pen me-2 text-primary"></i>Thông tin cá nhân & Học vị
+                        </h6>
+                    </div>
+                    <div class="card-body p-4 pt-0">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold fs-7 text-dark">Họ và tên</label>
+                                <input type="text" class="form-control bg-light" value="@ViewBag.FullName" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold fs-7 text-dark">Tên đăng nhập (Username)</label>
+                                <input type="text" class="form-control bg-light" value="@ViewBag.Username" disabled />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold fs-7 text-dark">Học hàm / Học vị</label>
+                                <select class="form-select bg-light">
+                                    <option>Cử nhân / Kỹ sư</option>
+                                    <option selected>Thạc sĩ (ThS)</option>
+                                    <option>Tiến sĩ (TS)</option>
+                                    <option>Phó Giáo sư (PGS.TS)</option>
+                                    <option>Giáo sư (GS.TS)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold fs-7 text-dark">Số điện thoại liên hệ</label>
+                                <input type="text" class="form-control bg-light" value="0912.345.678" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold fs-7 text-dark">Email công vụ</label>
+                                <input type="email" class="form-control bg-light" value="hai.nguyen@university.edu.vn" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold fs-7 text-dark">Văn phòng làm việc</label>
+                                <input type="text" class="form-control bg-light" value="Phòng 402 - Nhà C, Khu hiệu bộ" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Các môn học được phân công giảng dạy -->
+                <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                    <div class="card-header bg-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+                        <h6 class="fw-bold text-dark mb-0">
+                            <i class="fa-solid fa-book-bookmark me-2 text-success"></i>Học phần phân công biên soạn câu hỏi
+                        </h6>
+                        <span class="badge bg-light text-secondary border">Học kỳ 1 - 2026</span>
+                    </div>
+                    <div class="card-body p-4 pt-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 fs-7">
+                                <thead class="table-light fs-8 text-uppercase text-secondary">
+                                    <tr>
+                                        <th>Mã học phần</th>
+                                        <th>Tên học phần</th>
+                                        <th>Số tín chỉ</th>
+                                        <th>Số câu hỏi đã đóng góp</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold text-primary">CS201</td>
+                                        <td class="fw-semibold">Lập trình Hướng đối tượng</td>
+                                        <td>3 Tín chỉ</td>
+                                        <td class="fw-bold text-success">68 câu</td>
+                                        <td><span class="badge bg-success">Đang giảng dạy</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-primary">DS102</td>
+                                        <td class="fw-semibold">Cấu trúc dữ liệu & Giải thuật</td>
+                                        <td>4 Tín chỉ</td>
+                                        <td class="fw-bold text-success">42 câu</td>
+                                        <td><span class="badge bg-success">Đang giảng dạy</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-primary">DB301</td>
+                                        <td class="fw-semibold">Cơ sở dữ liệu nâng cao</td>
+                                        <td>3 Tín chỉ</td>
+                                        <td class="fw-bold text-success">32 câu</td>
+                                        <td><span class="badge bg-success">Đang giảng dạy</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+

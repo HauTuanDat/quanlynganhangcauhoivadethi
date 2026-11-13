@@ -1,0 +1,595 @@
+@{
+    ViewData["Title"] = "Ngân hàng câu hỏi của tôi - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var selectedStatus = (ViewBag.SelectedStatus as string) ?? "all";
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-light d-md-none p-2 rounded-3 border" type="button">
+            <i class="fa-solid fa-bars text-secondary"></i>
+        </button>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-controller="Teacher" asp-action="Index" class="text-decoration-none text-secondary">Giảng viên</a></li>
+                <li class="breadcrumb-item active fw-semibold text-primary" aria-current="page">Ngân hàng câu hỏi của tôi</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <a asp-action="CreateQuestion" class="btn btn-primary fw-semibold rounded-3 px-3">
+            <i class="fa-solid fa-plus me-1"></i> Soạn câu hỏi mới
+        </a>
+        <a asp-action="Import" class="btn btn-outline-success fw-semibold rounded-3 px-3">
+            <i class="fa-solid fa-file-import me-1"></i> Import Word/Excel
+        </a>
+        <div class="d-flex align-items-center gap-2 border-start ps-3">
+            <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(ViewBag.FullName ?? "Giang Vien"))&background=059669&color=fff&bold=true"
+                 alt="Avatar" class="rounded-circle shadow-sm" width="36" height="36" />
+            <div class="d-none d-lg-block text-start">
+                <div class="fw-bold fs-7 text-dark line-height-1">@ViewBag.FullName</div>
+                <small class="text-success fw-medium fs-8">@ViewBag.Department</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="p-4 flex-grow-1" style="background-color: #f4f6fa;">
+    
+    <!-- Header Title & Description -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h4 class="fw-bold text-dark mb-1">
+                <i class="fa-solid fa-box-archive text-success me-2"></i>Ngân hàng câu hỏi của tôi
+            </h4>
+            <p class="text-secondary small mb-0">
+                Biên soạn, chỉnh sửa, gửi Trưởng bộ môn phê duyệt và theo dõi tiến trình duyệt câu hỏi
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary bg-white rounded-3 fs-7" onclick="alert('Đã xuất danh sách câu hỏi ra tệp Excel thành công!');">
+                <i class="fa-solid fa-file-excel text-success me-1"></i> Xuất Excel
+            </button>
+            <button class="btn btn-success rounded-3 fs-7 fw-semibold" id="btnBatchSubmit" onclick="submitBatchQuestions();" style="display: none;">
+                <i class="fa-solid fa-paper-plane me-1"></i> Gửi duyệt hàng loạt (<span id="selectedCount">0</span>)
+            </button>
+        </div>
+    </div>
+
+    <!-- Alert nếu có câu hỏi cần chỉnh sửa -->
+    <div class="alert alert-danger border-danger border-opacity-25 rounded-4 shadow-sm mb-4 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+            <div class="p-3 bg-danger bg-opacity-10 text-danger rounded-circle">
+                <i class="fa-solid fa-triangle-exclamation fs-4"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold text-danger mb-1">Thầy/Cô có 5 câu hỏi bị Trưởng bộ môn yêu cầu chỉnh sửa</h6>
+                <div class="small text-secondary">
+                    Vui lòng xem các nhận xét và phản hồi góp ý chi tiết từ Trưởng bộ môn để chỉnh sửa và gửi duyệt lại.
+                </div>
+            </div>
+        </div>
+        <a asp-action="Questions" asp-route-status="revision" class="btn btn-danger btn-sm px-3 py-2 fw-semibold rounded-3 text-nowrap">
+            Lọc 5 câu cần sửa &rarr;
+        </a>
+    </div>
+
+    <!-- Tab Filter Bar theo Trạng thái duyệt -->
+    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+        <div class="card-body p-2 d-flex flex-wrap align-items-center gap-2">
+            <a asp-action="Questions" asp-route-status="all" 
+               class="btn btn-sm rounded-pill px-3 py-2 fw-semibold @(selectedStatus == "all" ? "btn-dark" : "btn-light text-secondary")">
+                <i class="fa-solid fa-list me-1"></i> Tất cả (142)
+            </a>
+            <a asp-action="Questions" asp-route-status="revision" 
+               class="btn btn-sm rounded-pill px-3 py-2 fw-semibold @(selectedStatus == "revision" ? "btn-danger text-white" : "btn-light text-danger")">
+                <i class="fa-solid fa-triangle-exclamation me-1"></i> Cần chỉnh sửa (5)
+            </a>
+            <a asp-action="Questions" asp-route-status="pending" 
+               class="btn btn-sm rounded-pill px-3 py-2 fw-semibold @(selectedStatus == "pending" ? "btn-primary" : "btn-light text-secondary")">
+                <i class="fa-solid fa-hourglass-half me-1"></i> Chờ duyệt (22)
+            </a>
+            <a asp-action="Questions" asp-route-status="approved" 
+               class="btn btn-sm rounded-pill px-3 py-2 fw-semibold @(selectedStatus == "approved" ? "btn-success" : "btn-light text-secondary")">
+                <i class="fa-solid fa-circle-check me-1"></i> Đã duyệt (108)
+            </a>
+            <a asp-action="Questions" asp-route-status="draft" 
+               class="btn btn-sm rounded-pill px-3 py-2 fw-semibold @(selectedStatus == "draft" ? "btn-secondary text-white" : "btn-light text-secondary")">
+                <i class="fa-solid fa-file-pen me-1"></i> Bản nháp (7)
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter & Search Controls -->
+    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+        <div class="card-body p-3">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input type="text" class="form-control bg-light border-start-0" id="searchBox" 
+                               placeholder="Tìm kiếm theo mã câu hỏi hoặc từ khóa nội dung..." />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select bg-light">
+                        <option value="">-- Tất cả môn học --</option>
+                        <option value="CS201">Lập trình Hướng đối tượng (CS201)</option>
+                        <option value="DS102">Cấu trúc dữ liệu & GT (DS102)</option>
+                        <option value="DB301">Cơ sở dữ liệu nâng cao (DB301)</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select bg-light">
+                        <option value="">-- Mức độ Bloom --</option>
+                        <option value="1">Nhận biết</option>
+                        <option value="2">Thông hiểu</option>
+                        <option value="3">Vận dụng</option>
+                        <option value="4">Vận dụng cao</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select bg-light">
+                        <option value="">-- Loại câu hỏi --</option>
+                        <option value="mcq">Trắc nghiệm 1 đáp án</option>
+                        <option value="multi">Trắc nghiệm nhiều đáp án</option>
+                        <option value="tf">Đúng / Sai</option>
+                        <option value="essay">Tự luận</option>
+                    </select>
+                </div>
+                <div class="col-md-1 text-end">
+                    <button class="btn btn-light border w-100" title="Đặt lại bộ lọc" onclick="window.location.href='@Url.Action("Questions", "Teacher")';">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng Ngân hàng câu hỏi & Theo dõi kết quả duyệt -->
+    <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light fs-8 text-uppercase text-secondary">
+                        <tr>
+                            <th class="ps-4" style="width: 40px;">
+                                <input type="checkbox" class="form-check-input" id="checkAll" onchange="toggleSelectAll(this)" />
+                            </th>
+                            <th style="width: 140px;">Mã / Học phần</th>
+                            <th>Nội dung câu hỏi</th>
+                            <th style="width: 110px;">Mức độ</th>
+                            <th style="width: 90px;">CLO</th>
+                            <th style="width: 130px;">Trạng thái</th>
+                            <th style="width: 200px;">Góp ý từ TBM</th>
+                            <th class="text-end pe-4" style="width: 160px;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="fs-7">
+                        
+                        <!-- CÂU 1: CẦN CHỈNH SỬA (STATUS = REVISION) -->
+                        @if (selectedStatus == "all" || selectedStatus == "revision")
+                        {
+                            <tr class="table-danger bg-opacity-10 border-start border-4 border-danger">
+                                <td class="ps-4">
+                                    <input type="checkbox" class="form-check-input q-checkbox" value="105" onchange="onItemSelect()" />
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-danger">CS201-Q105</div>
+                                    <small class="text-muted">Lập trình OOP</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark mb-1">
+                                        Trong tính đa hình của lập trình C#, hàm ảo (virtual method) có đặc điểm nào dưới đây?
+                                    </div>
+                                    <div class="text-muted fs-8">
+                                        <span class="me-3"><i class="fa-regular fa-circle-dot text-success me-1"></i>A. Cho phép lớp con ghi đè (override)</span>
+                                        <span><i class="fa-regular fa-circle text-secondary me-1"></i>B. Bắt buộc lớp con phải triển khai...</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-warning text-dark">Thông hiểu</span></td>
+                                <td><span class="badge bg-light text-dark border">CLO2</span></td>
+                                <td>
+                                    <span class="badge bg-danger text-white py-1 px-2">
+                                        <i class="fa-solid fa-rotate-left me-1"></i> Cần chỉnh sửa
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="p-2 bg-white rounded-2 border border-danger border-opacity-50 text-danger fs-8">
+                                        <strong>ThS. Trần Hoàng Nam:</strong><br />
+                                        "Đáp án B và D bị trùng ý diễn đạt. Cần viết lại câu D rõ ràng hơn."
+                                        <a href="javascript:void(0);" class="text-decoration-underline fw-bold d-block mt-1" 
+                                           onclick="showFeedbackModal('CS201-Q105', 'ThS. Trần Hoàng Nam', 'Đáp án B và D bị trùng ý diễn đạt. Đề nghị thầy sửa lại phương án D để tránh gây nhầm lẫn khi sinh viên làm bài thi kết thúc học phần.');">
+                                            Xem chi tiết &rarr;
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <a asp-action="EditQuestion" asp-route-id="105" class="btn btn-sm btn-danger fw-semibold" title="Sửa lại theo góp ý">
+                                            <i class="fa-solid fa-pen-to-square me-1"></i> Sửa
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger" title="Xóa" onclick="if(confirm('Thầy/Cô có chắc chắn muốn xóa câu hỏi này không?')) alert('Đã xóa câu hỏi!');">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- CÂU 2: CẦN CHỈNH SỬA THỨ 2 -->
+                            <tr class="table-danger bg-opacity-10 border-start border-4 border-danger">
+                                <td class="ps-4">
+                                    <input type="checkbox" class="form-check-input q-checkbox" value="91" onchange="onItemSelect()" />
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-danger">DS102-Q091</div>
+                                    <small class="text-muted">CTDL & GT</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark mb-1">
+                                        Cho cây nhị phân tìm kiếm cân bằng (AVL Tree), sau khi chèn nút có giá trị khóa $k$ gây mất cân bằng tại nút $Z$, trường hợp xoay Trái - Phải (Left-Right) xảy ra khi nào?
+                                    </div>
+                                    <div class="text-muted fs-8">
+                                        <span class="badge bg-light text-primary border"><i class="fa-solid fa-square-root-variable me-1"></i>Chứa công thức LaTeX</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-primary text-white">Vận dụng</span></td>
+                                <td><span class="badge bg-light text-dark border">CLO3</span></td>
+                                <td>
+                                    <span class="badge bg-danger text-white py-1 px-2">
+                                        <i class="fa-solid fa-rotate-left me-1"></i> Cần chỉnh sửa
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="p-2 bg-white rounded-2 border border-danger border-opacity-50 text-danger fs-8">
+                                        <strong>TS. Lê Thị Mai:</strong><br />
+                                        "Cần bổ sung hình vẽ minh họa cây AVL trước và sau khi xoay để câu hỏi tường minh."
+                                    </div>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <a asp-action="EditQuestion" asp-route-id="91" class="btn btn-sm btn-danger fw-semibold" title="Sửa lại theo góp ý">
+                                            <i class="fa-solid fa-pen-to-square me-1"></i> Sửa
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger" title="Xóa" onclick="if(confirm('Xác nhận xóa câu hỏi?')) alert('Đã xóa!');">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                        <!-- CÂU 3: CHỜ DUYỆT (STATUS = PENDING) -->
+                        @if (selectedStatus == "all" || selectedStatus == "pending")
+                        {
+                            <tr class="border-start border-4 border-primary">
+                                <td class="ps-4">
+                                    <input type="checkbox" class="form-check-input q-checkbox" value="104" onchange="onItemSelect()" />
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-primary">CS201-Q104</div>
+                                    <small class="text-muted">Lập trình OOP</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark mb-1">
+                                        Nguyên lý Đóng gói (Encapsulation) trong OOP nhằm mục đích chính nào dưới đây?
+                                    </div>
+                                    <div class="text-muted fs-8">
+                                        <span>Trắc nghiệm 1 đáp án • Đã gửi ngày 10/11/2026</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-info text-dark">Nhận biết</span></td>
+                                <td><span class="badge bg-light text-dark border">CLO1</span></td>
+                                <td>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary py-1 px-2">
+                                        <i class="fa-regular fa-clock me-1"></i> Chờ duyệt
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-muted small fst-italic">Đang đợi Trưởng BM thẩm định</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-outline-secondary rounded-2" title="Thu hồi về bản nháp để chỉnh sửa trước khi TBM duyệt" 
+                                            onclick="if(confirm('Thầy/Cô có muốn thu hồi câu hỏi này về Bản nháp để sửa lại không?')) alert('Đã thu hồi câu hỏi về Bản nháp thành công!');">
+                                        <i class="fa-solid fa-arrow-rotate-left me-1"></i> Thu hồi
+                                    </button>
+                                    <button class="btn btn-sm btn-light border rounded-2 text-primary" title="Xem trước" onclick="previewQuestion('CS201-Q104');">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+
+                        <!-- CÂU 4: BẢN NHÁP (STATUS = DRAFT) -->
+                        @if (selectedStatus == "all" || selectedStatus == "draft")
+                        {
+                            <tr class="border-start border-4 border-secondary">
+                                <td class="ps-4">
+                                    <input type="checkbox" class="form-check-input q-checkbox draft-item" value="106" onchange="onItemSelect()" />
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-secondary">CS201-Q106</div>
+                                    <small class="text-muted">Lập trình OOP</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark mb-1">
+                                        Phân tích sự khác biệt cơ bản giữa Interface và Abstract Class trong ngôn ngữ C#. Khi nào nên sử dụng Interface?
+                                    </div>
+                                    <div class="text-muted fs-8">
+                                        <span>Tự luận • Bản nháp cá nhân • Chưa gửi duyệt</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-danger text-white">Vận dụng cao</span></td>
+                                <td><span class="badge bg-light text-dark border">CLO3</span></td>
+                                <td>
+                                    <span class="badge bg-secondary text-white py-1 px-2">
+                                        <i class="fa-solid fa-file-pen me-1"></i> Bản nháp
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-muted small fst-italic">Chưa gửi duyệt</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-success fw-semibold" title="Gửi Trưởng bộ môn phê duyệt" 
+                                                onclick="if(confirm('Xác nhận gửi câu hỏi CS201-Q106 lên Trưởng bộ môn duyệt?')) alert('Đã gửi duyệt thành công!');">
+                                            <i class="fa-solid fa-paper-plane me-1"></i> Gửi duyệt
+                                        </button>
+                                        <a asp-action="EditQuestion" asp-route-id="106" class="btn btn-sm btn-light border" title="Sửa">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger" title="Xóa" onclick="if(confirm('Xóa bản nháp này?')) alert('Đã xóa!');">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                        <!-- CÂU 5: ĐÃ DUYỆT (STATUS = APPROVED) -->
+                        @if (selectedStatus == "all" || selectedStatus == "approved")
+                        {
+                            <tr class="border-start border-4 border-success">
+                                <td class="ps-4">
+                                    <input type="checkbox" class="form-check-input q-checkbox" value="89" onchange="onItemSelect()" />
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-success">DS102-Q089</div>
+                                    <small class="text-muted">CTDL & GT</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark mb-1">
+                                        Trong trường hợp tốt nhất và trung bình, độ phức tạp thuật toán QuickSort là:
+                                    </div>
+                                    <div class="text-muted fs-8">
+                                        <span class="me-3 text-success fw-semibold"><i class="fa-solid fa-check me-1"></i>Đáp án đúng: $O(n \log n)$</span>
+                                        <span>Đã duyệt ngày 05/11/2026 bởi ThS. Trần Hoàng Nam</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-primary text-white">Vận dụng</span></td>
+                                <td><span class="badge bg-light text-dark border">CLO2</span></td>
+                                <td>
+                                    <span class="badge bg-success text-white py-1 px-2">
+                                        <i class="fa-solid fa-check me-1"></i> Đã duyệt
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-success small fw-medium"><i class="fa-solid fa-circle-check me-1"></i>Đạt chuẩn ngân hàng đề</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light border text-primary" title="Xem chi tiết câu hỏi" onclick="previewQuestion('DS102-Q089');">
+                                        <i class="fa-regular fa-eye me-1"></i> Xem
+                                    </button>
+                                    <button class="btn btn-sm btn-light border text-secondary" title="Nhân bản để tạo câu hỏi tương tự" onclick="alert('Đã nhân bản câu hỏi sang bản nháp mới!');">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- CÂU 6: ĐÃ DUYỆT THỨ 2 -->
+                            <tr class="border-start border-4 border-success">
+                                <td class="ps-4">
+                                    <input type="checkbox" class="form-check-input q-checkbox" value="42" onchange="onItemSelect()" />
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-success">DB301-Q042</div>
+                                    <small class="text-muted">Cơ sở dữ liệu</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark mb-1">
+                                        Khóa ngoại (Foreign Key) trong mô hình dữ liệu quan hệ dùng để đảm bảo ràng buộc toàn vẹn nào?
+                                    </div>
+                                    <div class="text-muted fs-8">
+                                        <span class="me-3 text-success fw-semibold"><i class="fa-solid fa-check me-1"></i>Đáp án: Toàn vẹn tham chiếu (Referential Integrity)</span>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-warning text-dark">Thông hiểu</span></td>
+                                <td><span class="badge bg-light text-dark border">CLO1</span></td>
+                                <td>
+                                    <span class="badge bg-success text-white py-1 px-2">
+                                        <i class="fa-solid fa-check me-1"></i> Đã duyệt
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-success small fw-medium"><i class="fa-solid fa-circle-check me-1"></i>Đạt chuẩn ngân hàng đề</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light border text-primary" title="Xem chi tiết câu hỏi" onclick="previewQuestion('DB301-Q042');">
+                                        <i class="fa-regular fa-eye me-1"></i> Xem
+                                    </button>
+                                    <button class="btn btn-sm btn-light border text-secondary" title="Nhân bản" onclick="alert('Đã nhân bản câu hỏi!');">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Table Pagination & Summary -->
+        <div class="card-footer bg-white border-0 py-3 px-4 d-flex flex-wrap justify-content-between align-items-center">
+            <div class="small text-muted">
+                Hiển thị <strong>1 - 6</strong> trong tổng số <strong>142</strong> câu hỏi của giảng viên
+            </div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODAL: XEM PHẢN HỒI GÓP Ý TỪ TRƯỞNG BỘ MÔN ==================== -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-danger text-white rounded-top-4">
+                <h6 class="modal-title fw-bold" id="feedbackTitle">
+                    <i class="fa-solid fa-comment-dots me-2"></i>Chi tiết góp ý của Trưởng bộ môn
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <div class="small text-muted">Người nhận xét:</div>
+                    <div class="fw-bold text-dark fs-6" id="feedbackAuthor">ThS. Trần Hoàng Nam (Trưởng bộ môn)</div>
+                </div>
+                <div class="mb-3">
+                    <div class="small text-muted">Nội dung yêu cầu chỉnh sửa:</div>
+                    <div class="p-3 bg-light rounded-3 border mt-1 text-dark" id="feedbackContent" style="white-space: pre-line;">
+                        <!-- Nội dung phản hồi sẽ được điền bằng JS -->
+                    </div>
+                </div>
+                <div class="alert alert-warning py-2 px-3 small rounded-3">
+                    <i class="fa-solid fa-circle-info me-1"></i> Sau khi chỉnh sửa, Thầy/Cô hãy bấm <strong>"Lưu & Gửi phê duyệt lại"</strong> để Trưởng bộ môn tiến hành duyệt lại câu hỏi.
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-0 rounded-bottom-4">
+                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Đóng</button>
+                <a asp-action="EditQuestion" asp-route-id="105" class="btn btn-danger rounded-3 fw-semibold">
+                    <i class="fa-solid fa-pen-to-square me-1"></i> Tiến hành chỉnh sửa ngay
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODAL: XEM TRƯỚC CÂU HỎI (PREVIEW) ==================== -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h6 class="modal-title fw-bold">
+                    <i class="fa-regular fa-eye me-2"></i>Xem trước câu hỏi (Question Preview)
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                    <div>
+                        <span class="badge bg-primary me-2" id="previewCode">CS201-Q104</span>
+                        <span class="text-secondary small">Môn: <strong>Lập trình Hướng đối tượng</strong></span>
+                    </div>
+                    <div>
+                        <span class="badge bg-info text-dark me-1">Nhận biết</span>
+                        <span class="badge bg-light text-dark border">CLO1</span>
+                    </div>
+                </div>
+                <div class="fw-bold fs-6 text-dark mb-3" id="previewText">
+                    Nguyên lý Đóng gói (Encapsulation) trong OOP nhằm mục đích chính nào dưới đây?
+                </div>
+                <div class="list-group mb-3">
+                    <div class="list-group-item d-flex align-items-center gap-2 border-success bg-success bg-opacity-10">
+                        <span class="badge bg-success rounded-circle">A</span>
+                        <span class="fw-bold text-success">Che giấu trạng thái nội tại của đối tượng và ngăn chặn truy cập trực tiếp từ bên ngoài (ĐÚNG)</span>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center gap-2">
+                        <span class="badge bg-light text-dark border rounded-circle">B</span>
+                        <span>Cho phép một lớp kế thừa các thuộc tính và phương thức từ lớp khác</span>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center gap-2">
+                        <span class="badge bg-light text-dark border rounded-circle">C</span>
+                        <span>Giúp một hàm có thể hoạt động khác nhau trên các kiểu dữ liệu khác nhau</span>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center gap-2">
+                        <span class="badge bg-light text-dark border rounded-circle">D</span>
+                        <span>Tự động giải phóng vùng nhớ khi đối tượng không còn được sử dụng</span>
+                    </div>
+                </div>
+                <div class="p-3 bg-light rounded-3 border">
+                    <div class="small fw-bold text-primary mb-1"><i class="fa-solid fa-lightbulb me-1"></i>Lời giải thích chi tiết:</div>
+                    <div class="small text-secondary">
+                        Nguyên lý đóng gói bảo vệ dữ liệu bên trong của đối tượng thông qua các access modifiers (private, protected) và chỉ cho phép tương tác qua các phương thức Getter/Setter công khai (public).
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-0 rounded-bottom-4">
+                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Toggle Select All Checkbox
+    function toggleSelectAll(master) {
+        const checkboxes = document.querySelectorAll('.q-checkbox');
+        checkboxes.forEach(cb => cb.checked = master.checked);
+        onItemSelect();
+    }
+
+    // On Item Checkbox Changed
+    function onItemSelect() {
+        const checkedItems = document.querySelectorAll('.q-checkbox:checked');
+        const count = checkedItems.length;
+        const btn = document.getElementById('btnBatchSubmit');
+        const countSpan = document.getElementById('selectedCount');
+        
+        if (count > 0) {
+            btn.style.display = 'inline-block';
+            countSpan.innerText = count;
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+
+    // Submit Batch Questions for Approval
+    function submitBatchQuestions() {
+        const checkedItems = document.querySelectorAll('.q-checkbox:checked');
+        if (confirm(`Thầy/Cô có chắc chắn muốn gửi ${checkedItems.length} câu hỏi đã chọn lên Trưởng bộ môn phê duyệt?`)) {
+            alert(`Đã gửi ${checkedItems.length} câu hỏi lên Trưởng bộ môn phê duyệt thành công!`);
+            location.reload();
+        }
+    }
+
+    // Show Feedback Modal
+    function showFeedbackModal(code, author, content) {
+        document.getElementById('feedbackTitle').innerHTML = `<i class="fa-solid fa-comment-dots me-2"></i>Góp ý câu ${code}`;
+        document.getElementById('feedbackAuthor').innerText = author;
+        document.getElementById('feedbackContent').innerText = content;
+        const modal = new bootstrap.Modal(document.getElementById('feedbackModal'));
+        modal.show();
+    }
+
+    // Preview Question
+    function previewQuestion(code) {
+        document.getElementById('previewCode').innerText = code;
+        const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+        modal.show();
+    }
+</script>
+}
+

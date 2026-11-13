@@ -4,8 +4,8 @@ using System.Security.Claims;
 
 namespace WebApplication1.Controllers
 {
-    // Bắt buộc phải đăng nhập mới được vào trang Quản trị Admin
-    [Authorize]
+    // Bắt buộc phải có quyền Admin mới được vào trang Quản trị Admin
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         public IActionResult Index()

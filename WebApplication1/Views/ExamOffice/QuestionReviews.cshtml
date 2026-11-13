@@ -1,0 +1,82 @@
+@{
+    ViewData["Title"] = "Thẩm định câu hỏi Cấp 2 - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a asp-controller="ExamOffice" asp-action="Index" class="text-decoration-none text-secondary">Khảo thí & ĐBCL</a></li>
+            <li class="breadcrumb-item active fw-bold" style="color: #e11d48;" aria-current="page">Thẩm định câu hỏi Cấp 2 (Vào Ngân hàng)</li>
+        </ol>
+    </nav>
+    <div>
+        <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold">
+            <i class="fa-solid fa-stamp me-1"></i> 18 câu chờ thẩm định
+        </span>
+    </div>
+</div>
+
+<div class="p-4" style="background-color: #f8fafc; min-height: calc(100vh - 75px);">
+    <!-- Alert nghiệp vụ khảo thí -->
+    <div class="alert alert-danger-subtle border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center gap-3 p-3">
+        <div class="fs-3 text-danger"><i class="fa-solid fa-certificate"></i></div>
+        <div>
+            <div class="fw-bold text-danger-emphasis">Quy trình Thẩm định Cấp 2 (Phòng Khảo thí):</div>
+            <small class="text-muted">
+                Câu hỏi sau khi được Phòng Khảo thí bấm <strong>Phê duyệt Cấp 2</strong> sẽ chuyển trạng thái sang <strong>Approved</strong> và chính thức đưa vào Ngân hàng câu hỏi của toàn trường để sử dụng cho các đợt sinh đề thi.
+            </small>
+        </div>
+    </div>
+
+    <!-- Question Cards for Approval -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 border-start border-4 border-danger">
+        <div class="card-header bg-white py-3 px-4 d-flex align-items-center justify-content-between border-bottom">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-dark fw-bold">#Q-1082</span>
+                <span class="badge bg-light text-dark border">Cơ sở dữ liệu (IT3020)</span>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Bloom: Thông hiểu</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle">
+                    <i class="fa-solid fa-check-double me-1"></i> Cấp 1 đã duyệt: PGS.TS. Trần Thị Mai
+                </span>
+            </div>
+            <small class="text-muted">Người soạn: <strong>ThS. Nguyễn Văn A</strong></small>
+        </div>
+        <div class="card-body p-4">
+            <p class="fs-6 text-dark mb-3">
+                Trong mô hình dữ liệu quan hệ, thuộc tính hoặc tập thuộc tính nào sau đây được chọn làm <strong>Khóa chính (Primary Key)</strong> phải thỏa mãn ràng buộc toàn vẹn thực thể nào?
+            </p>
+            <div class="row g-2 mb-3">
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded-3 border bg-light">A. Giá trị có thể trùng lặp nhưng không được rỗng.</div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded-3 border bg-success-subtle border-success text-success fw-semibold">
+                        <i class="fa-solid fa-check-circle me-1"></i> B. Giá trị phải duy nhất và không được phép chứa giá trị NULL. (Đáp án đúng)
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded-3 border bg-light">C. Giá trị phải là số nguyên tự tăng và bắt buộc tham chiếu đến bảng khác.</div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded-3 border bg-light">D. Mỗi bảng có thể có nhiều khóa chính độc lập với nhau.</div>
+                </div>
+            </div>
+
+            <!-- Nút duyệt cấp 2 -->
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                <span class="text-muted small"><i class="fa-solid fa-circle-check text-success me-1"></i> Đầy đủ metadata, đáp án và giải thích hợp lệ.</span>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-warning rounded-pill px-3 fw-semibold text-dark" onclick="alert('Yêu cầu Trưởng bộ môn hoặc Giảng viên hiệu chỉnh lại!')">
+                        <i class="fa-solid fa-rotate-left me-1"></i> Trả về Cấp 1
+                    </button>
+                    <button class="btn btn-danger rounded-pill px-4 fw-semibold shadow-sm" style="background-color: #be123c; border-color: #be123c;" onclick="alert('Thẩm định Cấp 2 thành công! Câu hỏi đã chính thức chuyển sang trạng thái Approved.')">
+                        <i class="fa-solid fa-stamp me-1"></i> Duyệt Cấp 2 (Approved)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

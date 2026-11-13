@@ -95,15 +95,23 @@ namespace WebApplication1.Controllers
             // BƯỚC 8: Chuyển vào ứng dụng theo phân quyền (Role-based Navigation)
             if (user.Role == "Admin")
             {
-                return RedirectToAction("Index", "Home"); // Hoặc trang Admin Dashboard sau này
+                return RedirectToAction("Index", "Admin");
+            }
+            else if (user.Role == "PhongKhaoThi")
+            {
+                return RedirectToAction("Index", "ExamOffice");
             }
             else if (user.Role == "TruongBoMon")
             {
-                return RedirectToAction("Index", "Home"); // Hoặc trang Duyệt câu hỏi sau này
+                return RedirectToAction("Index", "Departm   entHead");
+            }
+            else if (user.Role == "GiangVien")
+            {
+                return RedirectToAction("Index", "Teacher");
             }
 
             // Mặc định cho Giảng viên
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Teacher");
         }
 
         // =========================================================================

@@ -1,0 +1,488 @@
+@{
+    ViewData["Title"] = "Bàn làm việc Giảng viên - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Top Header Navbar (Header Height: 60-72px, Border: #E5E7EB) -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm top-header-navbar">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-light p-2 rounded-3 border sidebar-toggle-btn me-1" type="button" title="Thu gọn / Mở rộng menu (Ctrl + B)">
+            <i class="fa-solid fa-bars text-secondary"></i>
+        </button>
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a asp-controller="Teacher" asp-action="Index" class="text-decoration-none text-secondary">Giảng viên</a></li>
+                    <li class="breadcrumb-item active fw-bold text-success" aria-current="page">Bàn làm việc (Dashboard)</li>
+                </ol>
+            </nav>
+            <div class="d-flex align-items-center gap-2 text-muted small">
+                <span class="badge px-2 py-1 rounded-pill" style="background-color: #d1fae5; color: #065f46; font-weight: 600;">
+                    <i class="fa-solid fa-book-open me-1"></i> @(ViewBag.CurrentSubject ?? "Cơ sở dữ liệu nâng cao (IT3020)")
+                </span>
+                <span class="text-secondary">• Học kỳ 1 (2026-2027)</span>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2 px-3 py-1 bg-light rounded-pill border text-muted small">
+            <i class="fa-regular fa-calendar-days text-success"></i>
+            <span id="liveClock">Thứ Sáu, 14/11/2026 - 08:30</span>
+        </div>
+
+        <!-- Avatar Giảng viên -->
+        <div class="d-flex align-items-center gap-2 border-start ps-3">
+            <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=059669&color=fff&bold=true"
+                 alt="Avatar" class="rounded-circle shadow-sm" width="38" height="38" />
+            <div class="d-none d-lg-block text-start">
+                <div class="fw-bold fs-7 text-dark line-height-1">@ViewBag.FullName</div>
+                <small class="text-success fw-medium fs-8">Giảng viên bộ môn</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Area -->
+<div class="p-4" style="background-color: #f8fafc; min-height: calc(100vh - 75px);">
+
+    <!-- Banner Chào mừng Tinh gọn (Animation Fade In / Slide Up) -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden animate-fade-in-up" style="background: linear-gradient(135deg, #064e3b 0%, #047857 60%, #059669 100%);">
+        <div class="card-body p-4 text-white">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                <div>
+                    <span class="badge px-3 py-1 rounded-pill mb-2 text-uppercase fw-bold" style="background: rgba(255,255,255,0.2); font-size: 11px;">
+                        <i class="fa-solid fa-chalkboard-user me-1 text-warning"></i> Cổng Biên Soạn & Quản Lý Đề Thi
+                    </span>
+                    <h4 class="fw-bold mb-1">Xin chào, @ViewBag.FullName! 👋</h4>
+                    <p class="mb-0 text-white-50 small">
+                        Hệ thống ghi nhận bạn có <strong class="text-warning">15 câu hỏi</strong> cần chỉnh sửa lại theo phản hồi của Trưởng bộ môn.
+                    </p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="CreateQuestion" class="btn btn-warning fw-bold px-3 py-2 rounded-3 text-dark shadow-sm">
+                        <i class="fa-solid fa-plus me-1"></i> Soạn câu hỏi mới
+                    </a>
+                    <a asp-action="Import" class="btn btn-outline-light fw-semibold px-3 py-2 rounded-3">
+                        <i class="fa-solid fa-file-import me-1"></i> Nhập Word / Excel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 Khối Thẻ Chỉ Số Cốt Lõi (Có Count Up & Hover Elevation & Staggered Delay) -->
+    <div class="row g-3 mb-4">
+        <!-- 1. Cần chỉnh sửa (Ưu tiên số 1) -->
+        <div class="col-12 col-sm-6 col-xl-3 animate-fade-in-up delay-1">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white border-start border-4 border-danger">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-bold text-uppercase">Cần chỉnh sửa</span>
+                    <div class="rounded-3 p-2 bg-danger-subtle text-danger">
+                        <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-baseline gap-2">
+                    <h2 class="fw-bold text-danger mb-0 count-up" data-countup="15">15</h2>
+                    <span class="badge bg-danger text-white small">Sửa ngay</span>
+                </div>
+                <small class="text-muted mt-2 d-block">Trưởng bộ môn đã gửi góp ý</small>
+            </div>
+        </div>
+
+        <!-- 2. Chờ duyệt -->
+        <div class="col-12 col-sm-6 col-xl-3 animate-fade-in-up delay-2">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white border-start border-4 border-warning">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-bold text-uppercase">Đang chờ duyệt</span>
+                    <div class="rounded-3 p-2 bg-warning-subtle text-warning">
+                        <i class="fa-solid fa-hourglass-half fs-5"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-baseline gap-2">
+                    <h2 class="fw-bold text-dark mb-0 count-up" data-countup="42">42</h2>
+                    <span class="badge bg-warning-subtle text-warning small">Đang chờ TBM</span>
+                </div>
+                <small class="text-muted mt-2 d-block">Đang trong hàng đợi Cấp 1</small>
+            </div>
+        </div>
+
+        <!-- 3. Đã duyệt (Approved) -->
+        <div class="col-12 col-sm-6 col-xl-3 animate-fade-in-up delay-3">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white border-start border-4 border-success">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-bold text-uppercase">Đã vào ngân hàng</span>
+                    <div class="rounded-3 p-2 bg-success-subtle text-success">
+                        <i class="fa-solid fa-circle-check fs-5"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-baseline gap-2">
+                    <h2 class="fw-bold text-success mb-0 count-up" data-countup="80">80</h2>
+                    <span class="badge bg-success-subtle text-success small">80% Đạt chuẩn</span>
+                </div>
+                <small class="text-muted mt-2 d-block">Đã duyệt vào ngân hàng chính thức</small>
+            </div>
+        </div>
+
+        <!-- 4. Đề thi đã tạo -->
+        <div class="col-12 col-sm-6 col-xl-3 animate-fade-in-up delay-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white border-start border-4 border-primary">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted small fw-bold text-uppercase">Đề thi đã tạo</span>
+                    <div class="rounded-3 p-2 bg-primary-subtle text-primary">
+                        <i class="fa-solid fa-file-lines fs-5"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-baseline gap-2">
+                    <h2 class="fw-bold text-dark mb-0 count-up" data-countup="4">4</h2>
+                    <span class="badge bg-primary-subtle text-primary small">Đã sinh ma trận</span>
+                </div>
+                <small class="text-muted mt-2 d-block">Đã gửi thẩm định học thuật</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2 Biểu đồ Phân tích Cân đối (1 Ngang rộng + 1 Tròn) -->
+    <div class="row g-4 mb-4 animate-fade-in-up delay-3">
+        <!-- Biểu đồ 1: Số lượng câu hỏi theo từng chương môn học -->
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0 d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">Tiến độ Ngân hàng Câu hỏi theo Chương</h5>
+                        <small class="text-muted">Môn: Cơ sở dữ liệu nâng cao (IT3020) - 100 câu đã biên soạn</small>
+                    </div>
+                    <span class="badge px-3 py-2 rounded-pill fw-semibold bg-light text-dark border">
+                        Chỉ tiêu: 100 câu/kỳ
+                    </span>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div style="height: 270px; position: relative;">
+                        <canvas id="chapterProgressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Biểu đồ 2: Cơ cấu độ khó Bloom -->
+        <div class="col-12 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <h5 class="fw-bold text-dark mb-1">Cơ cấu Độ khó Bloom</h5>
+                    <small class="text-muted">Tỷ lệ phân bố 4 mức độ nhận thức</small>
+                </div>
+                <div class="card-body px-4 pb-4 d-flex flex-column align-items-center justify-content-center">
+                    <div style="height: 210px; width: 100%; position: relative;">
+                        <canvas id="bloomChart"></canvas>
+                    </div>
+                    <div class="d-flex flex-wrap justify-content-center gap-3 mt-3 small text-muted">
+                        <span><i class="fa-solid fa-circle text-primary"></i> Nhận biết (40)</span>
+                        <span><i class="fa-solid fa-circle text-success"></i> Thông hiểu (30)</span>
+                        <span><i class="fa-solid fa-circle text-warning"></i> Vận dụng (20)</span>
+                        <span><i class="fa-solid fa-circle text-danger"></i> V.Dụng cao (10)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KHU VỰC DANH SÁCH TINH GỌN BẰNG TAB (Thay vì xếp chồng 4 bảng) -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 animate-fade-in-up delay-4">
+        <!-- Navigation Tabs & Nút Thao tác Skeleton Loading -->
+        <div class="card-header bg-white border-bottom p-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <ul class="nav nav-pills gap-2" id="teacherDashboardTabs" role="tablist">
+                <!-- Tab 1: Cần chỉnh sửa -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-semibold rounded-pill px-3 py-2 d-flex align-items-center gap-2" id="tab-revision" data-bs-toggle="pill" data-bs-target="#content-revision" type="button" role="tab">
+                        <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                        <span>Cần chỉnh sửa</span>
+                        <span class="badge bg-danger rounded-pill">15</span>
+                    </button>
+                </li>
+
+                <!-- Tab 2: Câu hỏi nộp gần đây -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold rounded-pill px-3 py-2 d-flex align-items-center gap-2 text-secondary" id="tab-recent" data-bs-toggle="pill" data-bs-target="#content-recent" type="button" role="tab">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Câu hỏi nộp gần đây</span>
+                    </button>
+                </li>
+
+                <!-- Tab 3: Đề thi đã tạo -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold rounded-pill px-3 py-2 d-flex align-items-center gap-2 text-secondary" id="tab-exams" data-bs-toggle="pill" data-bs-target="#content-exams" type="button" role="tab">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <span>Đề thi của tôi</span>
+                        <span class="badge bg-primary rounded-pill">4</span>
+                    </button>
+                </li>
+
+                <!-- Tab 4: Việc cần làm -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold rounded-pill px-3 py-2 d-flex align-items-center gap-2 text-secondary" id="tab-todo" data-bs-toggle="pill" data-bs-target="#content-todo" type="button" role="tab">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span>Việc cần làm</span>
+                        <span class="badge bg-warning text-dark rounded-pill">5</span>
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Nút Demo Skeleton Loading -->
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-medium align-self-start align-self-md-auto" onclick="window.ExamBankSkeleton.simulateRefresh('#teacherDashboardTabContent .tab-pane.active tbody');" title="Hiển thị hiệu ứng Skeleton Loading khi tải dữ liệu">
+                <i class="fa-solid fa-arrows-rotate me-1"></i> Làm mới dữ liệu
+            </button>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="tab-content" id="teacherDashboardTabContent">
+                
+                <!-- NỘI DUNG TAB 1: CÂU HỎI CẦN SỬA ĐỔI (MẶC ĐỊNH MỞ) -->
+                <div class="tab-pane fade show active" id="content-revision" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-muted small text-uppercase">
+                                <tr>
+                                    <th class="ps-4">Mã câu hỏi</th>
+                                    <th>Nội dung tóm tắt</th>
+                                    <th>Chương học</th>
+                                    <th>Nhận xét từ Trưởng bộ môn</th>
+                                    <th class="text-end pe-4">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-danger bg-opacity-10">
+                                    <td class="ps-4 fw-bold text-danger">#CS-Q042</td>
+                                    <td>
+                                        <div class="fw-semibold text-dark text-truncate" style="max-width: 280px;">Tính đa hình và từ khóa virtual trong C#</div>
+                                        <small class="text-muted">Độ khó: Thông hiểu</small>
+                                    </td>
+                                    <td>Chương 3: Kế thừa & Đa hình</td>
+                                    <td>
+                                        <div class="small text-danger fw-medium" style="max-width: 320px;">
+                                            <i class="fa-solid fa-comment-dots me-1"></i>"Đáp án B và D bị trùng ý diễn đạt. Cần viết lại câu hỏi rõ ràng hơn."
+                                        </div>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a asp-action="EditQuestion" asp-route-id="42" class="btn btn-sm btn-danger rounded-pill px-3 fw-semibold">
+                                            <i class="fa-solid fa-pen-to-square me-1"></i> Sửa ngay
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <tr class="table-danger bg-opacity-10">
+                                    <td class="ps-4 fw-bold text-danger">#CS-Q058</td>
+                                    <td>
+                                        <div class="fw-semibold text-dark text-truncate" style="max-width: 280px;">Cú pháp truy vấn LINQ to Objects</div>
+                                        <small class="text-muted">Độ khó: Vận dụng</small>
+                                    </td>
+                                    <td>Chương 4: LINQ & Generic</td>
+                                    <td>
+                                        <div class="small text-danger fw-medium" style="max-width: 320px;">
+                                            <i class="fa-solid fa-comment-dots me-1"></i>"Cần bổ sung chuẩn đầu ra CLO2 và giải thích đoạn mã ngắn."
+                                        </div>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a asp-action="EditQuestion" asp-route-id="58" class="btn btn-sm btn-danger rounded-pill px-3 fw-semibold">
+                                            <i class="fa-solid fa-pen-to-square me-1"></i> Sửa ngay
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <tr class="table-danger bg-opacity-10">
+                                    <td class="ps-4 fw-bold text-danger">#CS-Q071</td>
+                                    <td>
+                                        <div class="fw-semibold text-dark text-truncate" style="max-width: 280px;">Câu Đúng/Sai về bộ gom rác Garbage Collector</div>
+                                        <small class="text-muted">Độ khó: Nhận biết</small>
+                                    </td>
+                                    <td>Chương 2: Quản lý bộ nhớ</td>
+                                    <td>
+                                        <div class="small text-danger fw-medium" style="max-width: 320px;">
+                                            <i class="fa-solid fa-comment-dots me-1"></i>"Mệnh đề chưa chặt chẽ, sinh viên dễ hiểu nhầm về Dispose và Finalize."
+                                        </div>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a asp-action="EditQuestion" asp-route-id="71" class="btn btn-sm btn-danger rounded-pill px-3 fw-semibold">
+                                            <i class="fa-solid fa-pen-to-square me-1"></i> Sửa ngay
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- NỘI DUNG TAB 2: CÂU HỎI NỘP GẦN ĐÂY -->
+                <div class="tab-pane fade" id="content-recent" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-muted small text-uppercase">
+                                <tr>
+                                    <th class="ps-4">Mã câu</th>
+                                    <th>Nội dung câu hỏi</th>
+                                    <th>Cấp độ Bloom</th>
+                                    <th>Ngày nộp</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="ps-4 fw-bold">#Q-1082</td>
+                                    <td>Khóa chính (Primary Key) trong mô hình dữ liệu quan hệ...</td>
+                                    <td><span class="badge bg-primary-subtle text-primary">Thông hiểu</span></td>
+                                    <td>13/11/2026</td>
+                                    <td><span class="badge bg-warning-subtle text-warning">Chờ TBM duyệt</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-4 fw-bold">#Q-1080</td>
+                                    <td>Truy vấn JOIN và subquery lồng nhau trong SQL Server...</td>
+                                    <td><span class="badge bg-success-subtle text-success">Đã duyệt</span></td>
+                                    <td>12/11/2026</td>
+                                    <td><span class="badge bg-success-subtle text-success">Đã vào ngân hàng</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- NỘI DUNG TAB 3: ĐỀ THI CỦA TÔI -->
+                <div class="tab-pane fade" id="content-exams" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-muted small text-uppercase">
+                                <tr>
+                                    <th class="ps-4">Mã đề thi</th>
+                                    <th>Tên kỳ thi / Môn học</th>
+                                    <th>Số mã đề con</th>
+                                    <th>Thời gian & Câu</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="ps-4 fw-bold">#EXAM-2026-01</td>
+                                    <td>Đề thi Giữa kỳ: Cơ sở dữ liệu nâng cao (IT3020)</td>
+                                    <td><span class="badge bg-light text-dark border">4 mã đề (101-104)</span></td>
+                                    <td>60 phút • 40 câu</td>
+                                    <td><span class="badge bg-success-subtle text-success">Đã Approved</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- NỘI DUNG TAB 4: VIỆC CẦN LÀM (TO-DO) -->
+                <div class="tab-pane fade p-4" id="content-todo" role="tabpanel">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="todo1" />
+                                <label class="form-check-label fw-semibold text-dark" for="todo1">
+                                    Hoàn thành chỉnh sửa 15 câu hỏi bị Trưởng bộ môn trả về
+                                </label>
+                            </div>
+                            <span class="badge bg-danger">Hạn: Hôm nay</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="todo2" />
+                                <label class="form-check-label fw-semibold text-dark" for="todo2">
+                                    Nộp ma trận đề thi Giữa kỳ học phần IT3020
+                                </label>
+                            </div>
+                            <span class="badge bg-warning text-dark">Hạn: 18/11/2026</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Live Clock
+    function updateClock() {
+        const now = new Date();
+        const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+        const dayName = days[now.getDay()];
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const el = document.getElementById('liveClock');
+        if (el) el.innerText = `${dayName}, ${day}/${month}/${year} - ${hours}:${minutes}`;
+    }
+    setInterval(updateClock, 1000);
+
+    // Biểu đồ 1: Tiến độ Ngân hàng Câu hỏi theo Chương (Bar Chart ngang đẹp mắt)
+    const ctxChap = document.getElementById('chapterProgressChart');
+    if (ctxChap) {
+        new Chart(ctxChap.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Chương 1: Quan hệ', 'Chương 2: Chuẩn hóa', 'Chương 3: SQL nâng cao', 'Chương 4: Index & Tối ưu', 'Chương 5: Giao dịch'],
+                datasets: [
+                    {
+                        label: 'Đã duyệt (Approved)',
+                        data: [20, 18, 24, 10, 8],
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Đang chờ duyệt',
+                        data: [3, 2, 4, 3, 3],
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Cần sửa đổi',
+                        data: [2, 5, 2, 4, 2],
+                        backgroundColor: '#ef4444',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { boxWidth: 12, font: { family: "'Segoe UI', sans-serif", size: 12 } }
+                    }
+                },
+                scales: {
+                    x: { stacked: true, grid: { display: false } },
+                    y: { stacked: true, beginAtZero: true, grid: { color: '#f1f5f9' } }
+                }
+            }
+        });
+    }
+
+    // Biểu đồ 2: Cơ cấu Độ khó Bloom (Doughnut Chart)
+    const ctxBloom = document.getElementById('bloomChart');
+    if (ctxBloom) {
+        new Chart(ctxBloom.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Nhận biết (40%)', 'Thông hiểu (30%)', 'Vận dụng (20%)', 'Vận dụng cao (10%)'],
+                datasets: [{
+                    data: [40, 30, 20, 10],
+                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '72%',
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+</script>
+}

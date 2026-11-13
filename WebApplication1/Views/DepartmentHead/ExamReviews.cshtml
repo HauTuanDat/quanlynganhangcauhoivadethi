@@ -1,0 +1,170 @@
+@{
+    ViewData["Title"] = "Thẩm định đề thi Cấp 1 - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a asp-controller="DepartmentHead" asp-action="Index" class="text-decoration-none text-secondary">Trưởng bộ môn</a></li>
+            <li class="breadcrumb-item active fw-bold" style="color: #6366f1;" aria-current="page">Thẩm định đề thi Cấp 1</li>
+        </ol>
+    </nav>
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-indigo-subtle text-indigo px-3 py-2 rounded-pill fw-bold" style="background-color: #e0e7ff; color: #4338ca;">
+            <i class="fa-solid fa-file-shield me-1"></i> 3 bộ đề đang chờ duyệt
+        </span>
+    </div>
+</div>
+
+<div class="p-4" style="background-color: #f8fafc; min-height: calc(100vh - 75px);">
+
+    <!-- Quy định thẩm định đề thi -->
+    <div class="alert alert-info border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center gap-3 p-3">
+        <div class="fs-3 text-info"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+            <div class="fw-bold">Tiêu chí thẩm định Đề thi Cấp 1 (Bộ môn):</div>
+            <small class="text-muted">
+                1. Khung ma trận phân bổ đúng chuẩn • 2. Các mã đề con trong cùng một đợt sinh <strong>tuyệt đối không được trùng lặp câu hỏi</strong> • 3. Đáp án phải khớp theo thứ tự xáo trộn phương án.
+            </small>
+        </div>
+    </div>
+
+    <!-- Danh sách Đề thi chờ duyệt -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 border-start border-4 border-primary">
+        <div class="card-header bg-white py-3 px-4 d-flex align-items-center justify-content-between border-bottom">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-primary fw-bold">#EXAM-2026-01</span>
+                    <h5 class="fw-bold text-dark mb-0">Đề thi Giữa kỳ: Cơ sở dữ liệu nâng cao (IT3020)</h5>
+                </div>
+                <small class="text-muted">
+                    Học kỳ 1 - Năm học 2026-2027 • Thời gian: <strong>60 phút</strong> • Thang điểm: <strong>10.0</strong> • Người tạo: <strong>TS. Lê Hoàng Nam</strong>
+                </small>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill fw-semibold">
+                    <i class="fa-solid fa-hourglass-half me-1"></i> Chờ duyệt Cấp 1
+                </span>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <!-- Ma trận đề thi -->
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-3">
+                    <div class="p-3 rounded-3 bg-light border text-center">
+                        <small class="text-muted d-block mb-1">Tổng số câu / 1 mã đề</small>
+                        <h4 class="fw-bold text-dark mb-0">40 câu</h4>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="p-3 rounded-3 bg-light border text-center">
+                        <small class="text-muted d-block mb-1">Số mã đề sinh</small>
+                        <h4 class="fw-bold text-primary mb-0">4 mã đề (101, 102, 103, 104)</h4>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="p-3 rounded-3 bg-light border text-center">
+                        <small class="text-muted d-block mb-1">Tổng câu hỏi sử dụng</small>
+                        <h4 class="fw-bold text-success mb-0">160 câu (Không trùng)</h4>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="p-3 rounded-3 bg-light border text-center">
+                        <small class="text-muted d-block mb-1">Kiểm tra trùng lặp</small>
+                        <span class="badge bg-success-subtle text-success mt-2 py-1 px-2 fw-semibold">
+                            <i class="fa-solid fa-shield-check me-1"></i> Đạt chuẩn: 0% trùng câu
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bảng phân bố ma trận Bloom -->
+            <h6 class="fw-bold text-dark mb-3">Phân bổ ma trận câu hỏi:</h6>
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered align-middle text-center small mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-start">Chương / Chủ đề</th>
+                            <th>Nhận biết (30%)</th>
+                            <th>Thông hiểu (40%)</th>
+                            <th>Vận dụng (20%)</th>
+                            <th>Vận dụng cao (10%)</th>
+                            <th>Tổng câu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-start fw-medium">Chương 1: Mô hình E-R & Quan hệ</td>
+                            <td>3 câu</td>
+                            <td>4 câu</td>
+                            <td>2 câu</td>
+                            <td>1 câu</td>
+                            <td class="fw-bold">10 câu</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start fw-medium">Chương 2: Phụ thuộc hàm & Chuẩn hóa</td>
+                            <td>3 câu</td>
+                            <td>4 câu</td>
+                            <td>2 câu</td>
+                            <td>1 câu</td>
+                            <td class="fw-bold">10 câu</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start fw-medium">Chương 3: Truy vấn SQL nâng cao</td>
+                            <td>4 câu</td>
+                            <td>5 câu</td>
+                            <td>2 câu</td>
+                            <td>1 câu</td>
+                            <td class="fw-bold">12 câu</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start fw-medium">Chương 4: Tối ưu hóa truy vấn & Index</td>
+                            <td>2 câu</td>
+                            <td>3 câu</td>
+                            <td>2 câu</td>
+                            <td>1 câu</td>
+                            <td class="fw-bold">8 câu</td>
+                        </tr>
+                    </tbody>
+                    <tfoot class="table-light fw-bold">
+                        <tr>
+                            <td class="text-start">Tổng cộng</td>
+                            <td>12 câu (3.0đ)</td>
+                            <td>16 câu (4.0đ)</td>
+                            <td>8 câu (2.0đ)</td>
+                            <td>4 câu (1.0đ)</td>
+                            <td>40 câu (10.0đ)</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Nút thao tác phê duyệt đề -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between pt-3 border-top gap-2">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                        <i class="fa-solid fa-eye me-1"></i> Xem trước mã 101
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                        <i class="fa-solid fa-eye me-1"></i> Xem trước mã 102
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                        <i class="fa-solid fa-eye me-1"></i> Xem đáp án
+                    </button>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-warning rounded-pill px-3 fw-semibold text-dark" onclick="alert('Đã gửi phản hồi yêu cầu điều chỉnh ma trận đề thi đến người tạo!')">
+                        <i class="fa-solid fa-rotate-left me-1"></i> Yêu cầu điều chỉnh
+                    </button>
+                    <button class="btn btn-success rounded-pill px-4 fw-semibold shadow-sm" onclick="alert('Đã duyệt đề Cấp 1! Đề thi được chuyển sang Phòng Khảo thí để duyệt Cấp 2 và phát hành.')">
+                        <i class="fa-solid fa-check-double me-1"></i> Duyệt Đề thi Cấp 1
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

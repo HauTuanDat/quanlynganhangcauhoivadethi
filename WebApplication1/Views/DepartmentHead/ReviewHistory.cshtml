@@ -1,0 +1,56 @@
+@{
+    ViewData["Title"] = "Lịch sử phê duyệt - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a asp-controller="DepartmentHead" asp-action="Index" class="text-decoration-none text-secondary">Trưởng bộ môn</a></li>
+            <li class="breadcrumb-item active fw-bold" style="color: #6366f1;" aria-current="page">Lịch sử phê duyệt học thuật</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="p-4" style="background-color: #f8fafc; min-height: calc(100vh - 75px);">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 px-4 border-bottom">
+            <h5 class="fw-bold text-dark mb-0">Nhật ký xử lý duyệt câu hỏi & đề thi</h5>
+            <small class="text-muted">Lưu vết toàn bộ quyết định thẩm định phục vụ kiểm toán và đảm bảo chất lượng</small>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="ps-4">Thời gian</th>
+                        <th>Loại mục</th>
+                        <th>Mã / Tên mục</th>
+                        <th>Giảng viên</th>
+                        <th>Quyết định</th>
+                        <th>Ghi chú / Nhận xét</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="ps-4 text-muted small">13/11/2026 09:30</td>
+                        <td><span class="badge bg-light text-dark border">Câu hỏi</span></td>
+                        <td class="fw-bold">#Q-1070</td>
+                        <td>ThS. Nguyễn Văn A</td>
+                        <td><span class="badge bg-success-subtle text-success">Đã phê duyệt Cấp 1</span></td>
+                        <td class="text-muted small">Nội dung đạt chuẩn, đã chuyển lên Phòng Khảo thí.</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 text-muted small">12/11/2026 15:45</td>
+                        <td><span class="badge bg-light text-dark border">Câu hỏi</span></td>
+                        <td class="fw-bold">#Q-1065</td>
+                        <td>ThS. Phạm Thu Trang</td>
+                        <td><span class="badge bg-warning-subtle text-warning">Yêu cầu sửa đổi</span></td>
+                        <td class="text-muted small">Độ khó thực tế là Thông hiểu, GV đang gán Vận dụng cao. Cần chỉnh lại.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

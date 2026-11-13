@@ -1,0 +1,381 @@
+@{
+    ViewData["Title"] = "Quản lý đợt in ấn & Niêm phong bàn giao - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a asp-controller="ExamOffice" asp-action="Index" class="text-decoration-none text-secondary">Khảo thí & ĐBCL</a></li>
+            <li class="breadcrumb-item active fw-bold" style="color: #e11d48;" aria-current="page">Quản lý Đợt in ấn & Niêm phong đề thi</li>
+        </ol>
+    </nav>
+    <button class="btn btn-sm btn-danger rounded-pill px-3 fw-semibold shadow-sm" style="background-color: #be123c; border-color: #be123c;" data-bs-toggle="modal" data-bs-target="#newPrintModal">
+        <i class="fa-solid fa-plus me-1"></i> Tạo đợt in mới
+    </button>
+</div>
+
+<div class="p-4" style="background-color: #f8fafc; min-height: calc(100vh - 75px);">
+
+    <!-- Khối thẻ thống kê nhanh về in ấn đề thi -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-info">
+                <small class="text-muted text-uppercase fw-semibold">Đợt in đang xử lý</small>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                    <h3 class="fw-bold text-dark mb-0">2</h3>
+                    <span class="badge bg-info-subtle text-info small">Đang chạy máy</span>
+                </div>
+                <small class="text-muted">Tổng 1,450 bản đề thi</small>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-warning">
+                <div class="d-flex align-items-center justify-content-between">
+                    <small class="text-muted text-uppercase fw-semibold">Đã niêm phong tủ bảo mật</small>
+                </div>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                    <h3 class="fw-bold text-dark mb-0">4</h3>
+                    <span class="badge bg-warning-subtle text-warning small">Đã dán tem</span>
+                </div>
+                <small class="text-muted">Chờ giờ bàn giao điểm thi</small>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-success">
+                <small class="text-muted text-uppercase fw-semibold">Đã bàn giao điểm thi</small>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                    <h3 class="fw-bold text-dark mb-0">8</h3>
+                    <span class="badge bg-success-subtle text-success small">Có biên bản ký nhận</span>
+                </div>
+                <small class="text-muted">Đã thi xong an toàn</small>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-primary">
+                <small class="text-muted text-uppercase fw-semibold">Tổng bản in đợt này</small>
+                <div class="d-flex align-items-baseline gap-2 mt-1">
+                    <h3 class="fw-bold text-dark mb-0">4,850</h3>
+                    <span class="badge bg-primary-subtle text-primary small">Bản A4</span>
+                </div>
+                <small class="text-muted">Kỳ thi Giữa kỳ Học kỳ 1</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng danh sách các Đợt in -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+        <div class="card-header bg-white py-3 px-4 border-bottom d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold text-dark mb-0">Danh sách các Đợt in Đề thi chính thức</h5>
+                <small class="text-muted">Quy trình: Yêu cầu in $\rightarrow$ Xử lý in ấn $\rightarrow$ Niêm phong túi đề $\rightarrow$ Ký biên bản bàn giao</small>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary active">Tất cả</button>
+                <button class="btn btn-sm btn-outline-secondary">Đang in</button>
+                <button class="btn btn-sm btn-outline-secondary">Đã niêm phong</button>
+                <button class="btn btn-sm btn-outline-secondary">Đã bàn giao</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="ps-4">Mã đợt in</th>
+                        <th>Học phần / Môn thi</th>
+                        <th>Số lượng & Mã đề</th>
+                        <th>Thời gian thi & Ca thi</th>
+                        <th>Người thực hiện in</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end pe-4">Biên bản bàn giao</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Đợt in 1 -->
+                    <tr>
+                        <td class="ps-4">
+                            <span class="badge bg-dark fw-bold">#PRINT-089</span>
+                            <small class="d-block text-muted mt-1">Túi số: 12-CSDL</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark">Cơ sở dữ liệu nâng cao (IT3020)</div>
+                            <small class="text-muted">Bộ đề: #EXAM-2026-01 (Đề chính thức)</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-primary">650 bản</div>
+                            <small class="text-muted">Mã 101, 102, 103, 104 (162 bản/mã)</small>
+                        </td>
+                        <td>
+                            <div class="small fw-semibold text-dark">20/11/2026 - Ca 1 (07:30)</div>
+                            <small class="text-muted">Giảng đường C2 - 12 phòng thi</small>
+                        </td>
+                        <td>
+                            <div class="small fw-medium text-dark">ThS. Hoàng Thị Lan</div>
+                            <small class="text-muted">Cán bộ in: KS. Lê Văn Bình</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle py-1 px-2">
+                                <i class="fa-solid fa-spinner fa-spin me-1"></i> Đang in ấn (Processing)
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#handoverModal">
+                                <i class="fa-solid fa-file-contract me-1"></i> Xem biên bản
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Đợt in 2 -->
+                    <tr>
+                        <td class="ps-4">
+                            <span class="badge bg-dark fw-bold">#PRINT-088</span>
+                            <small class="d-block text-muted mt-1">Túi số: 08-KTLT</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark">Kỹ thuật Lập trình C/C++ (IT1010)</div>
+                            <small class="text-muted">Bộ đề: #EXAM-2026-04 (Đề chính thức)</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-primary">800 bản</div>
+                            <small class="text-muted">Mã 201, 202, 203, 204 (200 bản/mã)</small>
+                        </td>
+                        <td>
+                            <div class="small fw-semibold text-dark">18/11/2026 - Ca 2 (09:30)</div>
+                            <small class="text-muted">Giảng đường D3 - 16 phòng thi</small>
+                        </td>
+                        <td>
+                            <div class="small fw-medium text-dark">ThS. Hoàng Thị Lan</div>
+                            <small class="text-muted">Cán bộ in: KS. Lê Văn Bình</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2">
+                                <i class="fa-solid fa-circle-check me-1"></i> Đã bàn giao (Delivered)
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#handoverModal">
+                                <i class="fa-solid fa-circle-check me-1"></i> Đã ký nhận
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Đợt in 3 -->
+                    <tr>
+                        <td class="ps-4">
+                            <span class="badge bg-dark fw-bold">#PRINT-087</span>
+                            <small class="d-block text-muted mt-1">Túi số: 05-KTMT</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark">Kiến trúc Máy tính (IT2020)</div>
+                            <small class="text-muted">Bộ đề: #EXAM-2026-05 (Đề chính thức)</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-primary">450 bản</div>
+                            <small class="text-muted">Mã 301, 302, 303 (150 bản/mã)</small>
+                        </td>
+                        <td>
+                            <div class="small fw-semibold text-dark">19/11/2026 - Ca 1 (07:30)</div>
+                            <small class="text-muted">Giảng đường B1 - 9 phòng thi</small>
+                        </td>
+                        <td>
+                            <div class="small fw-medium text-dark">ThS. Hoàng Thị Lan</div>
+                            <small class="text-muted">Cán bộ in: KS. Lê Văn Bình</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle py-1 px-2">
+                                <i class="fa-solid fa-box-archive me-1"></i> Đã niêm phong (Printed)
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#handoverModal">
+                                <i class="fa-solid fa-file-contract me-1"></i> Xem biên bản
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 1: Tạo Đợt in Đề thi mới -->
+<div class="modal fade" id="newPrintModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-dark">
+                    <i class="fa-solid fa-print text-danger me-2"></i> Lập Lệnh In Đề Thi & Niêm Phong Mới
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-bold text-dark">1. Chọn Bộ đề thi đã Được duyệt (Published) (*):</label>
+                        <select class="form-select">
+                            <option selected>#EXAM-2026-01: Cơ sở dữ liệu nâng cao (IT3020)</option>
+                            <option>#EXAM-2026-03: Lập trình Mạng & Phân tán (IT4010)</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-bold text-dark">2. Các mã đề con cần in:</label>
+                        <div class="d-flex gap-3 pt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="code101" checked />
+                                <label class="form-check-label small" for="code101">Mã 101</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="code102" checked />
+                                <label class="form-check-label small" for="code102">Mã 102</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="code103" checked />
+                                <label class="form-check-label small" for="code103">Mã 103</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="code104" checked />
+                                <label class="form-check-label small" for="code104">Mã 104</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-bold text-dark">3. Số lượng bản in chính thức (*):</label>
+                        <input type="number" class="form-control" value="650" />
+                        <small class="text-muted">Bao gồm 600 bản cho thí sinh và 50 bản dự phòng</small>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-bold text-dark">4. Ngày thi & Ca thi (*):</label>
+                        <input type="text" class="form-control" value="20/11/2026 - Ca 1 (07:30)" />
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-bold text-dark">5. Cán bộ Khảo thí chịu trách nhiệm in (*):</label>
+                        <input type="text" class="form-control" value="ThS. Hoàng Thị Lan (lanhoang@university.edu.vn)" readonly />
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small fw-bold text-dark">6. Kỹ thuật viên vận hành máy in:</label>
+                        <input type="text" class="form-control" value="KS. Lê Văn Bình" />
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label small fw-bold text-dark">7. Ghi chú niêm phong:</label>
+                        <textarea class="form-control" rows="2" placeholder="Ghi chú số lượng túi đề thi, phòng thi áp dụng..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="button" class="btn btn-danger rounded-pill px-4 fw-semibold" style="background-color: #be123c; border-color: #be123c;" data-bs-dismiss="modal" onclick="alert('Lệnh in mới đã được khởi tạo thành công!')">
+                    <i class="fa-solid fa-print me-1"></i> Bắt đầu Lệnh in
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Xem Biên bản Bàn giao Đề thi Niêm phong -->
+<div class="modal fade" id="handoverModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-bottom py-3 px-4">
+                <h5 class="modal-title fw-bold text-dark">
+                    <i class="fa-solid fa-file-contract text-primary me-2"></i> Biên bản Bàn giao Túi Đề thi Niêm phong
+                </h5>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary" onclick="window.print()">
+                        <i class="fa-solid fa-print me-1"></i> In biên bản (A4)
+                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <!-- Mô phỏng trang văn bản A4 -->
+                <div class="p-4 bg-white shadow-sm mx-auto" style="max-width: 700px; font-family: 'Times New Roman', serif; color: #000; border: 1px solid #ddd; line-height: 1.6;">
+                    <div class="d-flex justify-content-between text-center mb-4">
+                        <div style="width: 45%;">
+                            <div class="fw-bold" style="font-size: 13px;">TRƯỜNG ĐẠI HỌC CÔNG NGHỆ</div>
+                            <div class="fw-bold" style="font-size: 13px;">PHÒNG KHẢO THÍ & ĐBCL</div>
+                            <div style="font-size: 12px;">Số: 89/BB-KT-2026</div>
+                        </div>
+                        <div style="width: 50%;">
+                            <div class="fw-bold" style="font-size: 13px;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                            <div class="fw-bold" style="font-size: 13px; text-decoration: underline;">Độc lập - Tự do - Hạnh phúc</div>
+                            <div class="fst-italic" style="font-size: 12px; margin-top: 4px;">Hà Nội, ngày 20 tháng 11 năm 2026</div>
+                        </div>
+                    </div>
+
+                    <div class="text-center my-4">
+                        <h5 class="fw-bold mb-1" style="font-size: 16px;">BIÊN BẢN BÀN GIAO TÚI ĐỀ THI NIÊM PHONG</h5>
+                        <div class="fst-italic" style="font-size: 13px;">(V/v Bàn giao đề thi kết thúc học phần Học kỳ 1 năm học 2026 - 2027)</div>
+                    </div>
+
+                    <div style="font-size: 13.5px;">
+                        <p class="mb-2">Hôm nay, vào hồi 06 giờ 45 phút, ngày 20 tháng 11 năm 2026, tại Phòng Khảo thí & ĐBCL, chúng tôi gồm có:</p>
+                        
+                        <div class="mb-2">
+                            <strong>I. BÊN GIAO (Phòng Khảo thí & ĐBCL):</strong><br />
+                            - Bà: <strong>ThS. Hoàng Thị Lan</strong> – Chuyên viên Phòng Khảo thí & ĐBCL.<br />
+                            - Ông: <strong>KS. Lê Văn Bình</strong> – Cán bộ kỹ thuật phụ trách in ấn.
+                        </div>
+
+                        <div class="mb-3">
+                            <strong>II. BÊN NHẬN (Hội đồng coi thi / Trưởng Điểm thi):</strong><br />
+                            - Ông: <strong>TS. Phạm Quốc Hùng</strong> – Trưởng Điểm thi Giảng đường C2.<br />
+                            - Bà: <strong>ThS. Nguyễn Thu Hà</strong> – Thư ký Điểm thi.
+                        </div>
+
+                        <p class="mb-2"><strong>III. NỘI DUNG BÀN GIAO:</strong></p>
+                        <table class="table table-bordered text-center small mb-3">
+                            <thead>
+                                <tr class="table-light">
+                                    <th>STT</th>
+                                    <th>Môn thi</th>
+                                    <th>Mã đợt in</th>
+                                    <th>Số túi đề</th>
+                                    <th>Số bản đề</th>
+                                    <th>Tình trạng niêm phong</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Cơ sở dữ liệu nâng cao (IT3020)</td>
+                                    <td>#PRINT-089</td>
+                                    <td>12 túi</td>
+                                    <td>650 bản</td>
+                                    <td class="text-success fw-bold">Nguyên niêm phong, đủ tem bảo mật</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p class="mb-4">Hai bên đã cùng kiểm tra tình trạng niêm phong của từng túi đề thi và xác nhận tem bảo mật còn nguyên vẹn, không có dấu hiệu bị rách hay mở ra trước giờ quy định.</p>
+
+                        <div class="row text-center mt-4">
+                            <div class="col-6">
+                                <strong>ĐẠI DIỆN BÊN GIAO</strong><br />
+                                <em>(Ký và ghi rõ họ tên)</em><br /><br /><br /><br />
+                                <strong>ThS. Hoàng Thị Lan</strong>
+                            </div>
+                            <div class="col-6">
+                                <strong>ĐẠI DIỆN BÊN NHẬN</strong><br />
+                                <em>(Ký và ghi rõ họ tên)</em><br /><br /><br /><br />
+                                <strong>TS. Phạm Quốc Hùng</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top py-2 px-4">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>

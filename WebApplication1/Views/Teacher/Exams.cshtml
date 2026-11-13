@@ -1,0 +1,437 @@
+@{
+    ViewData["Title"] = "Quản lý đề thi - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool hasPermission = ViewBag.HasExamPermission ?? true;
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-light d-md-none p-2 rounded-3 border" type="button">
+            <i class="fa-solid fa-bars text-secondary"></i>
+        </button>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-controller="Teacher" asp-action="Index" class="text-decoration-none text-secondary">Giảng viên</a></li>
+                <li class="breadcrumb-item active fw-semibold text-primary" aria-current="page">Quản lý đề thi</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        
+        <!-- NÚT DEMO CHUYỂN ĐỔI QUYỀN HẠN TẠO ĐỀ THI -->
+        <div class="d-flex align-items-center gap-2 p-1 px-2 bg-light border rounded-pill">
+            <span class="fs-8 text-secondary fw-semibold">Demo quyền tạo đề:</span>
+            <a asp-action="Exams" asp-route-hasPermission="true" 
+               class="badge @(hasPermission ? "bg-success text-white" : "bg-white text-secondary border") text-decoration-none">
+                Có quyền
+            </a>
+            <a asp-action="Exams" asp-route-hasPermission="false" 
+               class="badge @(!hasPermission ? "bg-danger text-white" : "bg-white text-secondary border") text-decoration-none">
+                Chưa có quyền
+            </a>
+        </div>
+
+        @if (hasPermission)
+        {
+            <a asp-action="CreateExam" class="btn btn-success fw-bold rounded-3 px-3 shadow-sm">
+                <i class="fa-solid fa-plus me-1"></i> Tạo đề thi mới
+            </a>
+        }
+        else
+        {
+            <button class="btn btn-secondary rounded-3 px-3" disabled title="Tài khoản chưa được cấp quyền tạo đề">
+                <i class="fa-solid fa-lock me-1"></i> Tạo đề thi mới
+            </button>
+        }
+
+        <div class="d-flex align-items-center gap-2 border-start ps-3">
+            <img src="https://ui-avatars.com/api/?name=@(Uri.EscapeDataString(ViewBag.FullName ?? "Giang Vien"))&background=059669&color=fff&bold=true"
+                 alt="Avatar" class="rounded-circle shadow-sm" width="36" height="36" />
+            <div class="d-none d-lg-block text-start">
+                <div class="fw-bold fs-7 text-dark line-height-1">@ViewBag.FullName</div>
+                <small class="text-success fw-medium fs-8">@ViewBag.Department</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="p-4 flex-grow-1" style="background-color: #f4f6fa;">
+    
+    <!-- BANNER TRẠNG THÁI PHÂN QUYỀN TẠO ĐỀ THI -->
+    @if (hasPermission)
+    {
+        <!-- TRƯỜNG HỢP A: ĐÃ ĐƯỢC CẤP QUYỀN TẠO ĐỀ THI -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white overflow-hidden border-start border-4 border-success">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge bg-success px-3 py-1 rounded-pill">
+                                <i class="fa-solid fa-circle-check me-1"></i> Đã được cấp quyền tạo đề thi
+                            </span>
+                            <span class="badge bg-light text-secondary border">Quyết định số: 142/QĐ-CNTT</span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1">
+                            Thầy/Cô có toàn quyền tạo đề thi theo ma trận chuẩn từ ngân hàng câu hỏi đã duyệt
+                        </h5>
+                        <p class="text-secondary small mb-0">
+                            Cấp bởi: <strong>TS. Vũ Tiến Dũng (Trưởng khoa CNTT)</strong> • Hiệu lực: Học kỳ 1, Năm học 2026 - 2027.
+                            Thầy/Cô có thể sinh đề thi kết thúc học phần, xáo trộn mã đề, xuất đề kèm ma trận và phiếu trả lời trắc nghiệm.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <a asp-action="CreateExam" class="btn btn-success fw-bold px-4 py-2 rounded-3 shadow-sm">
+                            <i class="fa-solid fa-wand-magic-sparkles me-2"></i>Bắt đầu tạo đề thi ngay
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- TRƯỜNG HỢP B: CHƯA ĐƯỢC CẤP QUYỀN TẠO ĐỀ THI HỌC PHẦN -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white overflow-hidden border-start border-4 border-warning">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge bg-warning text-dark px-3 py-1 rounded-pill">
+                                <i class="fa-solid fa-lock me-1"></i> Giới hạn quyền hạn: Chưa cấp quyền tạo đề chính thức
+                            </span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1">
+                            Tài khoản hiện tại chưa được cấp quyền tạo đề thi kết thúc học phần chính thức
+                        </h5>
+                        <p class="text-secondary small mb-0">
+                            Theo quy định bảo mật của Nhà trường, chỉ các Giảng viên có quyết định phân công từ Ban Giám hiệu hoặc Trưởng bộ môn mới được cấp quyền rút đề thi chính thức. Thầy/Cô chỉ có thể tạo <strong>Đề kiểm tra thường kỳ / Đề luyện tập</strong> cho sinh viên của lớp học phần phụ trách.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <button class="btn btn-outline-primary fw-semibold px-3 py-2 rounded-3" onclick="requestPermission();">
+                            <i class="fa-solid fa-paper-plane me-2"></i>Gửi yêu cầu cấp quyền tạo đề
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- 4 KPI Stat Cards về Đề thi -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted fw-medium fs-7">Tổng số đề thi</span>
+                    <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
+                        <i class="fa-solid fa-file-lines fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold mb-0 text-dark">@(hasPermission ? "8" : "3")</h3>
+                <small class="text-muted">Đề kết thúc môn & kiểm tra</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted fw-medium fs-7">Đã bàn giao Khảo thí</span>
+                    <div class="p-2 rounded-3 bg-success bg-opacity-10 text-success">
+                        <i class="fa-solid fa-circle-check fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold mb-0 text-success">@(hasPermission ? "4" : "0")</h3>
+                <small class="text-muted">Sẵn sàng in sao niêm phong</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted fw-medium fs-7">Đề đang biên soạn</span>
+                    <div class="p-2 rounded-3 bg-warning bg-opacity-10 text-warning">
+                        <i class="fa-solid fa-pen-ruler fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold mb-0 text-warning-emphasis">@(hasPermission ? "2" : "1")</h3>
+                <small class="text-muted">Bản nháp ma trận</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-muted fw-medium fs-7">Số mã đề đã trộn</span>
+                    <div class="p-2 rounded-3 bg-info bg-opacity-10 text-info">
+                        <i class="fa-solid fa-shuffle fs-5"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold mb-0 text-info">@(hasPermission ? "16" : "4")</h3>
+                <small class="text-muted">Mã đề xáo trộn A, B, C, D</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Danh sách đề thi -->
+    <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden mb-4">
+        <div class="card-header bg-white border-0 py-3 px-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h6 class="fw-bold text-dark mb-0">
+                    <i class="fa-solid fa-list-check me-2 text-primary"></i>Danh sách đề thi do Thầy/Cô quản lý
+                </h6>
+                <small class="text-muted">Xem cấu trúc đề, tải file in đề, phiếu đáp án và ma trận đặc tả</small>
+            </div>
+            <div class="d-flex gap-2">
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control bg-light border-0" placeholder="Tìm tên đề thi, mã môn..." />
+                    <button class="btn btn-light border"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light fs-8 text-uppercase text-secondary">
+                        <tr>
+                            <th class="ps-4">Mã đề / Tên đề thi</th>
+                            <th>Môn học</th>
+                            <th>Thời gian & Số câu</th>
+                            <th>Mã đề hoán vị</th>
+                            <th>Loại đề thi</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end pe-4">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="fs-7">
+                        
+                        <!-- ĐỀ 1 -->
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-primary">EXAM-OOP-2026-01</div>
+                                <div class="text-dark fw-semibold">Đề thi kết thúc học phần Lập trình OOP (Kỳ 1)</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">CS201 - Lập trình OOP</span>
+                            </td>
+                            <td>
+                                <div><i class="fa-regular fa-clock me-1 text-muted"></i>60 phút</div>
+                                <small class="text-muted">40 câu trắc nghiệm</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-primary border">4 mã đề (101, 102, 103, 104)</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary text-white">Thi chính thức</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-success py-1 px-2"><i class="fa-solid fa-check me-1"></i>Đã nộp Khảo thí</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-light border text-primary" title="Xem đề thi" onclick="viewExam('EXAM-OOP-2026-01');">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-light border text-success" title="Tải Word / PDF" onclick="exportExam('EXAM-OOP-2026-01');">
+                                        <i class="fa-solid fa-file-arrow-down"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-light border text-secondary" title="In ma trận đề thi" onclick="alert('Đang tạo bản in ma trận đề thi...');">
+                                        <i class="fa-solid fa-print"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- ĐỀ 2 -->
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-primary">EXAM-DS-2026-MID</div>
+                                <div class="text-dark fw-semibold">Kiểm tra giữa kỳ Cấu trúc dữ liệu & GT</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">DS102 - CTDL & GT</span>
+                            </td>
+                            <td>
+                                <div><i class="fa-regular fa-clock me-1 text-muted"></i>45 phút</div>
+                                <small class="text-muted">30 câu trắc nghiệm</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-primary border">2 mã đề (201, 202)</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-info text-dark">Kiểm tra giữa kỳ</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-success py-1 px-2"><i class="fa-solid fa-check me-1"></i>Đã phê duyệt</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-light border text-primary" title="Xem đề" onclick="viewExam('EXAM-DS-2026-MID');">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-light border text-success" title="Tải Word / PDF" onclick="exportExam('EXAM-DS-2026-MID');">
+                                        <i class="fa-solid fa-file-arrow-down"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- ĐỀ 3 -->
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-secondary">EXAM-DB-2026-DRAFT</div>
+                                <div class="text-dark fw-semibold">Đề thi thử Cơ sở dữ liệu nâng cao</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">DB301 - Cơ sở dữ liệu</span>
+                            </td>
+                            <td>
+                                <div><i class="fa-regular fa-clock me-1 text-muted"></i>50 phút</div>
+                                <small class="text-muted">35 câu (Bản nháp)</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-secondary border">Chưa xáo trộn</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary text-white">Luyện tập lớp</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary py-1 px-2"><i class="fa-solid fa-file-pen me-1"></i>Bản nháp</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group">
+                                    @if (hasPermission)
+                                    {
+                                        <a asp-action="CreateExam" class="btn btn-sm btn-primary fw-semibold" title="Tiếp tục chỉnh sửa ma trận">
+                                            <i class="fa-solid fa-pen-to-square me-1"></i> Sửa
+                                        </a>
+                                    }
+                                    <button class="btn btn-sm btn-outline-danger" title="Xóa đề" onclick="if(confirm('Xác nhận xóa bản nháp đề thi này?')) alert('Đã xóa!');">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+            <small class="text-muted">Hiển thị 3 đề thi gần nhất</small>
+            @if (hasPermission)
+            {
+                <a asp-action="CreateExam" class="btn btn-sm btn-outline-success fw-semibold rounded-3">
+                    <i class="fa-solid fa-plus me-1"></i> Thiết lập đề thi mới
+                </a>
+            }
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL: XEM ĐỀ THI & MA TRẬN -->
+<div class="modal fade" id="examModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-dark text-white rounded-top-4">
+                <h6 class="modal-title fw-bold" id="examModalTitle">
+                    <i class="fa-solid fa-file-lines me-2"></i>Chi tiết đề thi kết thúc học phần
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="p-3 bg-light rounded-3 border mb-3">
+                    <div class="row g-2 fs-7">
+                        <div class="col-6"><strong>Môn học:</strong> Lập trình Hướng đối tượng (CS201)</div>
+                        <div class="col-6"><strong>Thời gian làm bài:</strong> 60 phút</div>
+                        <div class="col-6"><strong>Tổng số câu:</strong> 40 câu trắc nghiệm khách quan</div>
+                        <div class="col-6"><strong>Người tạo:</strong> ThS. Nguyễn Văn Hải</div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-dark mb-2">Ma trận phân bổ câu hỏi:</h6>
+                <div class="table-responsive mb-3">
+                    <table class="table table-bordered table-sm text-center align-middle fs-8">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>Chương / Mức độ</th>
+                                <th>Nhận biết (40%)</th>
+                                <th>Thông hiểu (30%)</th>
+                                <th>Vận dụng (20%)</th>
+                                <th>Vận dụng cao (10%)</th>
+                                <th>Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-start">Chương 1: Tổng quan OOP</td>
+                                <td>4 câu</td>
+                                <td>2 câu</td>
+                                <td>1 câu</td>
+                                <td>0 câu</td>
+                                <td class="fw-bold">7 câu</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start">Chương 2: Lớp và đối tượng</td>
+                                <td>6 câu</td>
+                                <td>4 câu</td>
+                                <td>2 câu</td>
+                                <td>1 câu</td>
+                                <td class="fw-bold">13 câu</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start">Chương 3: Kế thừa & Đa hình</td>
+                                <td>6 câu</td>
+                                <td>6 câu</td>
+                                <td>5 câu</td>
+                                <td>3 câu</td>
+                                <td class="fw-bold">20 câu</td>
+                            </tr>
+                            <tr class="table-light fw-bold">
+                                <td class="text-start">Tổng cộng</td>
+                                <td class="text-primary">16 câu</td>
+                                <td class="text-warning-emphasis">12 câu</td>
+                                <td class="text-success">8 câu</td>
+                                <td class="text-danger">4 câu</td>
+                                <td>40 câu (100%)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="alert alert-success py-2 px-3 small rounded-3">
+                    <i class="fa-solid fa-circle-check me-1"></i> Tất cả 40 câu hỏi trong đề đều đã đạt trạng thái <strong>"Đã duyệt chính thức"</strong> bởi Trưởng bộ môn.
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-0 rounded-bottom-4">
+                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-success rounded-3 fw-semibold" onclick="alert('Đang tải file Word (.docx) đề thi và đáp án...');">
+                    <i class="fa-solid fa-file-word me-1"></i> Tải đề thi Word (.docx)
+                </button>
+                <button type="button" class="btn btn-danger rounded-3 fw-semibold" onclick="alert('Đang xuất tệp PDF bản in niêm phong...');">
+                    <i class="fa-solid fa-file-pdf me-1"></i> Xuất PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function requestPermission() {
+        alert('Đã gửi yêu cầu cấp quyền tạo đề thi lên Trưởng bộ môn (ThS. Trần Hoàng Nam) và Trưởng khoa thành công!\nVui lòng chờ phản hồi phê duyệt.');
+    }
+
+    function viewExam(code) {
+        document.getElementById('examModalTitle').innerHTML = `<i class="fa-solid fa-file-lines me-2"></i>Chi tiết đề thi: ${code}`;
+        const modal = new bootstrap.Modal(document.getElementById('examModal'));
+        modal.show();
+    }
+
+    function exportExam(code) {
+        alert(`Bắt đầu xuất trọn bộ đề thi ${code}:\n- 04 Mã đề xáo trộn (Word & PDF)\n- Bảng đáp án chấm trắc nghiệm\n- Ma trận đặc tả đề thi.`);
+    }
+</script>
+}
+

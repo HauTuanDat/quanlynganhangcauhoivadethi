@@ -1,0 +1,504 @@
+@{
+    ViewData["Title"] = "Soạn thảo câu hỏi mới - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+        <a asp-action="Questions" class="btn btn-light rounded-3 border p-2 text-secondary" title="Quay lại ngân hàng">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-controller="Teacher" asp-action="Index" class="text-decoration-none text-secondary">Giảng viên</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Teacher" asp-action="Questions" class="text-decoration-none text-secondary">Ngân hàng của tôi</a></li>
+                <li class="breadcrumb-item active fw-semibold text-primary" aria-current="page">Soạn câu hỏi mới</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-outline-secondary rounded-3 px-3" onclick="openLivePreview();">
+            <i class="fa-regular fa-eye me-1"></i> Xem trước
+        </button>
+        <button type="button" class="btn btn-light border rounded-3 px-3 text-secondary" onclick="saveDraft();">
+            <i class="fa-regular fa-floppy-disk me-1"></i> Lưu bản nháp
+        </button>
+        <button type="button" class="btn btn-success fw-bold rounded-3 px-4 shadow-sm" onclick="saveAndSubmit();">
+            <i class="fa-solid fa-paper-plane me-1"></i> Lưu & Gửi phê duyệt
+        </button>
+    </div>
+</div>
+
+<!-- Main Form Container -->
+<div class="p-4 flex-grow-1" style="background-color: #f4f6fa;">
+    <div class="container-fluid" style="max-width: 1200px;">
+        
+        <form id="questionForm">
+            <div class="row g-4">
+                
+                <!-- CỘT TRÁI (8 CỘT): NỘI DUNG CÂU HỎI & CÁC ĐÁP ÁN -->
+                <div class="col-lg-8">
+                    
+                    <!-- Card 1: Nội dung câu hỏi -->
+                    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                        <div class="card-header bg-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+                            <h6 class="fw-bold text-dark mb-0">
+                                <i class="fa-solid fa-pen-nib me-2 text-primary"></i>Nội dung câu hỏi
+                            </h6>
+                            <span class="badge bg-light text-primary border">Bắt buộc</span>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            
+                            <!-- Mini Toolbar -->
+                            <div class="d-flex flex-wrap align-items-center gap-1 p-2 bg-light border rounded-3 mb-2">
+                                <button type="button" class="btn btn-sm btn-white border px-2" title="In đậm" onclick="insertFormat('**', '**')">
+                                    <i class="fa-solid fa-bold"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-white border px-2" title="In nghiêng" onclick="insertFormat('*', '*')">
+                                    <i class="fa-solid fa-italic"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-white border px-2" title="Gạch chân" onclick="insertFormat('<u>', '</u>')">
+                                    <i class="fa-solid fa-underline"></i>
+                                </button>
+                                <div class="vr my-1 mx-1"></div>
+                                <button type="button" class="btn btn-sm btn-white border px-2 text-primary" title="Chèn công thức toán LaTeX" onclick="insertLatex()">
+                                    <i class="fa-solid fa-square-root-variable me-1"></i>LaTeX
+                                </button>
+                                <button type="button" class="btn btn-sm btn-white border px-2 text-success" title="Chèn đoạn mã Code" onclick="insertFormat('```\n', '\n```')">
+                                    <i class="fa-solid fa-code me-1"></i>Code
+                                </button>
+                                <button type="button" class="btn btn-sm btn-white border px-2" title="Chèn bảng biểu" onclick="insertTable()">
+                                    <i class="fa-solid fa-table"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-white border px-2 text-info" title="Chèn hình ảnh" onclick="document.getElementById('questionImageInput').click();">
+                                    <i class="fa-regular fa-image me-1"></i>Hình ảnh
+                                </button>
+                            </div>
+
+                            <!-- Textarea câu hỏi -->
+                            <div class="mb-3">
+                                <textarea class="form-control" id="questionContent" rows="5" 
+                                          placeholder="Nhập nội dung câu hỏi tại đây... Hỗ trợ gõ công thức toán học dạng LaTeX ví dụ: $f(x) = \frac{a}{b} \cdot \sqrt{x}$ hoặc mã code chương trình." style="font-size: 15px;"></textarea>
+                            </div>
+
+                            <!-- Khu vực Đính kèm hình ảnh minh họa cho câu hỏi -->
+                            <input type="file" id="questionImageInput" class="d-none" accept="image/*" onchange="previewQuestionImage(event)" />
+                            <div id="imagePreviewContainer" class="p-3 bg-light rounded-3 border d-none position-relative mb-2">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="small fw-bold text-secondary"><i class="fa-solid fa-paperclip me-1"></i>Hình ảnh minh họa đính kèm:</span>
+                                    <button type="button" class="btn btn-sm btn-outline-danger p-1 py-0 rounded-circle" onclick="removeQuestionImage()">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                                <img id="previewImg" src="#" alt="Preview" class="img-fluid rounded border" style="max-height: 200px;" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Danh sách các đáp án lựa chọn -->
+                    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4" id="answersCard">
+                        <div class="card-header bg-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">
+                                    <i class="fa-solid fa-list-ol me-2 text-success"></i>Phương án trả lời (Đáp án)
+                                </h6>
+                                <small class="text-muted">Tích chọn vào nút tròn để chỉ định đáp án đúng của câu hỏi</small>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-3" onclick="addAnswerOption()">
+                                <i class="fa-solid fa-plus me-1"></i> Thêm phương án
+                            </button>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            
+                            <div id="optionsList" class="d-flex flex-column gap-3">
+                                
+                                <!-- Phương án A -->
+                                <div class="p-3 rounded-3 border answer-box border-success bg-success bg-opacity-10" id="opt_A">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input correct-radio" type="radio" name="correctAnswer" id="radio_A" value="A" checked onchange="onRadioChange('A')" />
+                                        </div>
+                                        <div class="badge bg-success rounded-circle p-2 fs-7" style="width: 28px; height: 28px;">A</div>
+                                        <div class="flex-grow-1">
+                                            <input type="text" class="form-control bg-white" id="text_A" placeholder="Nhập nội dung đáp án A..." 
+                                                   value="Cho phép lớp dẫn xuất (lớp con) ghi đè (override) lại cài đặt của phương thức" />
+                                        </div>
+                                        <button type="button" class="btn btn-light border text-danger btn-sm rounded-2" title="Xóa phương án" onclick="removeOption('opt_A')">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                    <div class="mt-2 ps-5 small text-success fw-bold">
+                                        <i class="fa-solid fa-circle-check me-1"></i>Đáp án chính xác
+                                    </div>
+                                </div>
+
+                                <!-- Phương án B -->
+                                <div class="p-3 rounded-3 border answer-box bg-white" id="opt_B">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input correct-radio" type="radio" name="correctAnswer" id="radio_B" value="B" onchange="onRadioChange('B')" />
+                                        </div>
+                                        <div class="badge bg-light text-dark border rounded-circle p-2 fs-7" style="width: 28px; height: 28px;">B</div>
+                                        <div class="flex-grow-1">
+                                            <input type="text" class="form-control" id="text_B" placeholder="Nhập nội dung đáp án B..." 
+                                                   value="Ngăn chặn các lớp con không được phép kế thừa phương thức này" />
+                                        </div>
+                                        <button type="button" class="btn btn-light border text-danger btn-sm rounded-2" title="Xóa phương án" onclick="removeOption('opt_B')">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Phương án C -->
+                                <div class="p-3 rounded-3 border answer-box bg-white" id="opt_C">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input correct-radio" type="radio" name="correctAnswer" id="radio_C" value="C" onchange="onRadioChange('C')" />
+                                        </div>
+                                        <div class="badge bg-light text-dark border rounded-circle p-2 fs-7" style="width: 28px; height: 28px;">C</div>
+                                        <div class="flex-grow-1">
+                                            <input type="text" class="form-control" id="text_C" placeholder="Nhập nội dung đáp án C..." 
+                                                   value="Bắt buộc mọi lớp con phải triển khai lại, nếu không sẽ bị lỗi biên dịch" />
+                                        </div>
+                                        <button type="button" class="btn btn-light border text-danger btn-sm rounded-2" title="Xóa phương án" onclick="removeOption('opt_C')">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Phương án D -->
+                                <div class="p-3 rounded-3 border answer-box bg-white" id="opt_D">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input correct-radio" type="radio" name="correctAnswer" id="radio_D" value="D" onchange="onRadioChange('D')" />
+                                        </div>
+                                        <div class="badge bg-light text-dark border rounded-circle p-2 fs-7" style="width: 28px; height: 28px;">D</div>
+                                        <div class="flex-grow-1">
+                                            <input type="text" class="form-control" id="text_D" placeholder="Nhập nội dung đáp án D..." 
+                                                   value="Chỉ cho phép gọi phương thức từ bên trong chính lớp cha đó" />
+                                        </div>
+                                        <button type="button" class="btn btn-light border text-danger btn-sm rounded-2" title="Xóa phương án" onclick="removeOption('opt_D')">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Giải thích chi tiết & Hướng dẫn chấm -->
+                    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                        <div class="card-header bg-white border-0 py-3 px-4">
+                            <h6 class="fw-bold text-dark mb-0">
+                                <i class="fa-solid fa-lightbulb me-2 text-warning"></i>Lời giải thích chi tiết & Căn cứ đáp án
+                            </h6>
+                            <small class="text-muted">Căn cứ để Trưởng bộ môn thẩm định và cung cấp cho sinh viên sau khi thi</small>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            <textarea class="form-control" id="explanationText" rows="3" 
+                                      placeholder="Nhập lời giải thích tại sao đáp án trên là đúng, trích dẫn giáo trình hoặc tài liệu tham khảo..."></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CỘT PHẢI (4 CỘT): PHÂN LOẠI, MỨC ĐỘ BLOOM, CLO & THIẾT LẬP -->
+                <div class="col-lg-4">
+                    
+                    <!-- Card Thiết lập thuộc tính câu hỏi -->
+                    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                        <div class="card-header bg-white border-0 py-3 px-4">
+                            <h6 class="fw-bold text-dark mb-0">
+                                <i class="fa-solid fa-sliders me-2 text-primary"></i>Thông tin phân loại
+                            </h6>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            
+                            <!-- 1. Chọn Môn học -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-dark">
+                                    Học phần / Môn học <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select bg-light" id="subjectSelect">
+                                    <option value="CS201" selected>Lập trình Hướng đối tượng (CS201)</option>
+                                    <option value="DS102">Cấu trúc dữ liệu & GT (DS102)</option>
+                                    <option value="DB301">Cơ sở dữ liệu nâng cao (DB301)</option>
+                                </select>
+                            </div>
+
+                            <!-- 2. Chọn Chương / Chủ đề -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-dark">
+                                    Chương / Chủ đề <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select bg-light" id="topicSelect">
+                                    <option value="1">Chương 1: Tổng quan về OOP</option>
+                                    <option value="2">Chương 2: Lớp và Đối tượng</option>
+                                    <option value="3" selected>Chương 3: Tính Kế thừa & Đa hình</option>
+                                    <option value="4">Chương 4: Xử lý ngoại lệ & Generic</option>
+                                </select>
+                            </div>
+
+                            <!-- 3. Loại câu hỏi -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-dark">
+                                    Loại câu hỏi <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select bg-light" id="questionTypeSelect">
+                                    <option value="mcq" selected>Trắc nghiệm 1 đáp án đúng (Single Choice)</option>
+                                    <option value="multi">Trắc nghiệm nhiều đáp án (Multiple Choice)</option>
+                                    <option value="tf">Đúng / Sai (True / False)</option>
+                                    <option value="essay">Tự luận (Essay / Tự luận ngắn)</option>
+                                </select>
+                            </div>
+
+                            <!-- 4. Mức độ nhận thức (Thang Bloom) -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-dark">
+                                    Mức độ nhận thức (Bloom) <span class="text-danger">*</span>
+                                </label>
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="form-check p-2 border rounded-3 bg-light">
+                                        <input class="form-check-input ms-1" type="radio" name="bloomLevel" id="bloom1" value="1" />
+                                        <label class="form-check-label ms-2 fs-7 fw-semibold text-info" for="bloom1">
+                                            <i class="fa-solid fa-circle-info me-1"></i> 1. Nhận biết (Remembering)
+                                        </label>
+                                    </div>
+                                    <div class="form-check p-2 border rounded-3 bg-light border-warning border-opacity-50">
+                                        <input class="form-check-input ms-1" type="radio" name="bloomLevel" id="bloom2" value="2" checked />
+                                        <label class="form-check-label ms-2 fs-7 fw-semibold text-warning-emphasis" for="bloom2">
+                                            <i class="fa-solid fa-lightbulb me-1"></i> 2. Thông hiểu (Understanding)
+                                        </label>
+                                    </div>
+                                    <div class="form-check p-2 border rounded-3 bg-light">
+                                        <input class="form-check-input ms-1" type="radio" name="bloomLevel" id="bloom3" value="3" />
+                                        <label class="form-check-label ms-2 fs-7 fw-semibold text-success" for="bloom3">
+                                            <i class="fa-solid fa-gear me-1"></i> 3. Vận dụng (Applying)
+                                        </label>
+                                    </div>
+                                    <div class="form-check p-2 border rounded-3 bg-light">
+                                        <input class="form-check-input ms-1" type="radio" name="bloomLevel" id="bloom4" value="4" />
+                                        <label class="form-check-label ms-2 fs-7 fw-semibold text-danger" for="bloom4">
+                                            <i class="fa-solid fa-fire me-1"></i> 4. Vận dụng cao (Analyzing/Creating)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 5. Chuẩn đầu ra (CLO) -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-dark">
+                                    Chuẩn đầu ra môn học (CLO) <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select bg-light" id="cloSelect">
+                                    <option value="CLO1">CLO1 - Hiểu các khái niệm nền tảng về OOP</option>
+                                    <option value="CLO2" selected>CLO2 - Vận dụng kế thừa và đa hình trong thiết kế</option>
+                                    <option value="CLO3">CLO3 - Phân tích kiến trúc mã nguồn hướng đối tượng</option>
+                                </select>
+                            </div>
+
+                            <!-- 6. Điểm số mặc định -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-dark">Điểm số đề xuất</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control bg-light" value="0.25" step="0.25" min="0.25" />
+                                    <span class="input-group-text bg-light text-muted">Điểm</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Card Hướng dẫn quy chuẩn soạn câu hỏi -->
+                    <div class="card border-0 shadow-sm rounded-4 bg-white p-3">
+                        <h6 class="fw-bold text-dark mb-2">
+                            <i class="fa-solid fa-circle-question me-2 text-info"></i>Quy chuẩn kiểm duyệt
+                        </h6>
+                        <ul class="ps-3 small text-secondary mb-0">
+                            <li class="mb-1">Câu hỏi phải phân định rõ ràng 4 phương án, không dùng cụm từ "Tất cả đều đúng/sai".</li>
+                            <li class="mb-1">Phải gắn đúng chuẩn đầu ra CLO và mức độ tư duy Bloom.</li>
+                            <li class="mb-1">Sau khi bấm <strong>"Gửi phê duyệt"</strong>, câu hỏi sẽ được gửi thẳng tới Trưởng bộ môn để thẩm định.</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- ==================== MODAL PREVIEW TRỰC TIẾP ==================== -->
+<div class="modal fade" id="livePreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-success text-white rounded-top-4">
+                <h6 class="modal-title fw-bold">
+                    <i class="fa-solid fa-laptop-code me-2"></i>Xem trước câu hỏi khi sinh viên làm bài
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                    <span class="badge bg-primary">Lập trình OOP • CS201</span>
+                    <span class="badge bg-warning text-dark">Thông hiểu • CLO2</span>
+                </div>
+                <div class="fw-bold fs-6 text-dark mb-3" id="livePreviewQuestionText">
+                    <!-- Text Preview -->
+                </div>
+                <div id="livePreviewOptions" class="list-group mb-3">
+                    <!-- Options Preview -->
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-0 rounded-bottom-4">
+                <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Format Text Insertion
+    function insertFormat(startTag, endTag) {
+        const textarea = document.getElementById('questionContent');
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = textarea.value;
+        const selected = text.substring(start, end);
+        textarea.value = text.substring(0, start) + startTag + (selected || 'nội dung') + endTag + text.substring(end);
+        textarea.focus();
+    }
+
+    // Insert LaTeX Formula
+    function insertLatex() {
+        const formula = prompt("Nhập công thức toán học LaTeX:", "\\frac{a}{b} \\cdot \\sqrt{x^2 + y^2}");
+        if (formula) {
+            insertFormat('$' + formula + '$', '');
+        }
+    }
+
+    // Insert Table template
+    function insertTable() {
+        const tableText = "\n| Cột 1 | Cột 2 |\n|-------|-------|\n| Dữ liệu 1 | Dữ liệu 2 |\n";
+        insertFormat(tableText, '');
+    }
+
+    // Preview Uploaded Image
+    function previewQuestionImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreviewContainer').classList.remove('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeQuestionImage() {
+        document.getElementById('questionImageInput').value = "";
+        document.getElementById('imagePreviewContainer').classList.add('d-none');
+    }
+
+    // Radio Option Change
+    function onRadioChange(key) {
+        const boxes = document.querySelectorAll('.answer-box');
+        boxes.forEach(b => {
+            b.classList.remove('border-success', 'bg-success', 'bg-opacity-10');
+            b.classList.add('bg-white');
+            const note = b.querySelector('.small.text-success');
+            if (note) note.remove();
+        });
+
+        const activeBox = document.getElementById('opt_' + key);
+        if (activeBox) {
+            activeBox.classList.add('border-success', 'bg-success', 'bg-opacity-10');
+            activeBox.classList.remove('bg-white');
+            const note = document.createElement('div');
+            note.className = 'mt-2 ps-5 small text-success fw-bold';
+            note.innerHTML = '<i class="fa-solid fa-circle-check me-1"></i>Đáp án chính xác';
+            activeBox.appendChild(note);
+        }
+    }
+
+    // Add Option
+    let optionLetters = ['E', 'F', 'G'];
+    let optionIndex = 0;
+    function addAnswerOption() {
+        if (optionIndex >= optionLetters.length) {
+            alert('Đã đạt tối đa số phương án cho câu hỏi này!');
+            return;
+        }
+        const letter = optionLetters[optionIndex++];
+        const html = `
+            <div class="p-3 rounded-3 border answer-box bg-white" id="opt_${letter}">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="form-check m-0">
+                        <input class="form-check-input correct-radio" type="radio" name="correctAnswer" id="radio_${letter}" value="${letter}" onchange="onRadioChange('${letter}')" />
+                    </div>
+                    <div class="badge bg-light text-dark border rounded-circle p-2 fs-7" style="width: 28px; height: 28px;">${letter}</div>
+                    <div class="flex-grow-1">
+                        <input type="text" class="form-control" id="text_${letter}" placeholder="Nhập nội dung đáp án ${letter}..." />
+                    </div>
+                    <button type="button" class="btn btn-light border text-danger btn-sm rounded-2" onclick="removeOption('opt_${letter}')">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>`;
+        document.getElementById('optionsList').insertAdjacentHTML('beforeend', html);
+    }
+
+    function removeOption(id) {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+    }
+
+    // Save as Draft
+    function saveDraft() {
+        alert('Đã lưu câu hỏi vào danh mục "Bản nháp" thành công! Thầy/Cô có thể tiếp tục chỉnh sửa bất kỳ lúc nào.');
+        window.location.href = '@Url.Action("Questions", "Teacher")';
+    }
+
+    // Save & Submit for Approval
+    function saveAndSubmit() {
+        const content = document.getElementById('questionContent').value.trim();
+        if (!content) {
+            alert('Vui lòng nhập nội dung câu hỏi trước khi gửi duyệt!');
+            document.getElementById('questionContent').focus();
+            return;
+        }
+        alert('Đã gửi câu hỏi lên Trưởng bộ môn phê duyệt thành công! Trạng thái: Chờ thẩm định.');
+        window.location.href = '@Url.Action("Questions", "Teacher")';
+    }
+
+    // Open Live Preview
+    function openLivePreview() {
+        const content = document.getElementById('questionContent').value.trim() || "Trong tính đa hình của lập trình C#, hàm ảo (virtual method) có đặc điểm nào dưới đây?";
+        document.getElementById('livePreviewQuestionText').innerText = content;
+        
+        let optionsHtml = '';
+        const boxes = document.querySelectorAll('.answer-box');
+        boxes.forEach(b => {
+            const letter = b.querySelector('.badge').innerText;
+            const input = b.querySelector('input[type="text"]');
+            const text = input ? input.value : "";
+            const isChecked = b.querySelector('input[type="radio"]').checked;
+            
+            optionsHtml += `
+                <div class="list-group-item d-flex align-items-center gap-2 ${isChecked ? 'border-success bg-success bg-opacity-10' : ''}">
+                    <span class="badge ${isChecked ? 'bg-success' : 'bg-light text-dark border'} rounded-circle">${letter}</span>
+                    <span class="${isChecked ? 'fw-bold text-success' : ''}">${text} ${isChecked ? '(ĐÚNG)' : ''}</span>
+                </div>`;
+        });
+        document.getElementById('livePreviewOptions').innerHTML = optionsHtml;
+        const modal = new bootstrap.Modal(document.getElementById('livePreviewModal'));
+        modal.show();
+    }
+</script>
+}
+

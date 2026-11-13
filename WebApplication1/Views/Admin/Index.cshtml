@@ -402,9 +402,14 @@
 
     <!-- 1. TOP BAR: TÌM KIẾM & PROFILE -->
     <div class="top-header">
-        <div class="search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Tìm kiếm đề thi, câu hỏi, tài khoản..." />
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-light p-2 rounded-3 border sidebar-toggle-btn me-1" type="button" title="Thu gọn / Mở rộng menu (Ctrl + B)">
+                <i class="fa-solid fa-bars text-secondary"></i>
+            </button>
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm đề thi, câu hỏi, tài khoản..." />
+            </div>
         </div>
 
         <div class="header-actions">
@@ -430,7 +435,7 @@
     </div>
 
     <!-- 2. HERO BANNER VỚI ẢNH NỀN KHUÔN VIÊN TRƯỜNG HỌC -->
-    <div class="hero-banner">
+    <div class="hero-banner animate-fade-in-up">
         <div class="hero-top">
             <div class="hero-title-group">
                 <div class="hero-logo-box">
@@ -449,16 +454,16 @@
             </button>
         </div>
 
-        <!-- 4 THẺ THỐNG KÊ (STAT CARDS NỀN TRẮNG NỔI KHỐI) -->
+        <!-- 4 THẺ THỐNG KÊ (STAT CARDS NỀN TRẮNG NỔI KHỐI CÓ COUNT UP) -->
         <div class="stat-cards-grid">
             <!-- Thẻ 1: Tổng người dùng -->
-            <div class="stat-card-white">
+            <div class="stat-card-white animate-fade-in-up delay-1">
                 <div class="stat-icon purple">
                     <i class="fa-solid fa-users"></i>
                 </div>
                 <div>
                     <div>
-                        <span class="stat-number">12.850</span>
+                        <span class="stat-number count-up" data-countup="12.850">12.850</span>
                         <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 8%</span>
                     </div>
                     <div class="stat-label">Tổng người sử dụng</div>
@@ -466,13 +471,13 @@
             </div>
 
             <!-- Thẻ 2: Đang hoạt động -->
-            <div class="stat-card-white">
+            <div class="stat-card-white animate-fade-in-up delay-2">
                 <div class="stat-icon blue">
                     <i class="fa-solid fa-bolt"></i>
                 </div>
                 <div>
                     <div>
-                        <span class="stat-number">8.620</span>
+                        <span class="stat-number count-up" data-countup="8.620">8.620</span>
                         <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 12%</span>
                     </div>
                     <div class="stat-label">Số người đang hoạt động</div>
@@ -480,13 +485,13 @@
             </div>
 
             <!-- Thẻ 3: Tổng môn học -->
-            <div class="stat-card-white">
+            <div class="stat-card-white animate-fade-in-up delay-3">
                 <div class="stat-icon green">
                     <i class="fa-solid fa-book-open"></i>
                 </div>
                 <div>
                     <div>
-                        <span class="stat-number">24</span>
+                        <span class="stat-number count-up" data-countup="24">24</span>
                         <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 5%</span>
                     </div>
                     <div class="stat-label">Tổng môn học</div>
@@ -494,13 +499,13 @@
             </div>
 
             <!-- Thẻ 4: Tổng khoa / Bộ môn -->
-            <div class="stat-card-white">
+            <div class="stat-card-white animate-fade-in-up delay-4">
                 <div class="stat-icon orange">
                     <i class="fa-solid fa-building-columns"></i>
                 </div>
                 <div>
                     <div>
-                        <span class="stat-number">15</span>
+                        <span class="stat-number count-up" data-countup="15">15</span>
                         <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 3%</span>
                     </div>
                     <div class="stat-label">Tổng khoa / Bộ môn</div>

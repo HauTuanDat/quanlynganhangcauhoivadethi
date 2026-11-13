@@ -2,12 +2,28 @@
 @{
     var curController = ViewContext.RouteData.Values["Controller"]?.ToString();
     var curAction = ViewContext.RouteData.Values["Action"]?.ToString();
+
+    // Xác định vai trò của người dùng đang đăng nhập
+    var isAdmin = User.IsInRole("Admin");
+    var isExamOffice = User.IsInRole("PhongKhaoThi");
+    var isHOD = User.IsInRole("TruongBoMon");
+    var isTeacher = User.IsInRole("GiangVien");
+
+    // Dự phòng kiểm tra qua Claim nếu IsInRole chưa kích hoạt tức thời
+    if (!isAdmin && !isExamOffice && !isHOD && !isTeacher)
+    {
+        var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+        isAdmin = (roleClaim == "Admin");
+        isExamOffice = (roleClaim == "PhongKhaoThi");
+        isHOD = (roleClaim == "TruongBoMon");
+        isTeacher = (roleClaim == "GiangVien");
+    }
 }
 
 <style>
-    /* Custom Sidebar Styling - Deep Navy Blue Theme (Theo tông màu Hình 2) */
+    /* Custom Sidebar Styling - Deep Navy Blue Theme */
     .admin-sidebar {
-        width: 270px;
+        width: 255px; /* Sidebar Width: 240-260px */
         min-height: 100vh;
         background: linear-gradient(180deg, #0d1e46 0%, #091431 100%);
         color: #ffffff;
@@ -42,6 +58,21 @@
         flex-shrink: 0;
     }
 
+    .sidebar-logo-teacher {
+        background: linear-gradient(135deg, #059669, #10b981) !important;
+        box-shadow: 0 4px 10px rgba(5, 150, 105, 0.4) !important;
+    }
+
+    .sidebar-logo-hod {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4) !important;
+    }
+
+    .sidebar-logo-examoffice {
+        background: linear-gradient(135deg, #be123c, #e11d48) !important;
+        box-shadow: 0 4px 10px rgba(225, 29, 72, 0.4) !important;
+    }
+
     .sidebar-title {
         font-size: 17px;
         font-weight: 800;
@@ -57,6 +88,18 @@
         color: #93c5fd;
         text-transform: uppercase;
         margin-top: 2px;
+    }
+
+    .sidebar-subtitle-teacher {
+        color: #6ee7b7 !important;
+    }
+
+    .sidebar-subtitle-hod {
+        color: #a5b4fc !important;
+    }
+
+    .sidebar-subtitle-examoffice {
+        color: #fda4af !important;
     }
 
     /* Scrollable Menu */
@@ -88,7 +131,7 @@
         padding: 10px 14px;
         border-radius: 9px;
         color: #cbd5e1;
-        font-size: 14px;
+        font-size: 14.5px;
         font-weight: 500;
         text-decoration: none;
         transition: all 0.2s ease-in-out;
@@ -113,7 +156,7 @@
         color: #ffffff;
     }
 
-    /* Active State (Tựa như Dashboard trong Hình 1 & Màu xanh rực ở Hình 2) */
+    /* Active States */
     .sidebar-link.active {
         background: #2563eb;
         color: #ffffff;
@@ -121,7 +164,31 @@
         box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
     }
 
-    .sidebar-link.active i {
+    .sidebar-link.active-teacher {
+        background: #059669 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4) !important;
+    }
+
+    .sidebar-link.active-hod {
+        background: #4f46e5 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4) !important;
+    }
+
+    .sidebar-link.active-examoffice {
+        background: #e11d48 !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4) !important;
+    }
+
+    .sidebar-link.active i,
+    .sidebar-link.active-teacher i,
+    .sidebar-link.active-hod i,
+    .sidebar-link.active-examoffice i {
         color: #ffffff;
     }
 
@@ -146,104 +213,361 @@
     }
 </style>
 
-<aside class="admin-sidebar">
+<aside class="admin-sidebar" id="adminSidebar">
     <div>
-        <!-- 1. HEADER: EXAMBANK ADMINISTRATOR -->
-        <div class="sidebar-header">
-            <div class="sidebar-logo-icon">
-                <i class="fa-solid fa-graduation-cap"></i>
+        @if (isExamOffice)
+        {
+            <!-- ============================================================== -->
+            <!-- 1. HEADER CỔNG PHÒNG KHẢO THÍ & ĐBCL                           -->
+            <!-- ============================================================== -->
+            <div class="sidebar-header">
+                <div class="sidebar-logo-icon sidebar-logo-examoffice">
+                    <i class="fa-solid fa-stamp"></i>
+                </div>
+                <div class="sidebar-header-text">
+                    <div class="sidebar-title">EXAMBANK</div>
+                    <div class="sidebar-subtitle sidebar-subtitle-examoffice">Khảo Thí & ĐBCL</div>
+                </div>
+                <button type="button" class="btn btn-sm btn-link p-1 ms-auto sidebar-collapse-btn d-none d-lg-flex align-items-center justify-content-center" id="sidebarCollapseBtn" title="Thu gọn / Mở rộng sidebar">
+                    <i class="fa-solid fa-angles-left"></i>
+                </button>
             </div>
-            <div>
-                <div class="sidebar-title">EXAMBANK</div>
-                <div class="sidebar-subtitle">Administrator</div>
+
+            <!-- DANH SÁCH MENU PHÒNG KHẢO THÍ -->
+            <div class="sidebar-menu">
+                <ul class="p-0 m-0">
+                    <!-- TỔNG QUAN -->
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="ExamOffice" asp-action="Index" class="sidebar-link @(curController == "ExamOffice" && curAction == "Index" ? "active-examoffice" : "")">
+                            <i class="fa-solid fa-table-cells-large"></i>
+                            <span>Bàn làm việc</span>
+                        </a>
+                    </li>
+
+                    <!-- NHÓM: THẨM ĐỊNH CẤP 2 (PHÊ DUYỆT CHÍNH THỨC) -->
+                    <li class="menu-category" style="color: #fda4af;">Thẩm định cấp 2</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="ExamOffice" asp-action="QuestionReviews" class="sidebar-link d-flex justify-content-between align-items-center @(curController == "ExamOffice" && curAction == "QuestionReviews" ? "active-examoffice" : "")">
+                            <div>
+                                <i class="fa-solid fa-stamp"></i>
+                                <span>Duyệt câu hỏi Cấp 2</span>
+                            </div>
+                            <span class="badge rounded-pill bg-danger text-white small">18</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="ExamOffice" asp-action="ExamReviews" class="sidebar-link d-flex justify-content-between align-items-center @(curController == "ExamOffice" && curAction == "ExamReviews" ? "active-examoffice" : "")">
+                            <div>
+                                <i class="fa-solid fa-file-circle-check"></i>
+                                <span>Duyệt Đề thi Cấp 2</span>
+                            </div>
+                            <span class="badge rounded-pill bg-warning text-dark small">5</span>
+                        </a>
+                    </li>
+
+                    <!-- NHÓM: PHÁT HÀNH & BẢO MẬT -->
+                    <li class="menu-category" style="color: #fda4af;">Phát hành & Bảo mật</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="ExamOffice" asp-action="Publishing" class="sidebar-link @(curController == "ExamOffice" && curAction == "Publishing" ? "active-examoffice" : "")">
+                            <i class="fa-solid fa-file-export"></i>
+                            <span>Phát hành đề thi</span>
+                        </a>
+                    </li>
+
+                    <!-- NHÓM: QUẢN LÝ IN ẤN & BÀN GIAO -->
+                    <li class="menu-category" style="color: #fda4af;">In ấn & Niêm phong</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="ExamOffice" asp-action="PrintBatches" class="sidebar-link d-flex justify-content-between align-items-center @(curController == "ExamOffice" && curAction == "PrintBatches" ? "active-examoffice" : "")">
+                            <div>
+                                <i class="fa-solid fa-print"></i>
+                                <span>Quản lý đợt in đề thi</span>
+                            </div>
+                            <span class="badge rounded-pill bg-info text-dark small">2</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
-        </div>
+        }
+        else if (isHOD)
+        {
+            <!-- ============================================================== -->
+            <!-- 2. HEADER CỔNG TRƯỞNG BỘ MÔN                                   -->
+            <!-- ============================================================== -->
+            <div class="sidebar-header">
+                <div class="sidebar-logo-icon sidebar-logo-hod">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="sidebar-header-text">
+                    <div class="sidebar-title">EXAMBANK</div>
+                    <div class="sidebar-subtitle sidebar-subtitle-hod">Trưởng Bộ Môn</div>
+                </div>
+                <button type="button" class="btn btn-sm btn-link p-1 ms-auto sidebar-collapse-btn d-none d-lg-flex align-items-center justify-content-center" id="sidebarCollapseBtn" title="Thu gọn / Mở rộng sidebar">
+                    <i class="fa-solid fa-angles-left"></i>
+                </button>
+            </div>
 
-        <!-- 2. DANH SÁCH MENU (THEO CẤU TRÚC HÌNH 1) -->
-        <div class="sidebar-menu">
-            <ul class="p-0 m-0">
-                <!-- NÚT DASHBOARD (ĐANG ACTIVE) -->
-                <li class="sidebar-nav-item">
-                    <a asp-controller="Admin" asp-action="Index" class="sidebar-link @(curController == "Admin" && curAction == "Index" ? "active" : "")">
-                        <i class="fa-solid fa-table-cells-large"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
+            <!-- DANH SÁCH MENU TRƯỞNG BỘ MÔN -->
+            <div class="sidebar-menu">
+                <ul class="p-0 m-0">
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="DepartmentHead" asp-action="Index" class="sidebar-link @(curController == "DepartmentHead" && curAction == "Index" ? "active-hod" : "")">
+                            <i class="fa-solid fa-table-cells-large"></i>
+                            <span>Bàn làm việc</span>
+                        </a>
+                    </li>
 
-                <!-- NHÓM 1: QUẢN LÝ NGƯỜI DÙNG -->
-                <li class="menu-category">Quản lý người dùng</li>
-                <li class="sidebar-nav-item">
-                    <a asp-controller="Admin" asp-action="Users" class="sidebar-link @(curController == "Admin" && curAction == "Users" ? "active" : "")">
-                        <i class="fa-solid fa-users"></i>
-                        <span>Quản lý tài khoản</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a asp-controller="Admin" asp-action="Roles" class="sidebar-link @(curController == "Admin" && curAction == "Roles" ? "active" : "")">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span>Vai trò & phân quyền</span>
-                    </a>
-                </li>
+                    <li class="menu-category" style="color: #a5b4fc;">Kiểm duyệt học thuật</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="DepartmentHead" asp-action="QuestionReviews" class="sidebar-link d-flex justify-content-between align-items-center @(curController == "DepartmentHead" && curAction == "QuestionReviews" ? "active-hod" : "")">
+                            <div>
+                                <i class="fa-solid fa-clipboard-check"></i>
+                                <span>Duyệt câu hỏi cấp 1</span>
+                            </div>
+                            <span class="badge rounded-pill bg-warning text-dark small">12</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="DepartmentHead" asp-action="ExamReviews" class="sidebar-link d-flex justify-content-between align-items-center @(curController == "DepartmentHead" && curAction == "ExamReviews" ? "active-hod" : "")">
+                            <div>
+                                <i class="fa-solid fa-file-shield"></i>
+                                <span>Duyệt đề thi cấp 1</span>
+                            </div>
+                            <span class="badge rounded-pill bg-danger small">3</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="DepartmentHead" asp-action="ReviewHistory" class="sidebar-link @(curController == "DepartmentHead" && curAction == "ReviewHistory" ? "active-hod" : "")">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <span>Lịch sử phê duyệt</span>
+                        </a>
+                    </li>
 
-                <!-- NHÓM 2: QUẢN LÝ DANH MỤC -->
-                <li class="menu-category">Quản lý danh mục</li>
-                <li class="sidebar-nav-item">
-                    <a asp-controller="Admin" asp-action="Departments" class="sidebar-link @(curController == "Admin" && curAction == "Departments" ? "active" : "")">
-                        <i class="fa-solid fa-landmark"></i>
-                        <span>Khoa & bộ môn</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a asp-controller="Admin" asp-action="Subjects" class="sidebar-link @(curController == "Admin" && curAction == "Subjects" ? "active" : "")">
-                        <i class="fa-solid fa-book-open"></i>
-                        <span>Quản lý môn học</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a asp-controller="Admin" asp-action="Topics" class="sidebar-link @(curController == "Admin" && curAction == "Topics" ? "active" : "")">
-                        <i class="fa-solid fa-diagram-project"></i>
-                        <span>Chương & chủ đề</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a asp-controller="Admin" asp-action="QuestionTypes" class="sidebar-link @(curController == "Admin" && curAction == "QuestionTypes" ? "active" : "")">
-                        <i class="fa-solid fa-list-check"></i>
-                        <span>Loại câu hỏi & độ khó</span>
-                    </a>
-                </li>
+                    <li class="menu-category" style="color: #a5b4fc;">Ngân hàng bộ môn</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="DepartmentHead" asp-action="DepartmentQuestions" class="sidebar-link @(curController == "DepartmentHead" && curAction == "DepartmentQuestions" ? "active-hod" : "")">
+                            <i class="fa-solid fa-book-bookmark"></i>
+                            <span>Ngân hàng câu hỏi</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="DepartmentHead" asp-action="LecturerProgress" class="sidebar-link @(curController == "DepartmentHead" && curAction == "LecturerProgress" ? "active-hod" : "")">
+                            <i class="fa-solid fa-bars-progress"></i>
+                            <span>Tiến độ nộp câu hỏi GV</span>
+                        </a>
+                    </li>
 
-                <!-- NHÓM 3: QUẢN TRỊ HỆ THỐNG -->
-                <li class="menu-category">Quản trị hệ thống</li>
-                <li class="sidebar-nav-item">
-                    <a asp-controller="Admin" asp-action="Settings" class="sidebar-link @(curController == "Admin" && curAction == "Settings" ? "active" : "")">
-                        <i class="fa-solid fa-gear"></i>
-                        <span>Cấu hình hệ thống</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a asp-controller="Admin" asp-action="ActivityLogs" class="sidebar-link @(curController == "Admin" && curAction == "ActivityLogs" ? "active" : "")">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-                        <span>Nhật ký hoạt động</span>
-                    </a>
-                </li>
-                <li class="sidebar-nav-item">
-                    <a asp-controller="Admin" asp-action="Reports" class="sidebar-link @(curController == "Admin" && curAction == "Reports" ? "active" : "")">
-                        <i class="fa-solid fa-chart-line"></i>
-                        <span>Báo cáo & thống kê</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+                    <li class="menu-category" style="color: #a5b4fc;">Công việc giảng dạy</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Teacher" asp-action="Questions" class="sidebar-link @(curController == "Teacher" && curAction == "Questions" ? "active-hod" : "")">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span>Soạn câu hỏi của tôi</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Teacher" asp-action="Exams" class="sidebar-link @(curController == "Teacher" && curAction == "Exams" ? "active-hod" : "")">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span>Đề thi của tôi</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        }
+        else if (isTeacher)
+        {
+            <!-- ============================================================== -->
+            <!-- 3. HEADER CỔNG GIẢNG VIÊN                                      -->
+            <!-- ============================================================== -->
+            <div class="sidebar-header">
+                <div class="sidebar-logo-icon sidebar-logo-teacher">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div class="sidebar-header-text">
+                    <div class="sidebar-title">EXAMBANK</div>
+                    <div class="sidebar-subtitle sidebar-subtitle-teacher">Cổng Giảng Viên</div>
+                </div>
+                <button type="button" class="btn btn-sm btn-link p-1 ms-auto sidebar-collapse-btn d-none d-lg-flex align-items-center justify-content-center" id="sidebarCollapseBtn" title="Thu gọn / Mở rộng sidebar">
+                    <i class="fa-solid fa-angles-left"></i>
+                </button>
+            </div>
+
+            <!-- DANH SÁCH MENU GIẢNG VIÊN -->
+            <div class="sidebar-menu">
+                <ul class="p-0 m-0">
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Teacher" asp-action="Index" class="sidebar-link @(curController == "Teacher" && curAction == "Index" ? "active-teacher" : "")">
+                            <i class="fa-solid fa-table-cells-large"></i>
+                            <span>Bàn làm việc</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-category" style="color: #6ee7b7;">Ngân hàng câu hỏi</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Teacher" asp-action="Questions" class="sidebar-link @(curController == "Teacher" && curAction == "Questions" ? "active-teacher" : "")">
+                            <i class="fa-solid fa-list-check"></i>
+                            <span>Danh sách câu hỏi</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Teacher" asp-action="CreateQuestion" class="sidebar-link @(curController == "Teacher" && curAction == "CreateQuestion" ? "active-teacher" : "")">
+                            <i class="fa-solid fa-circle-plus"></i>
+                            <span>Soạn câu hỏi mới</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Teacher" asp-action="Import" class="sidebar-link @(curController == "Teacher" && curAction == "Import" ? "active-teacher" : "")">
+                            <i class="fa-solid fa-file-import"></i>
+                            <span>Nhập từ Word / Excel</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-category" style="color: #6ee7b7;">Quản lý đề thi</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Teacher" asp-action="Exams" class="sidebar-link @(curController == "Teacher" && curAction == "Exams" ? "active-teacher" : "")">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span>Danh sách đề thi</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Teacher" asp-action="CreateExam" class="sidebar-link @(curController == "Teacher" && curAction == "CreateExam" ? "active-teacher" : "")">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Tạo đề thi mới</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-category" style="color: #6ee7b7;">Cá nhân</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Teacher" asp-action="Profile" class="sidebar-link @(curController == "Teacher" && curAction == "Profile" ? "active-teacher" : "")">
+                            <i class="fa-regular fa-id-badge"></i>
+                            <span>Hồ sơ giảng viên</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        }
+        else
+        {
+            <!-- ============================================================== -->
+            <!-- 4. HEADER CỔNG QUẢN TRỊ ADMIN                                  -->
+            <!-- ============================================================== -->
+            <div class="sidebar-header">
+                <div class="sidebar-logo-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="sidebar-header-text">
+                    <div class="sidebar-title">EXAMBANK</div>
+                    <div class="sidebar-subtitle">Administrator</div>
+                </div>
+                <button type="button" class="btn btn-sm btn-link p-1 ms-auto sidebar-collapse-btn d-none d-lg-flex align-items-center justify-content-center" id="sidebarCollapseBtn" title="Thu gọn / Mở rộng sidebar">
+                    <i class="fa-solid fa-angles-left"></i>
+                </button>
+            </div>
+
+            <!-- DANH SÁCH MENU ADMIN -->
+            <div class="sidebar-menu">
+                <ul class="p-0 m-0">
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Admin" asp-action="Index" class="sidebar-link @(curController == "Admin" && curAction == "Index" ? "active" : "")">
+                            <i class="fa-solid fa-table-cells-large"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-category">Quản lý người dùng</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Admin" asp-action="Users" class="sidebar-link @(curController == "Admin" && curAction == "Users" ? "active" : "")">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Quản lý tài khoản</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Admin" asp-action="Roles" class="sidebar-link @(curController == "Admin" && curAction == "Roles" ? "active" : "")">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Vai trò & phân quyền</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-category">Quản lý danh mục</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Admin" asp-action="Departments" class="sidebar-link @(curController == "Admin" && curAction == "Departments" ? "active" : "")">
+                            <i class="fa-solid fa-landmark"></i>
+                            <span>Khoa & bộ môn</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Admin" asp-action="Subjects" class="sidebar-link @(curController == "Admin" && curAction == "Subjects" ? "active" : "")">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>Quản lý môn học</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Admin" asp-action="Topics" class="sidebar-link @(curController == "Admin" && curAction == "Topics" ? "active" : "")">
+                            <i class="fa-solid fa-diagram-project"></i>
+                            <span>Chương & chủ đề</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Admin" asp-action="QuestionTypes" class="sidebar-link @(curController == "Admin" && curAction == "QuestionTypes" ? "active" : "")">
+                            <i class="fa-solid fa-list-check"></i>
+                            <span>Loại câu hỏi & độ khó</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-category">Quản trị hệ thống</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Admin" asp-action="Settings" class="sidebar-link @(curController == "Admin" && curAction == "Settings" ? "active" : "")">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Cấu hình hệ thống</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Admin" asp-action="ActivityLogs" class="sidebar-link @(curController == "Admin" && curAction == "ActivityLogs" ? "active" : "")">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <span>Nhật ký hoạt động</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="Admin" asp-action="Reports" class="sidebar-link @(curController == "Admin" && curAction == "Reports" ? "active" : "")">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>Báo cáo & thống kê</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        }
     </div>
 
     <!-- 3. CHÂN SIDEBAR: HỒ SƠ & ĐĂNG XUẤT -->
     <div class="sidebar-footer">
         <ul class="p-0 m-0">
             <li class="sidebar-nav-item">
-                <a asp-controller="Admin" asp-action="Profile" class="sidebar-link @(curController == "Admin" && curAction == "Profile" ? "active" : "")">
-                    <i class="fa-regular fa-circle-user"></i>
-                    <span>Hồ sơ cá nhân</span>
-                </a>
+                @if (isExamOffice)
+                {
+                    <a asp-controller="ExamOffice" asp-action="Profile" class="sidebar-link @(curController == "ExamOffice" && curAction == "Profile" ? "active-examoffice" : "")">
+                        <i class="fa-regular fa-circle-user"></i>
+                        <span>Hồ sơ cá nhân</span>
+                    </a>
+                }
+                else if (isHOD)
+                {
+                    <a asp-controller="DepartmentHead" asp-action="Profile" class="sidebar-link @(curController == "DepartmentHead" && curAction == "Profile" ? "active-hod" : "")">
+                        <i class="fa-regular fa-circle-user"></i>
+                        <span>Hồ sơ cá nhân</span>
+                    </a>
+                }
+                else if (isTeacher)
+                {
+                    <a asp-controller="Teacher" asp-action="Profile" class="sidebar-link @(curController == "Teacher" && curAction == "Profile" ? "active-teacher" : "")">
+                        <i class="fa-regular fa-circle-user"></i>
+                        <span>Hồ sơ cá nhân</span>
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Admin" asp-action="Profile" class="sidebar-link @(curController == "Admin" && curAction == "Profile" ? "active" : "")">
+                        <i class="fa-regular fa-circle-user"></i>
+                        <span>Hồ sơ cá nhân</span>
+                    </a>
+                }
             </li>
             <li class="sidebar-nav-item">
                 <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="d-inline">

@@ -1,0 +1,80 @@
+@{
+    ViewData["Title"] = "Thẩm định đề thi Cấp 2 & Phát hành - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a asp-controller="ExamOffice" asp-action="Index" class="text-decoration-none text-secondary">Khảo thí & ĐBCL</a></li>
+            <li class="breadcrumb-item active fw-bold" style="color: #e11d48;" aria-current="page">Duyệt Đề thi Cấp 2 & Cấp phép Phát hành</li>
+        </ol>
+    </nav>
+    <div>
+        <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill fw-bold border border-warning-subtle">
+            <i class="fa-solid fa-file-shield me-1"></i> 5 bộ đề chờ duyệt
+        </span>
+    </div>
+</div>
+
+<div class="p-4" style="background-color: #f8fafc; min-height: calc(100vh - 75px);">
+    <!-- Item 1 -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 border-start border-4 border-danger">
+        <div class="card-header bg-white py-3 px-4 d-flex align-items-center justify-content-between border-bottom">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-danger fw-bold" style="background-color: #be123c !important;">#EXAM-2026-01</span>
+                    <h5 class="fw-bold text-dark mb-0">Đề thi Giữa kỳ: Cơ sở dữ liệu nâng cao (IT3020)</h5>
+                </div>
+                <small class="text-muted">
+                    Thời gian: <strong>60 phút</strong> • Thang điểm: <strong>10.0</strong> • <strong>4 mã đề: 101, 102, 103, 104</strong> • Trưởng bộ môn đã duyệt: <strong>PGS.TS. Trần Thị Mai</strong>
+                </small>
+            </div>
+            <span class="badge bg-warning-subtle text-warning border px-3 py-2 rounded-pill fw-bold">
+                Chờ duyệt Cấp 2
+            </span>
+        </div>
+        <div class="card-body p-4">
+            <!-- Thông tin kiểm tra chất lượng đề -->
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-4">
+                    <div class="p-3 rounded-3 bg-light border">
+                        <small class="text-muted d-block">Kiểm tra trùng câu giữa các mã đề:</small>
+                        <div class="fw-bold text-success mt-1"><i class="fa-solid fa-check-circle me-1"></i> Đạt chuẩn: 160 câu không trùng lặp</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-3 rounded-3 bg-light border">
+                        <small class="text-muted d-block">Nguồn câu hỏi sử dụng:</small>
+                        <div class="fw-bold text-success mt-1"><i class="fa-solid fa-check-circle me-1"></i> 100% câu hỏi đã Approved</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-3 rounded-3 bg-light border">
+                        <small class="text-muted d-block">Khóa câu cố định & xáo trộn:</small>
+                        <div class="fw-bold text-primary mt-1"><i class="fa-solid fa-lock me-1"></i> 4 câu khóa • Xáo trộn 4 phương án</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút duyệt Cấp 2 -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between pt-3 border-top gap-2">
+                <div class="d-flex gap-2">
+                    <a asp-action="Publishing" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                        <i class="fa-solid fa-file-pdf me-1"></i> Xem trước bản Word/PDF
+                    </a>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-warning rounded-pill px-3 fw-semibold text-dark" onclick="alert('Đã trả về Trưởng bộ môn kèm lý do yêu cầu điều chỉnh!')">
+                        <i class="fa-solid fa-rotate-left me-1"></i> Yêu cầu chỉnh sửa
+                    </button>
+                    <button class="btn btn-danger rounded-pill px-4 fw-semibold shadow-sm" style="background-color: #be123c; border-color: #be123c;" onclick="alert('Duyệt Cấp 2 thành công! Đề thi đã chính thức chuyển sang trạng thái Published (Được phép phát hành & in ấn).')">
+                        <i class="fa-solid fa-stamp me-1"></i> Cấp phép Phát hành (Published)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

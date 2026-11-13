@@ -1,31 +1,819 @@
+/* ==========================================================================
+   HỆ THỐNG TYPOGRAPHY & MÀU CHỮ (TEXT COLORS) CHUẨN DASHBOARD CHUYÊN NGHIỆP
+   
+   1. BẢNG KÍCH THƯỚC CHỮ (FONT SIZES & WEIGHTS):
+      - Heading trang H1: 28-32px, font-weight: 700
+      - Heading khu vực H2: 22-24px, font-weight: 600
+      - Heading thẻ H3: 18-20px, font-weight: 600
+      - Tiêu đề nhỏ H4: 16px, font-weight: 600
+      - Nội dung chính: 14-16px, font-weight: 400
+      - Nội dung bảng: 13-14px, font-weight: 400
+      - Sidebar: 14-15px, font-weight: 500
+      - Button: 14-15px, font-weight: 600
+      - Label Form: 13-14px, font-weight: 500
+      - Caption: 12px, font-weight: 400
+      - Badge: 11-12px, font-weight: 500
+
+   2. BẢNG MÀU CHỮ CHUẨN (TEXT COLORS - KHÔNG DÙNG ĐEN TUYỆT ĐỐI #000000):
+      - Primary Text:   #111827 (Tiêu đề, nội dung quan trọng)
+      - Secondary Text: #4B5563 (Mô tả, nội dung phụ)
+      - Tertiary Text:  #6B7280 (Thông tin bổ sung)
+      - Placeholder:    #9CA3AF (Gợi ý trong ô nhập liệu)
+      - Disabled:       #D1D5DB (Chữ không khả dụng)
+   ========================================================================== */
+
+:root {
+    /* 1. MÀU GIAO DIỆN CHỦ ĐẠO (COLOR PALETTE) */
+    --color-primary: #1d4ed8;            /* Xanh Hải quân Học viện (ARGB: 0xFF1D4ED8) */
+    --color-primary-hover: #1e40af;      /* Hover Primary */
+    --color-primary-subtle: #eff6ff;     /* Nền nhẹ Primary (rgba: 29, 78, 216, 0.08) */
+    
+    --color-secondary: #0f172a;          /* Xanh Đêm Sâu (ARGB: 0xFF0F172A) */
+    --color-secondary-subtle: #f1f5f9;   /* Nền nhẹ Secondary */
+
+    --color-accent: #f59e0b;             /* Vàng Hổ Phách Ánh Kim (ARGB: 0xFFF59E0B) */
+    --color-accent-hover: #d97706;       /* Hover Accent */
+    --color-accent-subtle: #fffbeb;      /* Nền nhẹ Accent */
+
+    --color-background: #f8fafc;         /* Xám Mây Dịu Mắt (ARGB: 0xFFF8FAFC) */
+    --color-surface: #ffffff;            /* Trắng Tinh Khiết Nổi Khối (ARGB: 0xFFFFFFFF) */
+    --color-border: #e5e7eb;             /* Border: #E5E7EB */
+
+    /* 4. THÔNG SỐ UI/UX CHUẨN DASHBOARD (THEO QUY CHUẨN THIẾT KẾ) */
+    --radius-card: 14px;                 /* Border Radius Card: 12-16px */
+    --radius-btn: 9px;                   /* Border Radius Button: 8-10px */
+    --radius-btn-sm: 8px;                /* Border Radius Button nhỏ */
+    --radius-input: 9px;                 /* Border Radius Input: 8-10px */
+    --height-input: 42px;                /* Input Height: 40-44px */
+    --height-btn: 42px;                  /* Button Height: 40-44px */
+    --height-btn-sm: 34px;               /* Button Height nhỏ */
+    --width-sidebar: 255px;              /* Sidebar Width: 240-260px */
+    --width-sidebar-collapsed: 76px;     /* Sidebar Width khi thu gọn */
+    --height-header: 66px;               /* Header Height: 60-72px */
+    --padding-card: 20px;                /* Card Padding: 16-24px */
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.04); /* Shadow Card: 0 2px 8px rgba(0,0,0, .04) */
+    --gap-component: 16px;               /* Khoảng cách giữa các thành phần: 8-24px */
+
+    /* 2. MÀU TRẠNG THÁI (STATUS COLORS) */
+    --color-success: #10b981;            /* Thành công / Đã duyệt (ARGB: 0xFF10B981) */
+    --color-success-subtle: #ecfdf5;     /* Nền Success */
+    
+    --color-warning: #f59e0b;            /* Cảnh báo / Chờ duyệt (ARGB: 0xFFF59E0B) */
+    --color-warning-subtle: #fffbeb;     /* Nền Warning */
+
+    --color-error: #ef4444;              /* Lỗi / Cần sửa gấp (ARGB: 0xFFEF4444) */
+    --color-error-subtle: #fef2f2;       /* Nền Error */
+
+    --color-info: #0ea5e9;               /* Thông tin / Hướng dẫn (ARGB: 0xFF0EA5E9) */
+    --color-info-subtle: #f0f9ff;        /* Nền Info */
+
+    /* 3. MÀU CHỮ (TEXT COLORS) */
+    --text-primary: #111827;             /* Tiêu đề, nội dung quan trọng */
+    --text-secondary: #4b5563;           /* Mô tả, nội dung phụ */
+    --text-tertiary: #6b7280;            /* Thông tin bổ sung, caption */
+    --text-placeholder: #9ca3af;         /* Gợi ý trong ô nhập liệu */
+    --text-disabled: #d1d5db;            /* Chữ không khả dụng */
+}
+
+/* ==========================================================================
+   1. BODY & NỀN TẢNG
+   ========================================================================== */
 html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    font-size: 15px;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: #4b5563; /* Secondary Text mặc định cho nội dung chung */
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.55;
+    background-color: #f8fafc;
+    -webkit-font-smoothing: antialiased;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* ==========================================================================
+   2. HEADING (PRIMARY TEXT: #111827)
+   ========================================================================== */
+
+/* Heading trang H1 (28-32px, 700) */
+h1, .h1, .heading-page {
+    font-size: 30px !important;
+    font-weight: 700 !important;
+    line-height: 1.25;
+    color: #111827 !important;
+    letter-spacing: -0.02em;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* Heading khu vực H2 (22-24px, 600) */
+h2, .h2, .heading-section {
+    font-size: 23px !important;
+    font-weight: 600 !important;
+    line-height: 1.3;
+    color: #111827 !important;
+    letter-spacing: -0.015em;
+}
+
+/* Heading thẻ H3 (18-20px, 600) */
+h3, .h3, .heading-card {
+    font-size: 19px !important;
+    font-weight: 600 !important;
+    line-height: 1.35;
+    color: #111827 !important;
+}
+
+/* Tiêu đề nhỏ H4 & H5 (16px, 600) */
+h4, .h4, h5, .h5, .heading-sub {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 1.4;
+    color: #111827 !important;
+}
+
+h6, .h6 {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    line-height: 1.4;
+    color: #111827 !important;
+}
+
+/* Chữ đậm quan trọng */
+.text-dark, strong, b, .fw-bold {
+    color: #111827 !important;
+}
+
+.stat-number {
+    color: #111827 !important;
+}
+
+/* ==========================================================================
+   3. NỘI DUNG CHÍNH (SECONDARY TEXT: #4B5563)
+   ========================================================================== */
+p, .content-main {
+    font-size: 14.5px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: #4b5563 !important;
+}
+
+.text-secondary {
+    color: #4b5563 !important;
+}
+
+/* ==========================================================================
+   4. BẢNG DỮ LIỆU (TABLES)
+   ========================================================================== */
+.table {
+    font-size: 13.5px !important;
+    color: #4b5563;
+}
+
+/* Tiêu đề cột trong bảng */
+.table th, .table thead th {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px;
+    color: #111827 !important; /* Tiêu đề bảng dùng Primary Text */
+    border-bottom-width: 1px;
+}
+
+/* Dòng dữ liệu trong bảng */
+.table td, .table tbody td {
+    font-size: 13.5px !important;
+    font-weight: 400 !important;
+    color: #4b5563 !important; /* Dữ liệu dùng Secondary Text */
+}
+
+/* Dữ liệu nổi bật trong bảng */
+.table td strong, .table td .fw-bold, .table td .fw-semibold {
+    color: #111827 !important;
+}
+
+/* ==========================================================================
+   5. THÔNG TIN BỔ SUNG & CAPTION (TERTIARY TEXT: #6B7280)
+   ========================================================================== */
+small, .small, .caption, .form-text, .text-muted, .stat-label, .activity-time {
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 1.4;
+    color: #6b7280 !important;
+}
+
+.breadcrumb-item, .breadcrumb-item a {
+    font-size: 13px !important;
+    color: #6b7280 !important;
+}
+
+.breadcrumb-item.active {
+    color: #111827 !important;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   6. FORM INPUTS, LABELS & PLACEHOLDER
+   ========================================================================== */
+/* Label Form (13-14px, 500, Secondary Text) */
+.form-label, label, .form-check-label {
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    margin-bottom: 5px;
+}
+
+/* Input & Select (Input Height: 40-44px, Border: #E5E7EB, Border Radius: 8-10px) */
+.form-control, .form-select {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: #111827 !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    border-radius: 9px !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 8px 14px !important;
+}
+
+/* Placeholder (#9CA3AF) */
+::placeholder,
+.form-control::placeholder,
+.form-select::placeholder {
+    color: #9ca3af !important;
+    opacity: 1 !important;
+    font-size: 13.5px;
+}
+
+/* ==========================================================================
+   7. TRẠNG THÁI KHÔNG KHẢ DỤNG (DISABLED: #D1D5DB)
+   ========================================================================== */
+:disabled,
+[disabled],
+.disabled,
+.form-control:disabled,
+.form-select:disabled,
+.btn:disabled {
+    color: #d1d5db !important;
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   8. SIDEBAR (SIDEBAR WIDTH: 240-260px)
+   ========================================================================== */
+.admin-sidebar {
+    width: 255px !important;
+}
+
+.admin-sidebar .sidebar-link,
+.sidebar-link {
+    font-size: 14.5px !important;
+    font-weight: 500 !important;
+}
+
+.admin-sidebar .menu-category {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   9. BUTTON & BADGE (BUTTON HEIGHT: 40-44px, BORDER RADIUS: 8-10px)
+   ========================================================================== */
+/* Button (14-15px, 600, Height: 42px, Radius: 9px) */
+.btn, button.btn, a.btn {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    height: 42px;
+    min-height: 42px;
+    border-radius: 9px !important;
+    padding: 0 16px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-sm {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    border-radius: 8px !important;
+    padding: 0 12px !important;
+}
+
+/* Badge (11-12px, 500) */
+.badge {
+    font-size: 11.5px !important;
+    font-weight: 500 !important;
+    padding: 4px 8px;
+    letter-spacing: 0.2px;
+}
+
+/* Focus rings */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+}
+
+/* ==========================================================================
+   10. HIỆU ỨNG 1: HOVER EFFECT (BUTTON, CARD, SIDEBAR, TABLE, BADGES)
+   ========================================================================== */
+
+/* 1.1. Thẻ Card (Radius: 12-16px, Padding: 16-24px, Border: #E5E7EB, Shadow: 0 2px 8px rgba(0,0,0, .04)) */
+.card,
+.stat-card-white,
+.dashboard-card,
+.kpi-card {
+    border-radius: 14px !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.2s ease !important;
+    will-change: transform, box-shadow;
+}
+
+.card-body {
+    padding: 20px !important; /* Card Padding: 16-24px */
+}
+
+.card:hover,
+.stat-card-white:hover,
+.dashboard-card:hover,
+.kpi-card:hover {
+    transform: translateY(-3.5px);
+    box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04) !important;
+}
+
+/* Header Height (60-72px) & Border (#E5E7EB) */
+.top-header,
+.top-header-navbar,
+.topbar-header {
+    min-height: 66px !important;
+    height: 66px;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+/* Khoảng cách giữa các thành phần (Spacing standard 8-24px) */
+.gap-8 { gap: 8px !important; }
+.gap-12 { gap: 12px !important; }
+.gap-16 { gap: 16px !important; }
+.gap-20 { gap: 20px !important; }
+.gap-24 { gap: 24px !important; }
+
+/* Đường viền tiêu chuẩn #E5E7EB */
+.border,
+.border-bottom,
+.border-top,
+.border-start,
+.border-end,
+.table-bordered {
+    border-color: #e5e7eb !important;
+}
+
+/* 1.2. Hover trên Nút bấm (Buttons) */
+.btn {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.2s ease,
+                border-color 0.2s ease,
+                filter 0.2s ease !important;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    filter: brightness(1.04);
+}
+
+.btn:active {
+    transform: translateY(0px) !important;
+    box-shadow: none !important;
+}
+
+/* 1.3. Hover trên Menu Sidebar */
+.sidebar-link {
+    transition: background-color 0.22s ease,
+                color 0.22s ease,
+                transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.22s ease !important;
+}
+
+.sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.09) !important;
+    color: #ffffff !important;
+    transform: translateX(4px);
+}
+
+.sidebar-link i {
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+                color 0.22s ease !important;
+}
+
+.sidebar-link:hover i {
+    transform: scale(1.15);
+    color: #ffffff !important;
+}
+
+/* Active links không cần dịch chuyển ngang */
+.sidebar-link.active:hover,
+.sidebar-link.active-teacher:hover,
+.sidebar-link.active-hod:hover,
+.sidebar-link.active-examoffice:hover {
+    transform: none !important;
+}
+
+/* 1.4. Hover trên Bảng dữ liệu (Table Rows) */
+.table tbody tr {
+    transition: background-color 0.18s ease,
+                transform 0.15s ease !important;
+}
+
+.table tbody tr:hover,
+.table-hover tbody tr:hover {
+    background-color: rgba(29, 78, 216, 0.035) !important;
+}
+
+/* 1.5. Hover trên Thẻ nhỏ & Hành động tương tác (Badges / Action Pills) */
+.badge-interactive,
+.action-pill {
+    transition: transform 0.18s ease,
+                box-shadow 0.18s ease,
+                background-color 0.18s ease !important;
+    cursor: pointer;
+}
+
+.badge-interactive:hover,
+.action-pill:hover {
+    transform: translateY(-1.5px) scale(1.03);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   11. HIỆU ỨNG 2: FADE IN / SLIDE UP (NỘI DUNG XUẤT HIỆN NHẸ NHÀNG)
+   ========================================================================== */
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease both;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Bậc thang trễ nhịp (Staggered Animation Delays) */
+.delay-1 { animation-delay: 0.06s !important; }
+.delay-2 { animation-delay: 0.12s !important; }
+.delay-3 { animation-delay: 0.18s !important; }
+.delay-4 { animation-delay: 0.24s !important; }
+.delay-5 { animation-delay: 0.30s !important; }
+.delay-6 { animation-delay: 0.36s !important; }
+
+/* Chuyển Tab mượt mà không bị giật khung */
+.tab-pane.fade.show.active {
+    animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Dropdown menu trượt nhẹ */
+.dropdown-menu.show {
+    animation: fadeInUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ==========================================================================
+   12. HIỆU ỨNG 3: COUNT UP (SỐ LIỆU TĂNG DẦN TỪ 0 ĐẾN GIÁ TRỊ THỰC TẾ)
+   ========================================================================== */
+.count-up {
+    font-variant-numeric: tabular-nums;
+    display: inline-block;
+    transition: color 0.3s ease;
+}
+
+/* Hiệu ứng sáng nhẹ khi số vừa đếm xong */
+.count-up.counted {
+    animation: numberPulse 0.4s ease-out;
+}
+
+@keyframes numberPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   13. HIỆU ỨNG 4: SKELETON LOADING (KHUNG GIẢ KHI DỮ LIỆU ĐANG TẢI)
+   ========================================================================== */
+
+@keyframes skeletonShimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s infinite ease-in-out;
+    border-radius: 6px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.skeleton-text {
+    height: 14px;
+    margin-bottom: 8px;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.skeleton-title {
+    height: 22px;
+    margin-bottom: 12px;
+    width: 65%;
+    border-radius: 6px;
+}
+
+.skeleton-badge {
+    height: 22px;
+    width: 75px;
+    border-radius: 20px;
+}
+
+.skeleton-circle {
+    border-radius: 50% !important;
+    width: 40px;
+    height: 40px;
+}
+
+.skeleton-btn {
+    height: 38px;
+    width: 120px;
+    border-radius: 8px;
+}
+
+.skeleton-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Khối Skeleton cho Bảng dữ liệu */
+.skeleton-table-row td {
+    padding: 14px 16px;
+}
+
+/* ==========================================================================
+   14. HIỆU ỨNG 5: SIDEBAR TRANSITION (MỞ RỘNG & THU GỌN MƯỢT MÀ)
+   ========================================================================== */
+
+.admin-sidebar {
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    flex-shrink: 0;
+    will-change: width, transform;
+}
+
+.sidebar-header,
+.sidebar-footer,
+.sidebar-menu {
+    transition: padding 0.3s ease;
+}
+
+.sidebar-header-text {
+    transition: opacity 0.22s ease, max-width 0.28s ease;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 180px;
+}
+
+.sidebar-link span {
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    white-space: nowrap;
+}
+
+.sidebar-collapse-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    border: none;
+    transition: all 0.25s ease;
+}
+
+.sidebar-collapse-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+}
+
+.sidebar-collapse-btn i {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* TRẠNG THÁI THU GỌN TRÊN DESKTOP (COLLAPSED) */
+.admin-sidebar.collapsed {
+    width: 76px !important;
+}
+
+.admin-sidebar.collapsed .sidebar-header {
+    padding: 18px 10px 14px 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    position: relative;
+}
+
+.admin-sidebar.collapsed .sidebar-logo-icon {
+    margin-right: 0 !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-sidebar.collapsed .sidebar-logo-icon:hover {
+    transform: scale(1.08);
+}
+
+.admin-sidebar.collapsed .sidebar-header-text,
+.admin-sidebar.collapsed .sidebar-link span,
+.admin-sidebar.collapsed .sidebar-link .badge {
+    opacity: 0;
+    max-width: 0;
+    display: none !important;
+    pointer-events: none;
+}
+
+/* NÚT MỞ RỘNG KHI SIDEBAR THU HẸP - LUÔN HIỂN THỊ RÕ RÀNG VÀ BẤM ĐƯỢC */
+.admin-sidebar.collapsed .sidebar-collapse-btn {
+    display: flex !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 9px !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+    margin: 4px auto 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.admin-sidebar.collapsed .sidebar-collapse-btn:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: scale(1.1) !important;
+    color: #ffffff !important;
+}
+
+.admin-sidebar.collapsed .sidebar-collapse-btn i {
+    font-size: 14px !important;
+    color: #ffffff !important;
+}
+
+.admin-sidebar.collapsed .menu-category {
+    font-size: 0 !important;
+    height: 1px;
+    padding: 0;
+    margin: 14px 16px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+    border: none;
+}
+
+.admin-sidebar.collapsed .sidebar-link {
+    justify-content: center;
+    padding: 12px 0 !important;
+    transform: none !important;
+}
+
+.admin-sidebar.collapsed .sidebar-link i {
+    margin-right: 0 !important;
+    font-size: 19px !important;
+}
+
+.admin-sidebar.collapsed .sidebar-footer {
+    padding: 14px 6px;
+}
+
+/* Sidebar Tooltip khi thu gọn */
+.sidebar-link[data-bs-toggle="tooltip"] {
+    position: relative;
+}
+
+/* ĐIỀU CHỈNH TRÊN THIẾT BỊ DI ĐỘNG (MOBILE DRAWER) */
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1045;
+        transform: translateX(-100%);
+        box-shadow: 0 0 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .admin-sidebar.mobile-open {
+        transform: translateX(0) !important;
+    }
+
+    .sidebar-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(3px);
+        z-index: 1040;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar-backdrop.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* ==========================================================================
+   15. HỖ TRỢ PREFERS-REDUCED-MOTION (GIẢM CHUYỂN ĐỘNG CHO NGƯỜI DÙNG)
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .animate-fade-in-up,
+    .animate-fade-in,
+    .animate-scale-in,
+    .skeleton,
+    .count-up {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .card:hover,
+    .stat-card-white:hover,
+    .dashboard-card:hover,
+    .kpi-card:hover,
+    .btn:hover,
+    .sidebar-link:hover {
+        transform: none !important;
+    }
 }

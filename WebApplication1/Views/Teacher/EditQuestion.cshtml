@@ -1,0 +1,243 @@
+@{
+    ViewData["Title"] = "Chỉnh sửa câu hỏi - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var questionId = ViewBag.QuestionId ?? 105;
+}
+
+<!-- Top Header Navbar -->
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <div class="d-flex align-items-center gap-3">
+        <a asp-action="Questions" class="btn btn-light rounded-3 border p-2 text-secondary" title="Quay lại">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-controller="Teacher" asp-action="Index" class="text-decoration-none text-secondary">Giảng viên</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Teacher" asp-action="Questions" class="text-decoration-none text-secondary">Ngân hàng của tôi</a></li>
+                <li class="breadcrumb-item active fw-semibold text-danger" aria-current="page">Chỉnh sửa câu hỏi #CS201-Q105</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a asp-action="Questions" class="btn btn-light border rounded-3 px-3 text-secondary">Hủy</a>
+        <button type="button" class="btn btn-outline-secondary rounded-3 px-3" onclick="alert('Đã cập nhật bản nháp!');">
+            <i class="fa-regular fa-floppy-disk me-1"></i> Lưu nháp
+        </button>
+        <button type="button" class="btn btn-danger fw-bold rounded-3 px-4 shadow-sm" onclick="submitRevision();">
+            <i class="fa-solid fa-paper-plane me-1"></i> Lưu & Gửi duyệt lại
+        </button>
+    </div>
+</div>
+
+<!-- Main Container -->
+<div class="p-4 flex-grow-1" style="background-color: #f4f6fa;">
+    <div class="container-fluid" style="max-width: 1200px;">
+        
+        <!-- ALERT BOX: LỜI GÓP Ý TỪ TRƯỞNG BỘ MÔN (YÊU CẦU CHỈNH SỬA) -->
+        <div class="card border-danger border-2 shadow-sm rounded-4 mb-4 bg-white overflow-hidden">
+            <div class="card-header bg-danger text-white py-3 px-4 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                    <h6 class="fw-bold mb-0">Yêu cầu chỉnh sửa từ Trưởng bộ môn: ThS. Trần Hoàng Nam</h6>
+                </div>
+                <span class="badge bg-white text-danger fw-semibold">Thời gian: 10/11/2026 - 15:42</span>
+            </div>
+            <div class="card-body p-4 bg-danger bg-opacity-10">
+                <div class="fs-6 text-dark mb-2 fw-medium">
+                    <i class="fa-solid fa-quote-left me-2 text-danger"></i>
+                    "Đáp án B và D bị trùng ý diễn đạt trong ngữ cảnh gọi phương thức. Đề nghị Thầy viết lại phương án D rõ ràng hơn và bổ sung chuẩn đầu ra CLO2 để tránh gây tranh cãi khi sinh viên làm bài thi kết thúc học phần."
+                    <i class="fa-solid fa-quote-right ms-2 text-danger"></i>
+                </div>
+                <div class="small text-secondary">
+                    <i class="fa-solid fa-circle-info text-primary me-1"></i> Sau khi Thầy/Cô chỉnh sửa các nội dung theo góp ý ở trên, hãy bấm nút <strong>"Lưu & Gửi duyệt lại"</strong> để Trưởng bộ môn tiến hành thẩm định và đưa vào ngân hàng đề thi chính thức.
+                </div>
+            </div>
+        </div>
+
+        <form id="editForm">
+            <div class="row g-4">
+                
+                <!-- CỘT TRÁI: NỘI DUNG VÀ ĐÁP ÁN -->
+                <div class="col-lg-8">
+                    
+                    <!-- Card Nội dung câu hỏi -->
+                    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                        <div class="card-header bg-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+                            <h6 class="fw-bold text-dark mb-0">
+                                <i class="fa-solid fa-pen-nib me-2 text-primary"></i>Nội dung câu hỏi
+                            </h6>
+                            <span class="badge bg-danger text-white">Đang sửa theo góp ý</span>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            <!-- Mini Toolbar -->
+                            <div class="d-flex flex-wrap align-items-center gap-1 p-2 bg-light border rounded-3 mb-2">
+                                <button type="button" class="btn btn-sm btn-white border px-2"><i class="fa-solid fa-bold"></i></button>
+                                <button type="button" class="btn btn-sm btn-white border px-2"><i class="fa-solid fa-italic"></i></button>
+                                <button type="button" class="btn btn-sm btn-white border px-2"><i class="fa-solid fa-underline"></i></button>
+                                <div class="vr my-1 mx-1"></div>
+                                <button type="button" class="btn btn-sm btn-white border px-2 text-primary"><i class="fa-solid fa-square-root-variable me-1"></i>LaTeX</button>
+                                <button type="button" class="btn btn-sm btn-white border px-2 text-success"><i class="fa-solid fa-code me-1"></i>Code</button>
+                            </div>
+
+                            <textarea class="form-control" rows="4" style="font-size: 15px;">Trong tính đa hình của lập trình hướng đối tượng C#, phương thức ảo (virtual method) có đặc điểm nổi bật nào dưới đây?</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Card Phương án trả lời -->
+                    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                        <div class="card-header bg-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">
+                                    <i class="fa-solid fa-list-ol me-2 text-success"></i>Phương án trả lời (Đáp án)
+                                </h6>
+                                <small class="text-danger fw-medium">* Chú ý điều chỉnh lại phương án D theo góp ý của TBM</small>
+                            </div>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            <div class="d-flex flex-column gap-3">
+                                
+                                <!-- Phương án A (Đúng) -->
+                                <div class="p-3 rounded-3 border answer-box border-success bg-success bg-opacity-10">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <input class="form-check-input" type="radio" name="correctAnswer" checked />
+                                        <div class="badge bg-success rounded-circle p-2 fs-7" style="width: 28px; height: 28px;">A</div>
+                                        <div class="flex-grow-1">
+                                            <input type="text" class="form-control bg-white" 
+                                                   value="Cho phép lớp con (derived class) sử dụng từ khóa override để ghi đè lại mã thực thi khi cần thiết" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 ps-5 small text-success fw-bold">
+                                        <i class="fa-solid fa-circle-check me-1"></i>Đáp án chính xác
+                                    </div>
+                                </div>
+
+                                <!-- Phương án B -->
+                                <div class="p-3 rounded-3 border answer-box bg-white">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <input class="form-check-input" type="radio" name="correctAnswer" />
+                                        <div class="badge bg-light text-dark border rounded-circle p-2 fs-7" style="width: 28px; height: 28px;">B</div>
+                                        <div class="flex-grow-1">
+                                            <input type="text" class="form-control" 
+                                                   value="Bắt buộc mọi lớp con phải định nghĩa lại phương thức, nếu không lớp con cũng phải là abstract" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Phương án C -->
+                                <div class="p-3 rounded-3 border answer-box bg-white">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <input class="form-check-input" type="radio" name="correctAnswer" />
+                                        <div class="badge bg-light text-dark border rounded-circle p-2 fs-7" style="width: 28px; height: 28px;">C</div>
+                                        <div class="flex-grow-1">
+                                            <input type="text" class="form-control" 
+                                                   value="Chỉ cho phép gọi thực thi từ các phương thức tĩnh (static methods) trong cùng một assembly" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Phương án D (ĐANG CẦN CHỈNH SỬA) -->
+                                <div class="p-3 rounded-3 border answer-box border-warning bg-warning bg-opacity-10">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <input class="form-check-input" type="radio" name="correctAnswer" />
+                                        <div class="badge bg-warning text-dark border rounded-circle p-2 fs-7" style="width: 28px; height: 28px;">D</div>
+                                        <div class="flex-grow-1">
+                                            <!-- Nội dung đã được viết lại mới, rõ ràng -->
+                                            <input type="text" class="form-control bg-white border-warning fw-medium" id="inputOptD"
+                                                   value="Không có phần thân triển khai mặc định ở lớp cha, hoàn toàn giống với khai báo trong Interface" />
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 ps-5 small text-warning-emphasis">
+                                        <i class="fa-solid fa-pen-nib me-1"></i>(Đã viết lại mới theo nhận xét của Trưởng bộ môn: nêu rõ tính chất không thân triển khai)
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lời giải thích -->
+                    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                        <div class="card-header bg-white border-0 py-3 px-4">
+                            <h6 class="fw-bold text-dark mb-0">
+                                <i class="fa-solid fa-lightbulb me-2 text-warning"></i>Lời giải thích chi tiết & Căn cứ đáp án
+                            </h6>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            <textarea class="form-control" rows="3">Trong C#, từ khóa virtual cho phép một phương thức có cài đặt mặc định ở lớp cha và cho phép lớp con ghi đè (override) lại khi cần thiết. Khác với abstract method bắt buộc phải override, virtual method thì tùy chọn.</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CỘT PHẢI: THIẾT LẬP THUỘC TÍNH -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                        <div class="card-header bg-white border-0 py-3 px-4">
+                            <h6 class="fw-bold text-dark mb-0">
+                                <i class="fa-solid fa-sliders me-2 text-primary"></i>Phân loại & Chuẩn đầu ra
+                            </h6>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-dark">Môn học</label>
+                                <select class="form-select bg-light" disabled>
+                                    <option selected>Lập trình Hướng đối tượng (CS201)</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-dark">Chương</label>
+                                <select class="form-select bg-light">
+                                    <option selected>Chương 3: Tính Kế thừa & Đa hình</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-dark">Mức độ Bloom</label>
+                                <select class="form-select bg-light">
+                                    <option>1. Nhận biết</option>
+                                    <option selected>2. Thông hiểu (Understanding)</option>
+                                    <option>3. Vận dụng</option>
+                                    <option>4. Vận dụng cao</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-dark">Chuẩn đầu ra (CLO)</label>
+                                <select class="form-select bg-light border-primary">
+                                    <option selected>CLO2 - Vận dụng kế thừa và đa hình trong thiết kế hệ thống</option>
+                                </select>
+                            </div>
+
+                            <!-- Lời nhắn gửi lại Trưởng bộ môn khi nộp duyệt lại -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold fs-7 text-primary">
+                                    <i class="fa-solid fa-reply me-1"></i>Phản hồi gửi lại Trưởng bộ môn
+                                </label>
+                                <textarea class="form-control" rows="3" placeholder="Nhập ghi chú phản hồi cho Trưởng bộ môn (ví dụ: Thưa Thầy, em đã viết lại đáp án D rõ ràng và bổ sung chuẩn CLO2)...">Thưa Thầy, tôi đã viết lại phương án D rõ ràng hơn để phân biệt với interface/abstract method và đã bổ sung đầy đủ chuẩn đầu ra CLO2 theo đúng góp ý của Thầy.</textarea>
+                            </div>
+
+                            <button type="button" class="btn btn-danger w-100 py-2 fw-bold rounded-3 shadow-sm" onclick="submitRevision();">
+                                <i class="fa-solid fa-paper-plane me-1"></i> Lưu & Gửi duyệt lại ngay
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function submitRevision() {
+        alert('Đã cập nhật câu hỏi và gửi lại Trưởng bộ môn (ThS. Trần Hoàng Nam) phê duyệt thành công!\nTrạng thái chuyển sang: Đang chờ thẩm định.');
+        window.location.href = '@Url.Action("Questions", "Teacher")';
+    }
+</script>
+}
+

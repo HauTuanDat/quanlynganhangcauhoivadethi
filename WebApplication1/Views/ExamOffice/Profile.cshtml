@@ -1,0 +1,55 @@
+@{
+    ViewData["Title"] = "Hồ sơ Chuyên viên Khảo thí - ExamBank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between shadow-sm">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a asp-controller="ExamOffice" asp-action="Index" class="text-decoration-none text-secondary">Khảo thí & ĐBCL</a></li>
+            <li class="breadcrumb-item active fw-bold" style="color: #e11d48;" aria-current="page">Hồ sơ cá nhân</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="p-4" style="background-color: #f8fafc; min-height: calc(100vh - 75px);">
+    <div class="row g-4 justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                <div class="d-flex align-items-center gap-4 border-bottom pb-4 mb-4">
+                    <img src="https://ui-avatars.com/api/?name=Hoang+Thi+Lan&background=e11d48&color=fff&bold=true&size=100"
+                         alt="Avatar" class="rounded-circle shadow-sm" width="90" height="90" />
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1">@ViewBag.FullName</h4>
+                        <div class="badge bg-danger-subtle text-danger mb-2">
+                            Chuyên viên Khảo thí & ĐBCL (PhongKhaoThi)
+                        </div>
+                        <div class="text-muted small">
+                            <i class="fa-solid fa-stamp me-1"></i> @ViewBag.Department • @ViewBag.Institution
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label text-muted small fw-semibold">Tên đăng nhập</label>
+                        <input type="text" class="form-control" value="@ViewBag.Username" readonly />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label text-muted small fw-semibold">Họ và tên</label>
+                        <input type="text" class="form-control" value="@ViewBag.FullName" readonly />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label text-muted small fw-semibold">Email cơ quan</label>
+                        <input type="text" class="form-control" value="lanhoang@university.edu.vn" readonly />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label text-muted small fw-semibold">Thẩm quyền nghiệp vụ</label>
+                        <input type="text" class="form-control" value="Duyệt câu hỏi Cấp 2 (Approved), Duyệt Đề thi Cấp 2 & Phát hành, Quản lý đợt in" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
