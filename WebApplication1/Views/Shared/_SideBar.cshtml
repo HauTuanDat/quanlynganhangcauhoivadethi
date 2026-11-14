@@ -285,6 +285,21 @@
                             <span class="badge rounded-pill bg-info text-dark small">2</span>
                         </a>
                     </li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="ExamOffice" asp-action="HandoverHistory" class="sidebar-link @(curController == "ExamOffice" && curAction == "HandoverHistory" ? "active-examoffice" : "")">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <span>Lịch sử bàn giao & Lưu trữ</span>
+                        </a>
+                    </li>
+
+                    <!-- NHÓM: BÁO CÁO & ĐBCL -->
+                    <li class="menu-category" style="color: #fda4af;">Thống kê & ĐBCL</li>
+                    <li class="sidebar-nav-item">
+                        <a asp-controller="ExamOffice" asp-action="Reports" class="sidebar-link @(curController == "ExamOffice" && curAction == "Reports" ? "active-examoffice" : "")">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>Báo cáo khảo thí toàn trường</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         }

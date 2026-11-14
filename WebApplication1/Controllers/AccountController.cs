@@ -91,7 +91,22 @@ namespace WebApplication1.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-
+            // GHI VẾT HOẠT ĐỘNG: Bắt request đăng nhập thành công
+            var loginLog = new ActivityLog
+            {
+                UserId = user.Id,
+                FullName = user.FullName,
+                UserRole = user.Role,
+                ActionType = "Login",
+                TargetType = "User",
+                TargetId = user.Id,
+                Title = "Đăng nhập hệ thống",
+                Description = $"{user.FullName} ({user.Role}) vừa đăng nhập vào hệ thống",
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                CreateAt = DateTime.Now
+            };
+            _context.ActivityLogs.Add(loginLog);
+            await _context.SaveChangesAsync();
             // BƯỚC 8: Chuyển vào ứng dụng theo phân quyền (Role-based Navigation)
             if (user.Role == "Admin")
             {
@@ -103,7 +118,7 @@ namespace WebApplication1.Controllers
             }
             else if (user.Role == "TruongBoMon")
             {
-                return RedirectToAction("Index", "Departm   entHead");
+                return RedirectToAction("Index", "DepartmentHead");
             }
             else if (user.Role == "GiangVien")
             {
@@ -169,6 +184,22 @@ namespace WebApplication1.Controllers
 
             // Chuyển hướng sang trang Đăng nhập kèm thông báo thành công
             TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
+            // 6. GHI VẾT HOẠT ĐỘNG: Bắt request đăng ký tài khoản thành công
+            var registerLog = new ActivityLog
+            {
+                UserId = newUser.Id,
+                FullName = newUser.FullName,
+                UserRole = newUser.Role,
+                ActionType = "Register",
+                TargetType = "User",
+                TargetId = newUser.Id,
+                Title = "Người dùng mới đăng ký",
+                Description = $"Tài khoản '{newUser.Username}' ({newUser.FullName}) vừa đăng ký thành công",
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                CreateAt = DateTime.Now
+            };
+            _context.ActivityLogs.Add(registerLog);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Login");
         }
 

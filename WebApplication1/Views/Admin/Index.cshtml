@@ -1,3 +1,4 @@
+@model WebApplication1.Models.AdminDashboardViewModel
 @{
     ViewData["Title"] = "Tổng quan Quản trị - ExamBank";
     Layout = "_Layout";
@@ -423,11 +424,11 @@
 
             <div class="user-pill">
                 <div class="user-avatar">
-                    @(ViewBag.FullName != null ? ViewBag.FullName.ToString().Substring(0, 1).ToUpper() : "A")
+                    @(Model?.AdminFullName != null && Model.AdminFullName.Length > 0 ? Model.AdminFullName.Substring(0, 1).ToUpper() : (ViewBag.FullName != null ? ViewBag.FullName.ToString().Substring(0, 1).ToUpper() : "A"))
                 </div>
                 <div class="d-none d-sm-block text-start">
-                    <div class="fw-bold small text-dark leading-tight">@(ViewBag.FullName ?? "Quản trị viên")</div>
-                    <div class="text-muted" style="font-size: 11px;">@(ViewBag.Role ?? "Admin")</div>
+                    <div class="fw-bold small text-dark leading-tight">@(Model?.AdminFullName ?? ViewBag.FullName ?? "Quản trị viên")</div>
+                    <div class="text-muted" style="font-size: 11px;">@(Model?.AdminRole ?? ViewBag.Role ?? "Admin")</div>
                 </div>
                 <i class="fa-solid fa-chevron-down text-muted small ms-1"></i>
             </div>
@@ -449,7 +450,7 @@
 
             <button class="year-filter-btn">
                 <i class="fa-regular fa-calendar-days"></i>
-                <span>Năm học 2025 - 2026</span>
+                <span>@(Model?.AcademicYear ?? "Năm học 2025 - 2026")</span>
                 <i class="fa-solid fa-chevron-down ms-1 small"></i>
             </button>
         </div>
@@ -463,8 +464,8 @@
                 </div>
                 <div>
                     <div>
-                        <span class="stat-number count-up" data-countup="12.850">12.850</span>
-                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 8%</span>
+                        <span class="stat-number count-up" data-countup="@(Model?.TotalUsers ?? 0)">@(Model?.TotalUsers.ToString("N0") ?? "0")</span>
+                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> @(Model?.UserGrowthPercent ?? 8)%</span>
                     </div>
                     <div class="stat-label">Tổng người sử dụng</div>
                 </div>
@@ -477,8 +478,8 @@
                 </div>
                 <div>
                     <div>
-                        <span class="stat-number count-up" data-countup="8.620">8.620</span>
-                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 12%</span>
+                        <span class="stat-number count-up" data-countup="@(Model?.ActiveUsers ?? 0)">@(Model?.ActiveUsers.ToString("N0") ?? "0")</span>
+                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> @(Model?.ActiveGrowthPercent ?? 12)%</span>
                     </div>
                     <div class="stat-label">Số người đang hoạt động</div>
                 </div>
@@ -491,8 +492,8 @@
                 </div>
                 <div>
                     <div>
-                        <span class="stat-number count-up" data-countup="24">24</span>
-                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 5%</span>
+                        <span class="stat-number count-up" data-countup="@(Model?.TotalSubjects ?? 0)">@(Model?.TotalSubjects ?? 0)</span>
+                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> @(Model?.SubjectGrowthPercent ?? 5)%</span>
                     </div>
                     <div class="stat-label">Tổng môn học</div>
                 </div>
@@ -505,8 +506,8 @@
                 </div>
                 <div>
                     <div>
-                        <span class="stat-number count-up" data-countup="15">15</span>
-                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> 3%</span>
+                        <span class="stat-number count-up" data-countup="@(Model?.TotalDepartments ?? 0)">@(Model?.TotalDepartments ?? 0)</span>
+                        <span class="stat-badge"><i class="fa-solid fa-arrow-up"></i> @(Model?.DepartmentGrowthPercent ?? 3)%</span>
                     </div>
                     <div class="stat-label">Tổng khoa / Bộ môn</div>
                 </div>
@@ -546,73 +547,35 @@
                     </div>
                     <a href="#" class="text-primary text-decoration-none small fw-bold">Xem tất cả <i class="fa-solid fa-arrow-right small"></i></a>
                 </div>
-
                 <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-left">
-                            <div class="activity-icon bg-primary bg-opacity-10 text-primary">
-                                <i class="fa-solid fa-file-lines"></i>
+                    @if (Model?.RecentActivities != null && Model.RecentActivities.Any())
+                    {
+                        foreach (var item in Model.RecentActivities)
+                        {
+                            <div class="activity-item">
+                                <div class="activity-left">
+                                    <div class="activity-icon bg-@item.ColorClass bg-opacity-10 text-@item.ColorClass">
+                                        <i class="fa-solid @item.IconClass"></i>
+                                    </div>
+                                    <div>
+                                        <div class="activity-title">@item.Title</div>
+                                        <div class="activity-desc">@item.Description</div>
+                                    </div>
+                                </div>
+                                <div class="activity-time">@item.Timestamp</div>
                             </div>
-                            <div>
-                                <div class="activity-title">Thêm đề thi mới</div>
-                                <div class="activity-desc">Đề thi giữa kỳ - Toán cao cấp</div>
-                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-4 text-muted small">
+                            <i class="fa-solid fa-clock-rotate-left fs-4 d-block mb-2 text-secondary"></i>
+                            Chưa có hoạt động nào được ghi nhận.
                         </div>
-                        <div class="activity-time">2 phút trước</div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-left">
-                            <div class="activity-icon bg-success bg-opacity-10 text-success">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </div>
-                            <div>
-                                <div class="activity-title">Cập nhật câu hỏi</div>
-                                <div class="activity-desc">Câu 1024 - Môn Cơ sở dữ liệu</div>
-                            </div>
-                        </div>
-                        <div class="activity-time">5 phút trước</div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-left">
-                            <div class="activity-icon bg-info bg-opacity-10 text-info">
-                                <i class="fa-solid fa-user-plus"></i>
-                            </div>
-                            <div>
-                                <div class="activity-title">Thêm người dùng</div>
-                                <div class="activity-desc">Nguyễn Văn A (Sinh viên)</div>
-                            </div>
-                        </div>
-                        <div class="activity-time">10 phút trước</div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-left">
-                            <div class="activity-icon bg-warning bg-opacity-10 text-warning">
-                                <i class="fa-solid fa-calendar-check"></i>
-                            </div>
-                            <div>
-                                <div class="activity-title">Cập nhật lịch thi</div>
-                                <div class="activity-desc">Thi giữa kỳ - 25/11/2026</div>
-                            </div>
-                        </div>
-                        <div class="activity-time">15 phút trước</div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-left">
-                            <div class="activity-icon bg-danger bg-opacity-10 text-danger">
-                                <i class="fa-solid fa-check-double"></i>
-                            </div>
-                            <div>
-                                <div class="activity-title">Đánh dấu hoàn thành</div>
-                                <div class="activity-desc">Xử lý đơn đăng ký thi</div>
-                            </div>
-                        </div>
-                        <div class="activity-time">20 phút trước</div>
-                    </div>
+                    }
                 </div>
+
+              </div>
             </div>
         </div>
     </div>
@@ -638,7 +601,7 @@
                         <canvas id="userDonutChart"></canvas>
                         <!-- Nhãn số trung tâm Donut -->
                         <div class="position-absolute top-50 start-50 translate-middle text-center" style="pointer-events: none;">
-                            <div class="fw-bold fs-5 text-dark">12.850</div>
+                            <div class="fw-bold fs-5 text-dark">@(Model?.TotalUsers.ToString("N0") ?? "0")</div>
                             <div class="text-muted" style="font-size: 10px;">Tổng người dùng</div>
                         </div>
                     </div>
@@ -662,37 +625,19 @@
         </div>
 
         <!-- Danh sách thông báo nhanh -->
-        <div class="col-lg-7">
-            <div class="dashboard-card">
-                <div class="card-header-custom">
-                    <div class="card-header-title">
-                        <i class="fa-solid fa-bell"></i>
-                        <span>Thông báo nhanh</span>
-                    </div>
-                    <a href="#" class="text-primary text-decoration-none small fw-bold">Xem tất cả <i class="fa-solid fa-arrow-right small"></i></a>
+    <div>
+        @if (Model?.QuickNotices != null && Model.QuickNotices.Any())
+        {
+            foreach (var notice in Model.QuickNotices)
+            {
+                <div class="notice-item @notice.Type">
+                    <i class="fa-solid @(notice.Type == "success" ? "fa-circle-check" : notice.Type == "warning" ? "fa-triangle-exclamation" : "fa-circle-info") fs-5"></i>
+                    <span>@notice.Message</span>
+                    <span class="notice-time">@notice.TimeAgo</span>
                 </div>
-
-                <div>
-                    <div class="notice-item info">
-                        <i class="fa-solid fa-circle-info fs-5"></i>
-                        <span>Hệ thống sẽ bảo trì định kỳ vào 22:00 ngày 15/11/2026.</span>
-                        <span class="notice-time">1 giờ trước</span>
-                    </div>
-
-                    <div class="notice-item success">
-                        <i class="fa-solid fa-circle-check fs-5"></i>
-                        <span>Đã cập nhật phiên bản hệ thống v2.1.0 với nhiều tính năng mới.</span>
-                        <span class="notice-time">2 giờ trước</span>
-                    </div>
-
-                    <div class="notice-item warning">
-                        <i class="fa-solid fa-triangle-exclamation fs-5"></i>
-                        <span>Có 1 đề thi sắp hết hạn (trong 1 ngày).</span>
-                        <span class="notice-time">3 giờ trước</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+            }
+        }
+    </div>
     </div>
 
 </div>
@@ -705,11 +650,11 @@
         new Chart(ctxWorkload, {
             type: 'line',
             data: {
-                labels: ['28/10', '29/10', '30/10', '31/10', '01/11', '02/11', '03/11', '04/11'],
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.WorkloadChart?.Labels ?? new List<string>())),
                 datasets: [
                     {
-                        label: 'Chờ xử lý',
-                        data: [470, 610, 750, 670, 740, 870, 890, 920],
+                        label: 'Chờ duyệt',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.WorkloadChart?.PendingList ?? new List<int>())),
                         borderColor: '#2563eb',
                         backgroundColor: 'rgba(37, 99, 235, 0.08)',
                         tension: 0.4,
@@ -718,8 +663,8 @@
                         pointRadius: 4
                     },
                     {
-                        label: 'Đang thực hiện',
-                        data: [370, 420, 510, 460, 520, 650, 680, 710],
+                        label: 'Đang xử lý / Chỉnh sửa',
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.WorkloadChart?.InProgressList ?? new List<int>())),
                         borderColor: '#8b5cf6',
                         backgroundColor: 'rgba(139, 92, 246, 0.05)',
                         tension: 0.4,
@@ -729,7 +674,7 @@
                     },
                     {
                         label: 'Đã hoàn thành',
-                        data: [250, 260, 360, 290, 310, 420, 440, 460],
+                        data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.WorkloadChart?.CompletedList ?? new List<int>())),
                         borderColor: '#10b981',
                         backgroundColor: 'rgba(16, 185, 129, 0.05)',
                         tension: 0.4,
@@ -751,9 +696,7 @@
                 },
                 scales: {
                     y: {
-                        min: 0,
-                        max: 1000,
-                        ticks: { stepSize: 250 },
+                        beginAtZero: true,
                         grid: { color: '#f1f5f9' }
                     },
                     x: {

@@ -10,6 +10,7 @@ namespace WebApplication1.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
